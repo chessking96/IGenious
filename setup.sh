@@ -14,6 +14,11 @@ touch exclude.txt # would allow to add variables which should not be considered 
 
 # prepare copy of c code
 cp $1.c code_temp.c
+
+# change declarations
+python3 ../multideclaration.py DFT16
+
+# rename to standard name
 cp config_$1.json config_orig.json
 
 # copy helper files
