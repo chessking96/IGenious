@@ -10,7 +10,7 @@ void init_DFT16(double a) {
 }
 
 void DFT16(double  *Y, double  *X) {
-    float a145, a146, a147, a148, a149, a150, a151, a152
+    long double a145, a146, a147, a148, a149, a150, a151, a152
             , a153, a154, a155, a156, s61, s62, s63, s64
             , s65, s66, s67, s68, s69, s70, s71, s72
             , s73, s74, s75, s76, s77, s78, s79, s80

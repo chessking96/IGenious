@@ -47,17 +47,24 @@ m9="\tfor(int i = 0; i < 10000000; i++){\n"
 m10="\t\t"$2"(y, x);\n"
 m11="\t}\n"
 m12="\tclock_t end = clock();\n"
-m13="\tlong diff = (long)(end-start);\n"
-m14='\tprintf("diff: %ld\\n", end);\n'
+
+# time print and save
+m13="\tlong diff_time = (long)(end-start);\n"
+m14='\tprintf("diff: %ld\\n", diff_time);\n'
 m15='\tFILE* file = fopen("score.cov", "w");\n'
-m16='\tfprintf(file, "%ld\\n", diff);\n'
+m16='\tfprintf(file, "%ld\\n", diff_time);\n'
 m17="\tfclose(file);\n"
-m18='\tprintf("corr: %d\\n", y[0]);\n'
-m19="\tfile = fopen(\"sat.cov\", \"w\");\n"
-m20='\tfprintf(file, "true\\n");\n'
-m21="\tfclose(file);\n"
-m22="\treturn 0;\n"
-mainBody=$m1$m2$m3$m4$m5$m6$m7$m8$m9$m10$m11$m12$m13$m14$m15$m16$m17$m18$m19$m20$m21$m22
+
+# accuraccy print and save (has to be overwritten after IGen compilation)
+m18='\tprintf("AfterIGenReplacement");\n'
+#m18='\tprintf("corr: %d\\n", y[0]);\n'
+#m19="\tfile = fopen(\"sat.cov\", \"w\");\n"
+#m20='\tfprintf(file, "true\\n");\n'
+#m21="\tfclose(file);\n"
+
+
+m19="\treturn 0;\n"
+mainBody=$m1$m2$m3$m4$m5$m6$m7$m8$m9$m10$m11$m12$m13$m14$m15$m16$m17$m18$m19 #$m20$m21$m22
 main=$mainIntro$mainBody"}"
 
 code="$include$main"
@@ -70,7 +77,6 @@ cp igen_main.c main.c
 cp igen_random_range.c random_range.c
 
 python3 ../precision_support.py
-
 
 cd ..
 

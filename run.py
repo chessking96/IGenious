@@ -6,18 +6,27 @@ import re
 import subprocess
 
 def main():
+
+  #read original code
+  with open ("code_temp.c", "r") as myfile:
+    c = myfile.read()
+
   #read original config
   orig_types = json.loads(open('config_orig.json', 'r').read())["config"]
-  #print(orig_types)
 
   #read config file
   with open("config_temp.json", "r") as myfile:
     replacements = load_json(myfile.read())
 
-  #read original code
-  with open ("code_temp.c", "r") as myfile:
-    c = myfile.read()
   #print(c)
+  #print()
+  #print(orig_types)
+  #print()
+  #print(replacements)
+
+
+
+
 
   dict = {}
   #print("origtypes: " + str(orig_types[0]['localVar']['name']))
@@ -40,7 +49,10 @@ def main():
     regexpr1 = r'([\t\r (]+)' + orig_type + r'([\t\r (]+)' + varname
     regexpr2 = r'\1' + new_type + r'\2' + varname
     c = re.sub(regexpr1, regexpr2, c)
+  
+
   #print(c)
+  #subprocess.call(["python3 ../sleep.py"], shell=True) #remove shell...
   #print(json_str)
   #data = json.loads(json_str)
   #print(json.dumps(data, indent=4, sort_keys=True))
@@ -49,25 +61,17 @@ def main():
   f = open("code_rep.c", "w+")
   f.write(c)
   f.close()
-  #subprocess.call(["pwd"], shell=True)
+
   subprocess.call(["python3 ../../IGen/bin/igen.py code_rep.c"], shell=True) #remove shell...
-  #subprocess.call(["python3 ../../IGen/bin/igen.py main.c"], shell=True) #remove shell...
-  #subprocess.call(["python3 ../../IGen/bin/igen.py random_range.c"], shell=True) #remove shell...
+
   
   subprocess.call(["cp code_rep.c o_code_rep.c"], shell=True) #remove shell...
-  #subprocess.call(["cp main.c o_main.c"], shell=True) #remove shell...
-  #subprocess.call(["cp random_range.c o_random_range.c"], shell=True) #remove shell...
+
   
   subprocess.call(["cp igen_code_rep.c code_rep.c"], shell=True) #remove shell...
-  #subprocess.call(["cp igen_main.c main.c"], shell=True) #remove shell...
-  #subprocess.call(["cp igen_random_range.c random_range.c"], shell=True) #remove shell...
-  #subprocess.call(["rm -rf build && mkdir build && cd build"], shell=True) #remove shell...
   subprocess.call(["cmake . && make"], shell=True) #remove shell...
   subprocess.call(["./some_app"], shell=True) #remove shell...
-  
-  #subprocess.call(["cp o_code_rep.c code_rep.c"], shell=True) #remove shell...
-  #subprocess.call(["cp o_main.c main.c"], shell=True) #remove shell...
-  #subprocess.call(["cp o_random_range.c random_range.c"], shell=True) #remove shell...
+
   
 
   return 0

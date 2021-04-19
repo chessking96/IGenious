@@ -72,7 +72,7 @@ def main():
 					end = pos
 					for i in range(len(names)):
 						#print(i - start, names[i - start], curr_type)
-						tokens[start + 2 * i] = curr_type + " "
+						tokens[start + 2 * i] = "\t" + curr_type + " "
 						tokens[start + 2 * i + 1] = names[i] + ";\n"
 
 					del tokens[start + 2 * len(names):end + 3]
