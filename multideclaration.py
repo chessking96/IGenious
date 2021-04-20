@@ -22,7 +22,7 @@ def main():
 	tokens = re.split('(\W)', c)
 
 	some_symbols = ["", "=", "+", "*", "-", "\n", " ", "{", "}"]
-	types =  ['double', 'float']
+	types =  ['double', 'float', 'long double']
 
 	stat = 0
 	pos = 0
@@ -30,6 +30,7 @@ def main():
 	names = []
 	start = -1
 	end = -1
+	twice = False
 
 	while True:
 		if pos >= len(tokens):
@@ -38,17 +39,25 @@ def main():
 		#	break
 		token = tokens[pos]
 		if token not in some_symbols:
-			# print(token)
+			#print(token, stat)
 			if token in types:
 				#print("1: " + token)
 				stat = 1
 				start = pos
 				curr_type = token
+				twice = False
+				if token == 'double' and tokens[pos - 2] == 'long':
+					twice = True
+					curr_type = 'long double'
 			if stat == 1:
 				if token in types:
 					stat = 1
 					start = pos
 					curr_type = token
+					twice = False
+					if token == 'double' and tokens[pos - 2] == 'long':
+						twice = True
+						curr_type = 'long double'
 					names.clear()
 					#print("1.1: " + token)
 				else:
@@ -63,12 +72,18 @@ def main():
 					stat = 1
 					start = pos
 					curr_type = token
+					twice = False
+
+					if token == 'double' and tokens[pos - 1] == 'long':
+						twice = True
+						curr_type = 'long double'
 					names.clear()
 					#print("3.1: " + token)
 				elif token == ",":
 					stat = 1
 					#print("3.2: " + token)
 				elif token == ";":
+					print("type: " + curr_type)
 					end = pos
 					for i in range(len(names)):
 						#print(i - start, names[i - start], curr_type)
@@ -76,6 +91,8 @@ def main():
 						tokens[start + 2 * i + 1] = names[i] + ";\n"
 
 					del tokens[start + 2 * len(names):end + 3]
+					if twice:
+						del tokens[start - 2:start]
 					names.clear()
 					#print("hi", token)
 					stat = 0
@@ -96,6 +113,7 @@ def main():
 	f.close()
 	# print(c_new)
 	
+	#input("...");
 
 
 

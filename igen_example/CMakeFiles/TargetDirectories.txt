@@ -1,3 +1,0 @@
-/home/user/master-thesis/igen_example/CMakeFiles/rebuild_cache.dir
-/home/user/master-thesis/igen_example/CMakeFiles/edit_cache.dir
-/home/user/master-thesis/igen_example/CMakeFiles/small.dir

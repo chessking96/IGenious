@@ -36,15 +36,19 @@ def main():
 
   #print(dict)
 
-  for rep in  replacements:
+  for rep in replacements:
     #new
     #print("or: " + str(rep))
     fname = rep[0]
     new_type = rep[1]
+    if new_type == 'longdouble':
+      new_type = 'long double'
     varname = rep[2]
 
     #orig
     orig_type = dict[rep[0], rep[2]]
+    if orig_type == 'longdouble':
+      orig_type = 'long double'
     #print("to: " + new_type)
     regexpr1 = r'([\t\r (]+)' + orig_type + r'([\t\r (]+)' + varname
     regexpr2 = r'\1' + new_type + r'\2' + varname
@@ -65,10 +69,12 @@ def main():
   subprocess.call(["python3 ../../IGen/bin/igen.py code_rep.c"], shell=True) #remove shell...
 
   
-  subprocess.call(["cp code_rep.c o_code_rep.c"], shell=True) #remove shell...
+  subprocess.call(["cp code_rep.c orig_code_rep.c"], shell=True) #remove shell...
+  subprocess.call(["cp igen_code_rep.c code_rep.c"], shell=True) #remove shell...
+
+  subprocess.call(["python3 ../sleep.py"], shell=True) #remove shell...
 
   
-  subprocess.call(["cp igen_code_rep.c code_rep.c"], shell=True) #remove shell...
   subprocess.call(["cmake . && make"], shell=True) #remove shell...
   subprocess.call(["./some_app"], shell=True) #remove shell...
 
