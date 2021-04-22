@@ -14,15 +14,15 @@ touch exclude.txt # would allow to add variables which should not be considered 
 
 # prepare copy of c code
 cp $1.c code_temp.c
-python3 ../multideclaration.py DFT16
+python3 ../scripts/multideclaration.py DFT16
 
 # rename to standard name
 cp config_$1.json config_orig.json
 
 # copy helper files
-cp ../random_range.c random_range.c
+cp ../src/random_range.c random_range.c
 
-cp ../CMakeLists.txt CMakeLists.txt
+cp ../src/CMakeLists.txt CMakeLists.txt
 
 # create main function for time measurement
 touch main.c
@@ -34,14 +34,14 @@ include=$include1$include2$include3$include4"\n"
 
 mainIntro="int main(){\n"
 m1="\tinitRandomSeed();\n"
-m2="\tdouble* x = malloc(32*sizeof(double));\n"
+m2="\tlong double* x = malloc(32*sizeof(long double));\n"
 m3="\tfor(int i = 0; i < 32; i++){\n"
-m4="\t\tdouble h = getRandomDouble();\n"
+m4="\t\tlong double h = getRandomDouble();\n"
 m5="\t\tx[i] = h;\n"
 m6="\t}\n"
-m7="\tdouble* y = malloc(32*sizeof(double));\n"
+m7="\tlong double* y = malloc(32*sizeof(long double));\n"
 m8="\tclock_t start = clock();\n"
-m9="\tfor(int i = 0; i < 10000000; i++){\n"
+m9="\tfor(int i = 0; i < 2000000; i++){\n"
 m10="\t\t"$2"(y, x);\n"
 m11="\t}\n"
 m12="\tclock_t end = clock();\n"
@@ -54,7 +54,7 @@ m16='\tfprintf(file, "%ld\\n", diff_time);\n'
 m17="\tfclose(file);\n"
 
 # accuraccy print and save (has to be overwritten after IGen compilation)
-m18='\tprintf("AfterIGenReplacement");\n'
+m18='\tprintf("BeforeIGenReplacement");\n'
 #m18='\tprintf("corr: %d\\n", y[0]);\n'
 #m19="\tfile = fopen(\"sat.cov\", \"w\");\n"
 #m20='\tfprintf(file, "true\\n");\n'
@@ -71,10 +71,14 @@ echo -e $code > main.c
 
 python3 ../../IGen/bin/igen.py main.c
 python3 ../../IGen/bin/igen.py random_range.c
+cp main.c orig_main.c
+cp random_range.c orig_random_range.c
 cp igen_main.c main.c
 cp igen_random_range.c random_range.c
 
-python3 ../precision_support.py
+python3 ../scripts/precision_support.py
+
+
 
 cd ..
 

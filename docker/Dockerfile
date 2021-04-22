@@ -41,12 +41,12 @@ Run wget -qnc http://prdownloads.sourceforge.net/scons/scons-2.4.0.tar.gz && \
    mv scons-2.4.0 scons && \
    cd scons && \
    sudo python2.7 setup.py install && \
-   cd ..
+   cd
 
 Run git clone https://github.com/ucd-plse/precimonious.git && \
    cd precimonious && \
    echo "export CORVETTE_PATH=$HOME/precimonious" >> ~/.bashrc && \
-   cd ..
+   cd
 
 ENV CORVETTE_PATH="/root/precimonious"
 
@@ -61,8 +61,17 @@ Run cd $HOME/precimonious/src && \
    cd
 
 Run sudo apt-get -y install curl 
-Run curl https://bootstrap.pypa.io/pip/2.7/get-pip.py --output get-pip.py
-Run sudo python get-pip.py
+Run python --version
+Run wget https://www.python.org/ftp/python/2.7.18/Python-2.7.18.tgz
+Run tar xfz Python-2.7.18.tgz
+Run cd Python-2.7.18/ && \
+    ./configure --prefix /usr/local/lib/python2.7.18 --enable-ipv6 && \
+    make && \
+    make install
+    
+Run wget https://bootstrap.pypa.io/pip/2.7/get-pip.py
+
+Run sudo python2.7 get-pip.py
 
 Run sudo apt-get install -y graphviz 
 Run sudo apt-get install -y graphviz-dev 
