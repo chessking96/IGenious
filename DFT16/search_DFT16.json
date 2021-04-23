@@ -1,0 +1,17 @@
+{"config": [
+	{"localVar": {
+		"function": "DFT16",
+		"name": "a",
+		"type": ["float", "double"]
+	}},
+	{"localVar": {
+		"function": "DFT16",
+		"name": "X",
+		"type": ["float*", "double*", "longdouble*"]
+	}},
+	{"localVar": {
+		"function": "DFT16",
+		"name": "Y",
+		"type": ["float*", "double*", "longdouble*"]
+	}}
+]}

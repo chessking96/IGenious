@@ -36,15 +36,16 @@ def main():
 
 	# print error
 	#p1 = '\tprintf("%f' + r"\\n" + '", diff_max);\n'
-	p5 = '\tprintf("1: %.20f %.20f' + r"\\n" + '", y[max].lh, y[max].ll);\n'
-	p0 = '\tprintf("2: %.20f %.20f' + r"\\n" + '", y[max].uh, y[max].ul);\n'
-	p1 = '\tprintf("3: %.20f %.20f' + r"\\n" + '", diff_max.uh, diff_max.ul);\n'
-	p15= '\tprintf("4: %.20f %.20f %.20f %.20f' + r"\\n" + '", y[0].lh, y[0].ll, y[0].uh, y[0].ul);\n'
+	#p5 = '\tprintf("1: %.20f %.20f' + r"\\n" + '", y[max].lh, y[max].ll);\n'
+	#p0 = '\tprintf("2: %.20f %.20f' + r"\\n" + '", y[max].uh, y[max].ul);\n'
+	#p1 = '\tprintf("3: %.20f %.20f' + r"\\n" + '", diff_max.uh, diff_max.ul);\n'
+	p15= '\tprintf("1: %.20f %.20f %.20f %.20f' + r"\\n" + '", y[0].lh, y[0].ll, y[0].uh, y[0].ul);\n'
 	p2 = '\tfile = fopen("sat.cov", "w");\n'
 	p3 = '\tfprintf(file, "%s' + r"\\n" + '", answer);\n'
 	p4 = '\tfclose(file);\n'
 
-	c_new = c_new + p5 + p0 + p1 + p15 + p2 + p3 + p4
+	#c_new = c_new + p5 + p0 + p1 + p15 + p2 + p3 + p4
+	c_new = c_new + p15 + p2 + p3 + p4
 
 	#print(c_new)
 

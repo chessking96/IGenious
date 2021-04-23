@@ -1,0 +1,17 @@
+{
+	"localVar": {
+		"function": "DFT16",
+		"type": "float",
+		"name": "a",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble*",
+		"name": "X",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble*",
+		"name": "Y",
+	},
+}
