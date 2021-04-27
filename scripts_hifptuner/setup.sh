@@ -3,9 +3,11 @@ if [ "$1" = "" ] || [ "$2" = "" ] ; then
   exit
 fi
 
-cd $1
+d30='docker exec -e LLVM_VERSION="llvm-3.0" hi llvm-config --version'
 
 # prepare files for precimonious
+$d30 
+
 ../../precimonious/scripts/compile.sh $1 .
 ../../precimonious/scripts/dependencies.sh $1 $2 .
 touch exclude.txt # would allow to add variables which should not be considered in analysis
@@ -20,7 +22,7 @@ python3 ../scripts/multideclaration.py DFT16
 cp config_$1.json config_orig.json
 
 # copy helper files
-cp ../src/random_range.c random_range.c
+#cp ../src/random_range.c random_range.c
 
 cp ../src/CMakeLists.txt CMakeLists.txt
 
@@ -30,25 +32,34 @@ include1="#include \"random_range.c\"\n"
 include2="#include \"code_rep.c\"\n"
 include3="#include <time.h>\n"
 include4="#include <stdio.h>\n"
-include=$include1$include2$include3$include4"\n"
+include5="#include <fenv.h>\n"
+include6="#include <math.h>\n"
+include=$include1$include2$include3$include4$include5$include6"\n"
 
 mainIntro="int main(){\n"
+m0="\tfesetround(FE_UPWARD);\n"
+#m0=''
 m1="\tinitRandomSeed();\n"
 m2="\tlong double* x = malloc(32*sizeof(long double));\n"
 m3="\tfor(int i = 0; i < 32; i++){\n"
-m4="\t\tlong double h = getRandomDouble();\n"
+m4="\t\tdd_I h = getRandomDouble();\n"
 m5="\t\tx[i] = h;\n"
 m6="\t}\n"
+m65='\tprintf("0: %.20f %.20f %.20f %.20f\\n", x[0].lh, x[0].ll, x[0].uh, x[0].ul);\n'
 m7="\tlong double* y = malloc(32*sizeof(long double));\n"
 m8="\tclock_t start = clock();\n"
-m9="\tfor(int i = 0; i < 2000000; i++){\n"
+m9="\tfor(int i = 0; i < 1; i++){\n"
 m10="\t\t"$2"(y, x);\n"
+if [ "$1" = "func" ] ; then
+	m10="\t\t"$2"();\n"
+fi
 m11="\t}\n"
 m12="\tclock_t end = clock();\n"
 
 # time print and save
 m13="\tlong diff_time = (long)(end-start);\n"
-m14='\tprintf("diff: %ld\\n", diff_time);\n'
+#m14='\tprintf("diff: %ld\\n", diff_time);\n'
+m14=''
 m15='\tFILE* file = fopen("score.cov", "w");\n'
 m16='\tfprintf(file, "%ld\\n", diff_time);\n'
 m17="\tfclose(file);\n"
@@ -62,7 +73,7 @@ m18='\tprintf("BeforeIGenReplacement");\n'
 
 
 m19="\treturn 0;\n"
-mainBody=$m1$m2$m3$m4$m5$m6$m7$m8$m9$m10$m11$m12$m13$m14$m15$m16$m17$m18$m19 #$m20$m21$m22
+mainBody=$m0$m1$m2$m3$m4$m5$m6$m65$m7$m8$m9$m10$m11$m12$m13$m14$m15$m16$m17$m18$m19 #$m20$m21$m22
 main=$mainIntro$mainBody"}"
 
 code="$include$main"
@@ -70,11 +81,11 @@ code="$include$main"
 echo -e $code > main.c
 
 python3 ../../IGen/bin/igen.py main.c
-python3 ../../IGen/bin/igen.py random_range.c
+# ../../IGen/bin/igen.py random_range.c
 cp main.c orig_main.c
-cp random_range.c orig_random_range.c
+#cp random_range.c orig_random_range.c
 cp igen_main.c main.c
-cp igen_random_range.c random_range.c
+#cp igen_random_range.c random_range.c
 
 python3 ../scripts/precision_support.py
 

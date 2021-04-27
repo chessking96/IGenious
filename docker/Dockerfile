@@ -1,7 +1,7 @@
 FROM ubuntu:14.04
 
 WORKDIR /root
-Run sudo apt-get -y update -y
+Run sudo apt-get -y update
 Run sudo apt-get install wget
 Run sudo apt-get install python-pip -y
 
@@ -11,6 +11,7 @@ Run sudo apt-get install git -y
 Run sudo apt-get install software-properties-common -y
 Run sudo apt-get install vim -y
 Run sudo apt-get install python-dev -y
+Run sudo apt-get install nano -y
 
 Run wget http://llvm.org/releases/3.0/clang+llvm-3.0-x86_64-linux-Ubuntu-11_10.tar.gz && \
    tar -xzvf clang+llvm-3.0-x86_64-linux-Ubuntu-11_10.tar.gz && \
@@ -29,7 +30,7 @@ Run echo "export LLVM_VERSION=llvm-3.0" >> ~/.bashrc && \
    echo "export LLVM_COMPILER=clang" >> ~/.bashrc
  
 ENV LLVM_VERSION=llvm-3.0
-ENV	PATH="/root/$LLVM_VERSION/bin:${PATH}"
+ENV PATH="/root/$LLVM_VERSION/bin:${PATH}"
 ENV LD_LIBRARY_PATH="/root/$LLVM_VERSION/lib:${LD_LIBRARY_PATH}"
 ENV LLVM_COMPILER=clang
 ENV CORVETTE_PATH="/root/precimonious"
@@ -99,7 +100,7 @@ Run cd $HOME/HiFPTuner/precimonious/logging && \
    make clean; make && cd
 
 ENV LLVM_VERSION=llvm-3.8
-ENV	PATH="/root/$LLVM_VERSION/bin:${PATH}"
+ENV PATH="/root/$LLVM_VERSION/bin:${PATH}"
 ENV LD_LIBRARY_PATH="/root/$LLVM_VERSION/lib"
 ENV CPATH="/root/$LLVM_VERSION/include:."
    

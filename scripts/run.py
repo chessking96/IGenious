@@ -27,10 +27,11 @@ def main():
 
 
 
-
   dict = {}
   #print("origtypes: " + str(orig_types[0]['localVar']['name']))
   for i in range(len(orig_types)):
+    if 'call' in orig_types[i].keys():
+      continue
     #print(replacements[i])
     dict[(orig_types[i]['localVar']['function'], orig_types[i]['localVar']['name'])] = orig_types[i]['localVar']['type']
 

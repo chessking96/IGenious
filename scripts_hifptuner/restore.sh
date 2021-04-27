@@ -3,6 +3,10 @@ if [ "$1" = "" ]; then
   exit
 fi
 
-rm -rf $1
-mkdir $1
-cp $1.c $1/
+
+docker start hi
+docker exec hi rm -rf /root/$1
+docker exec hi mkdir /root/$1
+docker cp scripts_hifptuner/to30.sh hi:/root
+docker cp scripts_hifptuner/to38.sh hi:/root
+docker cp $1/$1.c hi:/root/$1/$1.c

@@ -1,7 +1,7 @@
-if [ "$1" = "" ] ; then
+if [ "$1" = "" ] || [ "$2" = "" ] ; then
   echo "Argument missing."
   exit
 fi
-./scripts_hifptuner/restore.sh $1
-./scripts_hifptuner/setup.sh $1 $1
-./scripts_hifptuner/run.sh $1
+./scripts/restore.sh $1
+./scripts/setup.sh $1 $2
+./scripts/run.sh $1
