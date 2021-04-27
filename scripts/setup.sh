@@ -20,7 +20,7 @@ python3 ../scripts/multideclaration.py DFT16
 cp config_$1.json config_orig.json
 
 # copy helper files
-cp ../src/random_range.c random_range.c
+#cp ../src/random_range.c random_range.c
 
 cp ../src/CMakeLists.txt CMakeLists.txt
 
@@ -40,7 +40,7 @@ m0="\tfesetround(FE_UPWARD);\n"
 m1="\tinitRandomSeed();\n"
 m2="\tlong double* x = malloc(32*sizeof(long double));\n"
 m3="\tfor(int i = 0; i < 32; i++){\n"
-m4="\t\tlong double h = getRandomDouble();\n"
+m4="\t\tdd_I h = getRandomDouble();\n"
 m5="\t\tx[i] = h;\n"
 m6="\t}\n"
 m65='\tprintf("0: %.20f %.20f %.20f %.20f\\n", x[0].lh, x[0].ll, x[0].uh, x[0].ul);\n'
@@ -76,11 +76,11 @@ code="$include$main"
 echo -e $code > main.c
 
 python3 ../../IGen/bin/igen.py main.c
-python3 ../../IGen/bin/igen.py random_range.c
+# ../../IGen/bin/igen.py random_range.c
 cp main.c orig_main.c
-cp random_range.c orig_random_range.c
+#cp random_range.c orig_random_range.c
 cp igen_main.c main.c
-cp igen_random_range.c random_range.c
+#cp igen_random_range.c random_range.c
 
 python3 ../scripts/precision_support.py
 

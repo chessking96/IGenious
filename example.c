@@ -1,5 +1,6 @@
 #include <fenv.h>
 int main(){
-	fesetround(2048);
-	return 0;
+	int a = 5;
+	int b;
+	long double c, d;
 }

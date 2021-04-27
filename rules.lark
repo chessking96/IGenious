@@ -1,0 +1,34 @@
+	start: program
+	program: (decl)*
+	decl: comment | func_dec | func | preproc
+	preproc: /#[^\n]*/ -> preprocstmt
+	comment: longcomment | shortcomment
+	longcomment: C_COMMENT
+	shortcomment: CPP_COMMENT
+	func_dec: WORD CNAME "(" arguments ")" ";"
+	func: WORD CNAME "(" arguments ")" "{" stmts "}"
+	arguments: [(argument ",")* argument]
+	argument: ([CNAME | "*"])+ CNAME
+	stmts: (stmt)*
+	stmt: vardecl | multivardecl | assignment | funccall | returnstmt
+	returnstmt: "return" expr ";" -> returnstmt
+	funccall: CNAME "(" exprlist ");"
+	exprlist: [(expr ",")* expr]
+	vardecl: ([CNAME | "*"])+ CNAME ["=" expr] ";"
+	multivardecl: ([CNAME | "*"])+ CNAME ("," CNAME)+ ";"
+	expr: NUMBER | CNAME | "(" expr ")" | expr op expr | op expr
+	op: "+" -> plus
+		| "-" -> minus
+		| "*" -> mult
+		| "/" -> div
+		| "&"
+	assignment: lefthand "=" expr ";"
+	lefthand: CNAME | "(" lefthand ")" | "*" lefthand | lefthand "+" lefthand | NUMBER
+
+	%import common.NUMBER
+	%import common.CNAME
+	%import common.WORD
+	%import common.CPP_COMMENT
+    %import common.C_COMMENT
+    %import common.WS
+    %ignore WS
