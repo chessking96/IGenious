@@ -28,7 +28,7 @@ Run echo "export LLVM_VERSION=llvm-3.0" >> ~/.bashrc && \
    echo "export LD_LIBRARY_PATH=$HOME/\$LLVM_VERSION/lib:$LD_LIBRARY_PATH" >> ~/.bashrc && \
    echo "export CPATH=$HOME/\$LLVM_VERSION/include:." >> ~/.bashrc && \
    echo "export LLVM_COMPILER=clang" >> ~/.bashrc
- 
+
 ENV LLVM_VERSION=llvm-3.0
 ENV PATH="/root/$LLVM_VERSION/bin:${PATH}"
 ENV LD_LIBRARY_PATH="/root/$LLVM_VERSION/lib:${LD_LIBRARY_PATH}"
@@ -61,7 +61,7 @@ Run cd $HOME/precimonious/src && \
    scons -U test && \
    cd
 
-Run sudo apt-get -y install curl 
+Run sudo apt-get -y install curl
 Run python --version
 Run wget https://www.python.org/ftp/python/2.7.18/Python-2.7.18.tgz
 Run tar xfz Python-2.7.18.tgz
@@ -69,21 +69,21 @@ Run cd Python-2.7.18/ && \
     ./configure --prefix /usr/local/lib/python2.7.18 --enable-ipv6 && \
     make && \
     make install
-    
+
 Run wget https://bootstrap.pypa.io/pip/2.7/get-pip.py
 
 Run sudo python2.7 get-pip.py
 
-Run sudo apt-get install -y graphviz 
-Run sudo apt-get install -y graphviz-dev 
-Run sudo apt-get install -y libgraphviz-dev 
+Run sudo apt-get install -y graphviz
+Run sudo apt-get install -y graphviz-dev
+Run sudo apt-get install -y libgraphviz-dev
 Run sudo apt-get install -y python-matplotlib
 Run sudo pip install 'decorator==4.3.0'
 Run sudo pip install 'networkx==2.2'
 Run sudo pip install python-louvain
 Run sudo pip install graphviz
 Run sudo pip install pygraphviz
-   
+
 Run sudo apt-get install -y bc
 
 Run cd && git clone https://github.com/ucd-plse/HiFPTuner.git
@@ -103,7 +103,7 @@ ENV LLVM_VERSION=llvm-3.8
 ENV PATH="/root/$LLVM_VERSION/bin:${PATH}"
 ENV LD_LIBRARY_PATH="/root/$LLVM_VERSION/lib"
 ENV CPATH="/root/$LLVM_VERSION/include:."
-   
+
 
 Run cd $HOME/HiFPTuner/src/varDeps && \
    make clean; make
