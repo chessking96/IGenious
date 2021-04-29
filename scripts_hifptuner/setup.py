@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import subprocess
+import sys
 
 def call(arg):
 	subprocess.call([arg], shell=True) #remove shell...
@@ -20,9 +21,15 @@ def call_38(arg):
 		subprocess.call([command + arg + "'"], shell=True) #remove shell...
 
 def main():
-	call_30(r"cd DFT16 && clang -c -emit-llvm DFT16.c -o DFT16.bc")
-	call_30(r"cd DFT16 && ../HiFPTuner/scripts/compile.sh DFT16.bc")
-	call_38(r"cd DFT16 && ../HiFPTuner/scripts/analyze.sh json_DFT16.bc")
+	if len(sys.argv) != 2:
+		print("Argument missing or to many.")
+		exit(-1)
+	filename = sys.argv[1]
+	print(filename)
+
+	call_30(r"cd " + filename + r" && clang -c -emit-llvm " + filename + r".c -o " + filename + r".bc")
+	call_30(r"cd " + filename + r" && ../HiFPTuner/scripts/compile.sh " + filename + r".bc")
+	call_38(r"cd " + filename + r" && ../HiFPTuner/scripts/analyze.sh json_" + filename + r".bc")
 
 
 

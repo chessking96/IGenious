@@ -1,0 +1,12 @@
+{
+	"localVar": {
+		"function": "example",
+		"type": "double",
+		"name": "a",
+	},
+	"localVar": {
+		"function": "example",
+		"type": "double*",
+		"name": "y",
+	},
+}

@@ -1,0 +1,51 @@
+VMWare Virtual Machine - Ubuntu 20.04 - Easy Install - 40 GB Harddrive
+sudo apt-get update
+sudo apt-get upgrade
+system restart
+sudo apt-get install git g++
+Install IGen -> Clang-tidy fix
+
+
+install python2.7
+echo "deb http://archive.ubuntu.com/ubuntu trusty main" | sudo tee /etc/apt/sources.list.d/trusty.list
+sudo apt-get update
+Install gcc/g++ 4.8
+sudo apt-get install g++-4.8
+sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 2
+udo update-alternatives --config g++
+
+Install precimonious
+
+change dd2.py:
+import subprocess
+
+  subprocess.check_call(["./../scripts/call_run_python3.sh"], shell=True) #remove shell=True...
+  answer = ''
+  with open("sat.cov", "r") as myfile:
+  	answer = myfile.read()
+  
+  if answer == "false\n":
+  	result = 0
+  else:
+  	result = 1
+  print(result)
+
+
+switch back to newer gcc/g++/python
+
+Install docker
+https://docs.docker.com/engine/install/ubuntu/
+https://github.com/sindresorhus/guides/blob/main/docker-without-sudo.md
+System restart
+
+git get masterthesis
+Install dockerfile in masterthesis/docker
+docker build -t hifptuner .
+docker run -t -d --name hi hifptuner
+
+
+
+
+
+
+

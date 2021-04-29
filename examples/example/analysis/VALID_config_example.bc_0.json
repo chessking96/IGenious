@@ -1,0 +1,12 @@
+{
+	"localVar": {
+		"function": "example",
+		"type": "longdouble",
+		"name": "a",
+	},
+	"localVar": {
+		"function": "example",
+		"type": "longdouble*",
+		"name": "y",
+	},
+}

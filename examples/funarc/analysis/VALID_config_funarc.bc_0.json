@@ -1,0 +1,57 @@
+{
+	"localVar": {
+		"function": "funarc",
+		"type": "longdouble",
+		"name": "ans",
+	},
+	"localVar": {
+		"function": "funarc",
+		"type": "longdouble",
+		"name": "s1",
+	},
+	"localVar": {
+		"function": "funarc",
+		"type": "longdouble",
+		"name": "t1",
+	},
+	"localVar": {
+		"function": "funarc",
+		"type": "longdouble",
+		"name": "t2",
+	},
+	"localVar": {
+		"function": "funarc",
+		"type": "longdouble",
+		"name": "h",
+	},
+	"localVar": {
+		"function": "funarc",
+		"type": "longdouble",
+		"name": "dppi",
+	},
+	"localVar": {
+		"function": "funarc",
+		"type": "longdouble",
+		"name": "d1",
+	},
+	"localVar": {
+		"function": "funarc",
+		"type": "longdouble",
+		"name": "x",
+	},
+	"localVar": {
+		"function": "funarc",
+		"type": "longdouble*",
+		"name": "y",
+	},
+	"localVar": {
+		"function": "funarc",
+		"type": "longdouble",
+		"name": "t14",
+	},
+	"localVar": {
+		"function": "funarc",
+		"type": "longdouble",
+		"name": "dppi1",
+	},
+}

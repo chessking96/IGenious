@@ -1,0 +1,57 @@
+{"config": [
+	{"localVar": {
+		"function": "funarc",
+		"name": "ans",
+		"type": "longdouble"
+	}},
+	{"localVar": {
+		"function": "funarc",
+		"name": "s1",
+		"type": "longdouble"
+	}},
+	{"localVar": {
+		"function": "funarc",
+		"name": "t1",
+		"type": "longdouble"
+	}},
+	{"localVar": {
+		"function": "funarc",
+		"name": "t2",
+		"type": "longdouble"
+	}},
+	{"localVar": {
+		"function": "funarc",
+		"name": "h",
+		"type": "longdouble"
+	}},
+	{"localVar": {
+		"function": "funarc",
+		"name": "dppi",
+		"type": "longdouble"
+	}},
+	{"localVar": {
+		"function": "funarc",
+		"name": "d1",
+		"type": "longdouble"
+	}},
+	{"localVar": {
+		"function": "funarc",
+		"name": "x",
+		"type": "longdouble"
+	}},
+	{"localVar": {
+		"function": "funarc",
+		"name": "y",
+		"type": "longdouble*"
+	}},
+	{"localVar": {
+		"function": "funarc",
+		"name": "t14",
+		"type": "longdouble"
+	}},
+	{"localVar": {
+		"function": "funarc",
+		"name": "dppi1",
+		"type": "longdouble"
+	}}
+]}

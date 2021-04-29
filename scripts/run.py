@@ -4,93 +4,71 @@ import sys, os
 import json
 import re
 import subprocess
+from helper import call, getEnvVar
 
 def main():
+    file_path = sys.argv[1]
+    file_name = sys.argv[2]
+    #read original code
+    with open ('IGen/rmd_' + file_name + '.c', 'r') as myfile:
+        c = myfile.read()
 
-  #read original code
-  with open ("code_temp.c", "r") as myfile:
-    c = myfile.read()
+    #read original config
+    orig_types = json.loads(open('config_' + file_name + '.json', 'r').read())["config"]
 
-  #read original config
-  orig_types = json.loads(open('config_orig.json', 'r').read())["config"]
+    #read config file
+    with open("config_temp.json", "r") as myfile:
+        replacements = load_json(myfile.read())
 
-  #read config file
-  with open("config_temp.json", "r") as myfile:
-    replacements = load_json(myfile.read())
+    dict = {}
 
-  #print(c)
-  #print()
-  #print(orig_types)
-  #print()
-  #print(replacements)
+    for i in range(len(orig_types)):
+        if 'call' in orig_types[i].keys():
+            continue
+
+        dict[(orig_types[i]['localVar']['function'], orig_types[i]['localVar']['name'])] = orig_types[i]['localVar']['type']
 
 
+    for rep in replacements:
+        #new
+        #print("or: " + str(rep))
+        fname = rep[0]
+        new_type = rep[1]
+        if new_type == 'longdouble':
+            new_type = 'long double'
+        varname = rep[2]
 
-
-  dict = {}
-  #print("origtypes: " + str(orig_types[0]['localVar']['name']))
-  for i in range(len(orig_types)):
-    if 'call' in orig_types[i].keys():
-      continue
-    #print(replacements[i])
-    dict[(orig_types[i]['localVar']['function'], orig_types[i]['localVar']['name'])] = orig_types[i]['localVar']['type']
-
-  #print(dict)
-
-  for rep in replacements:
-    #new
-    #print("or: " + str(rep))
-    fname = rep[0]
-    new_type = rep[1]
-    if new_type == 'longdouble':
-      new_type = 'long double'
-    varname = rep[2]
-
-    #orig
-    orig_type = dict[rep[0], rep[2]]
-    if orig_type == 'longdouble':
-      orig_type = 'long double'
-    #print("to: " + new_type)
-    regexpr1 = r'([\t\r (]+)' + orig_type + r'([\t\r (]+)' + varname
-    regexpr2 = r'\1' + new_type + r'\2' + varname
-    c = re.sub(regexpr1, regexpr2, c)
-  
-
-  #print(c)
-  #subprocess.call(["python3 ../sleep.py"], shell=True) #remove shell...
-  #print(json_str)
-  #data = json.loads(json_str)
-  #print(json.dumps(data, indent=4, sort_keys=True))
-  #print(data["localVar"])
-
-  f = open("code_rep.c", "w+")
-  f.write(c)
-  f.close()
+        #orig
+        orig_type = dict[rep[0], rep[2]]
+        if orig_type == 'longdouble':
+            orig_type = 'long double'
+        regexpr1 = r'([\t\r (]+)' + orig_type + r'([\t\r (]+)' + varname
+        regexpr2 = r'\1' + new_type + r'\2' + varname
+        c = re.sub(regexpr1, regexpr2, c)
 
 
 
-  subprocess.call(["python3 ../../IGen/bin/igen.py code_rep.c"], shell=True) #remove shell...
+    with open('IGen/chg_rmd_' + file_name + '.c', 'w') as f:
+        f.write(c)
 
-  
-  subprocess.call(["cp code_rep.c orig_code_rep.c"], shell=True) #remove shell...
-  subprocess.call(["cp igen_code_rep.c code_rep.c"], shell=True) #remove shell...
+    igen_path = getEnvVar('IGEN_PATH')
+    call('python3 ' + igen_path + '/bin/igen.py IGen/chg_rmd_' + file_name + '.c')
 
-  #subprocess.call(["python3 ../scripts/sleep.py"], shell=True) #remove shell...
+    call('cp IGen/chg_rmd_' + file_name + '.c ' + 'IGen/make_code.c')
 
-  
-  subprocess.call(["cmake . && make"], shell=True) #remove shell...
-  subprocess.call(["./some_app"], shell=True) #remove shell...
+    call("cd IGen && cmake . && make")
+    call("./IGen/some_app")
 
-  return 0
+    return 0
 
 
 #Get function name, variable name and type out of json file
 def load_json(string):
-  x = re.findall("localVar\": {\n\t\t\"function\": \"(.+(?=\"))\",\n\t\t\"type\
-\": \"(.+(?=\"))\",\n\t\t\"name\": \"(.+(?=\"))", string, re.MULTILINE)
-  #print(x)
-  return x
+    x = re.findall("localVar\": {\n\t\t\"function\": \"(.+(?=\"))\",\n\t\t\"type\
+    \": \"(.+(?=\"))\",\n\t\t\"name\": \"(.+(?=\"))", string, re.MULTILINE)
+    #print(x)
+    return x
 
 
 if __name__ == "__main__":
-  main()
+    main()

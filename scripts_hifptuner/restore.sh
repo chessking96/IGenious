@@ -7,6 +7,9 @@ fi
 docker start hi
 docker exec hi rm -rf /root/$1
 docker exec hi mkdir /root/$1
-docker cp scripts_hifptuner/to30.sh hi:/root
-docker cp scripts_hifptuner/to38.sh hi:/root
-docker cp $1/$1.c hi:/root/$1/$1.c
+docker cp $1.c hi:/root/$1/$1.c
+
+# move this later into Dockerfile
+docker exec hi sed -i 's/$auto_tuning/\/root\/HiFPTuner/g' /root/HiFPTuner/scripts/compile.sh
+docker exec hi sed -i 's/$auto_tuning/\/root\/HiFPTuner/g' /root/HiFPTuner/scripts/analyze.sh
+docker exec hi sed -i 's/-llog//g' /root/HiFPTuner/scripts/analyze.sh

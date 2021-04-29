@@ -1,0 +1,12 @@
+{
+	"localVar": {
+		"function": "example",
+		"type": "float",
+		"name": "a",
+	},
+	"localVar": {
+		"function": "example",
+		"type": "float*",
+		"name": "y",
+	},
+}

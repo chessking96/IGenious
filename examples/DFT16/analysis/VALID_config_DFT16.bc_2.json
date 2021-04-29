@@ -1,0 +1,592 @@
+{
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "t440",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "t441",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "t442",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "t443",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "t444",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "t445",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "t446",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "t447",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "t448",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "t449",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "a145",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "a146",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "a147",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "a148",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "a149",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "t450",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "t451",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "t452",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "t453",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "t454",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "t455",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "t456",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "t373",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "t374",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "t375",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "t376",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "t377",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "t378",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "t379",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "a151",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "a154",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "a150",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "a156",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "a152",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "a153",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "a155",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "t457",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "t380",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "t381",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "t382",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "t383",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "t384",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "t385",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "t387",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "t388",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble*",
+		"name": "X",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble*",
+		"name": "Y",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "s61",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "s62",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "s63",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "s64",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "s65",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "s66",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "s67",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "s68",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "s69",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "t389",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "t390",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "longdouble",
+		"name": "t391",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t392",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t393",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t394",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t395",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t396",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t397",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t398",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t399",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "s70",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "s71",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "s72",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "s73",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "s74",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "s75",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "s76",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "s77",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "s78",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "s79",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t400",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t401",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t402",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t403",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t404",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t405",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t406",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t407",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t408",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t409",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "s80",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t410",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t411",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t412",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t413",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t414",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t415",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t416",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t417",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t418",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t419",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t420",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t421",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t422",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t423",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t424",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t425",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t426",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t427",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t428",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t429",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t430",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t431",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t432",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t433",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t434",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t435",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t436",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t437",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t438",
+	},
+	"localVar": {
+		"function": "DFT16",
+		"type": "double",
+		"name": "t439",
+	},
+}

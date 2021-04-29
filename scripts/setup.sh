@@ -44,12 +44,16 @@ m4="\t\tdd_I h = getRandomDouble();\n"
 m5="\t\tx[i] = h;\n"
 m6="\t}\n"
 m65='\tprintf("0: %.20f %.20f %.20f %.20f\\n", x[0].lh, x[0].ll, x[0].uh, x[0].ul);\n'
-m7="\tlong double* y = malloc(32*sizeof(long double));\n"
+#m7="\tlong double* y = malloc(32*sizeof(long double));\n"
+m7="\tlong double* y = malloc(1*sizeof(long double));\n"
 m8="\tclock_t start = clock();\n"
 m9="\tfor(int i = 0; i < 1; i++){\n"
 m10="\t\t"$2"(y, x);\n"
 if [ "$1" = "func" ] ; then
 	m10="\t\t"$2"();\n"
+fi
+if [ "$1" = "funarc" ] ; then
+  m10="\t\t"$2"(y);\n"
 fi
 m11="\t}\n"
 m12="\tclock_t end = clock();\n"
@@ -90,4 +94,3 @@ python3 ../scripts/precision_support.py
 
 
 cd ..
-

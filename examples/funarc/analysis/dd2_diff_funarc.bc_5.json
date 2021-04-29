@@ -1,0 +1,11 @@
+localVar: ans  at funarc longdouble -> double
+localVar: s1  at funarc longdouble -> double
+localVar: t1  at funarc longdouble -> double
+localVar: t2  at funarc longdouble -> float
+localVar: h  at funarc longdouble -> float
+localVar: dppi  at funarc longdouble -> float
+localVar: d1  at funarc longdouble -> float
+localVar: x  at funarc longdouble -> float
+localVar: y  at funarc longdouble* -> float*
+localVar: t14  at funarc longdouble -> float
+localVar: dppi1  at funarc longdouble -> float

@@ -1,0 +1,1 @@
+gcc -std=c11 -Wno-deprecated -O3 -march=native -frounding-math   CMakeFiles/some_app.dir/cleaned_igen_main.c.o  -o some_app  -lm 

@@ -1,0 +1,12 @@
+{"config": [
+	{"localVar": {
+		"function": "example",
+		"name": "a",
+		"type": ["float", "double", "longdouble"]
+	}},
+	{"localVar": {
+		"function": "example",
+		"name": "y",
+		"type": ["float*", "double*", "longdouble*"]
+	}}
+]}

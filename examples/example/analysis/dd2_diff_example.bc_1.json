@@ -1,0 +1,2 @@
+localVar: a  at example longdouble -> double
+localVar: y  at example longdouble* -> double*
