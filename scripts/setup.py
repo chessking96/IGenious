@@ -167,11 +167,11 @@ def cleanUp():
             myfile.write(c)
 
 if __name__ == "__main__":
-    is_input = False
+    is_input = True
     num_input = 32
     is_output = True
     num_output = 32
-    repetitions = 1
+    repetitions = 100000
     precision = 0.0000001
 
     # arguments: filepath filename, functionname

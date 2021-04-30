@@ -28,10 +28,8 @@ def main():
 
         dict[(orig_types[i]['localVar']['function'], orig_types[i]['localVar']['name'])] = orig_types[i]['localVar']['type']
 
-
     for rep in replacements:
         #new
-        #print("or: " + str(rep))
         fname = rep[0]
         new_type = rep[1]
         if new_type == 'longdouble':
@@ -64,9 +62,7 @@ def main():
 
 #Get function name, variable name and type out of json file
 def load_json(string):
-    x = re.findall("localVar\": {\n\t\t\"function\": \"(.+(?=\"))\",\n\t\t\"type\
-    \": \"(.+(?=\"))\",\n\t\t\"name\": \"(.+(?=\"))", string, re.MULTILINE)
-    #print(x)
+    x = re.findall("localVar\": {\n\t\t\"function\": \"(.+(?=\"))\",\n\t\t\"type\": \"(.+(?=\"))\",\n\t\t\"name\": \"(.+(?=\"))", string, re.MULTILINE)
     return x
 
 

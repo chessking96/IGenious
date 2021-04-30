@@ -1,3 +1,0 @@
-/home/user/master-thesis/examples/example/analysis/IGen/CMakeFiles/rebuild_cache.dir
-/home/user/master-thesis/examples/example/analysis/IGen/CMakeFiles/edit_cache.dir
-/home/user/master-thesis/examples/example/analysis/IGen/CMakeFiles/some_app.dir
