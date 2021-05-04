@@ -1,0 +1,44 @@
+start: program
+program: (decl)*
+decl: comment | func_dec | func | preproc -> decl
+
+// Preprocessor and comments
+preproc: /#[^\n]*/ -> preprocstmt
+comment: longcomment | shortcomment -> comment
+longcomment: C_COMMENT -> longcomment
+shortcomment: CPP_COMMENT -> shorcomment
+
+// functions
+func_dec: WORD CNAME "(" arguments ")" ";" -> funcdecl
+func: WORD CNAME "(" arguments ")" "{" stmts "}" -> func
+arguments: [(argument ",")* argument] -> arguments
+argument: ["*" | CNAME]+ CNAME -> argument
+
+
+stmts: (stmt)* -> stmts
+stmt: vardeclwith | vardeclwithout | multivardecl | returnstmt | expr  -> stmt
+
+returnstmt: "return" expr ";" -> returnstmt
+funccall: CNAME "(" exprlist ");" -> funccall
+exprlist: [(expr ",")* expr] -> exprlist
+
+vardeclwithout: (CNAME)+ CNAME ";" -> vardeclwithout
+vardeclwith: (CNAME)+ CNAME "=" expr ";" -> vardeclwith
+multivardecl: (CNAME)+ CNAME ("," CNAME)+ ";" -> multivardecl
+
+expr: NUMBER | "(" expr ")" | expr op expr | op expr -> expr | CNAME
+
+op: "+" -> plus
+  | "-" -> minus
+  | "/" -> div
+  | "&" -> andspecial
+  | "*" -> times
+
+
+%import common.NUMBER
+%import common.CNAME
+%import common.WORD
+%import common.CPP_COMMENT
+%import common.C_COMMENT
+%import common.WS
+%ignore WS

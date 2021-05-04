@@ -23,7 +23,7 @@ import subprocess
   answer = ''
   with open("sat.cov", "r") as myfile:
   	answer = myfile.read()
-  
+
   if answer == "false\n":
   	result = 0
   else:
@@ -44,8 +44,4 @@ docker build -t hifptuner .
 docker run -t -d --name hi hifptuner
 
 
-
-
-
-
-
+pip install lark-parser --upgrade

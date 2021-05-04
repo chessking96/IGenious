@@ -1,0 +1,69 @@
+start: program
+program: (decl)*
+decl: comment | func_dec | func | preproc -> decl
+
+// Preprocessor and comments
+preproc: /#[^\n]*/ -> preprocstmt
+comment: longcomment | shortcomment -> comment
+longcomment: ccomment -> longcomment
+shortcomment: CPP_COMMENT -> shorcomment
+
+// functions
+func_dec: WORD CNAME "(" arguments ")" ";" ->funcdecl
+func: WORD CNAME "(" arguments ")" "{" stmts "}" -> func
+arguments: [(argument ",")* argument] -> arguments
+argument: ["*" | CNAME]+ CNAME -> argument
+
+
+stmts: (stmt)* -> stmts
+stmt: vardeclwith | vardeclwithout | multivardecl | returnstmt | expr ";" | assignment  -> stmt
+
+returnstmt: "return" expr ";" -> returnstmt
+funccall: CNAME "(" exprlist ");" -> funccall
+exprlist: [(expr ",")* expr] -> exprlist
+
+vardeclwithout: types CNAME ";" -> vardeclwithout
+vardeclwith: types CNAME "=" expr ";" -> vardeclwith
+multivardecl: types CNAME ("," CNAME)+ ";" -> multivardecl
+type1: "char" -> char | "signed" "char" ->signedchar | "unsigned" "char" -> unsignedchar | "short" -> short | "short" "int" -> shortint
+type2: "signed" "short" | "signed" "short" "int" | "unsigned" "short"
+type3: "unsigned" "short" "int" | "int" | "signed" | "signed" "int" | "unsigned"
+type4: "unsigned" "int" | "long" | "long" "int" | "signed" "long"
+type5: "signed" "long" "int" | "unsigned" "long" | "unsigned" "long" "int"
+type6: "long" "long" | "long" "long" "int" | "signed" "long" "long"
+type7: "signed" "long" "long" "int" | "unsigned" "long" "long"
+type8: "unsigned" "long" "long" "int"
+
+type: type1 | type2 | type3 | type4 | type5 | type6 | type7 | type8
+
+dtype: "float" -> float | "double" -> double | "long" "double" -> longdouble
+
+types: type | dtype
+
+
+expr: exprnumber | exprbraces | expropexpr | exprop | exprcname -> expr
+
+exprnumber: NUMBER -> exprnumber
+exprbraces: "(" expr ")" -> exprbraces
+expropexpr: expr op expr -> expropexpr
+exprop: op expr -> exprop
+exprcname: CNAME -> exprcname
+
+assignment: expr "=" expr ";"
+
+ccomment: C_COMMENT
+
+op: "+" -> plus
+  | "-" -> minus
+  | "/" -> div
+  | "&" -> andspecial
+  | "*" -> star
+
+
+%import common.NUMBER
+%import common.CNAME
+%import common.WORD
+%import common.CPP_COMMENT
+%import common.C_COMMENT
+%import common.WS
+%ignore WS
