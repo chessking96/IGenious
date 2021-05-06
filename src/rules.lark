@@ -39,20 +39,21 @@ type: type1 | type2 | type3 | type4 | type5 | type6 | type7 | type8 -> type
 
 dtype: "float" -> float | "double" -> double | "long" "double" -> longdouble
 
-types: type | dtype -> dtype | types "*"
+types: type | dtype -> dtype | types star
 
+assignment: expr "=" expr ";"
 
-
-
-expr: exprnumber | exprbraces | expropexpr | exprop | exprcname -> expr
+expr: (CNAME | NUMBER | lbrace | rbrace | op )+
+//expr: exprnumber | exprbraces | expropexpr | exprop | exprcname -> expr
 
 exprnumber: NUMBER -> exprnumber
 exprbraces: "(" expr ")" -> exprbraces
 expropexpr: expr op expr -> expropexpr
-exprop: op expr -> exprop
+exprop: star expr -> exprop
 exprcname: CNAME -> exprcname
 
-assignment: expr "=" expr ";"
+rbrace: ")" -> rbrace
+lbrace: "(" -> lbrace
 
 ccomment: C_COMMENT
 
@@ -60,7 +61,9 @@ op: "+" -> plus
   | "-" -> minus
   | "/" -> div
   | "&" -> andspecial
-  | "*" -> star
+  | star
+
+star: "*" -> star
 
 
 %import common.NUMBER

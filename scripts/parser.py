@@ -5,6 +5,8 @@ import sys
 import json
 import os, re
 
+from helper import getEnvVar
+
 class Printer(Transformer):
 	def preprocstmt(self, s):
 		return (s[0])
@@ -38,7 +40,10 @@ class Printer(Transformer):
 		return s[0] + ' ' + s[1] + '(' + str(s[2]) + ');\n'
 
 	def types(self, s):
-		return s[0]
+		res = ''
+		for i in range(len(s)):
+			res += s[i]
+		return res
 
 
 	def typespointer(self, s):
@@ -206,13 +211,10 @@ class Printer(Transformer):
 		return s[0] + " = " + s[1]
 
 	def expr(self, s):
-		return s[0]
-
-	def minus(self, s):
-		return '-'
-
-	def plus(self, s):
-		return '+'
+		res = ''
+		for i in range(len(s)):
+			res += s[i]
+		return res
 
 	def WORD(self, s):
 		return s.value
@@ -225,6 +227,12 @@ class Printer(Transformer):
 
 	def op(self, s):
 		return s[0]
+
+	def lbrace(self, s):
+		return "("
+
+	def rbrace(self, s):
+		return ")"
 
 	def exprop(self, s):
 		return str(s[0]) + "(" + str(s[1]) + ")"
@@ -243,6 +251,12 @@ class Printer(Transformer):
 
 	def star(self, s):
 		return '*'
+
+	def minus(self, s):
+		return '-'
+
+	def plus(self, s):
+		return '+'
 
 class RemoveMultiDec(Visitor):
 	def some():
@@ -264,18 +278,6 @@ class RemoveMultiDec(Visitor):
 				for j in range(len(newstmts)):
 					t.children.insert(i + j, newstmts[j])
 
-def createTree():
-	filename = sys.argv[1]
-	with open(filename, 'r') as file:
-		code = file.read()
-
-	path = os.path.dirname(os.path.realpath(__file__))
-	grammar_file = path + '/rules.lark'
-	p = Lark.open(grammar_file, rel_to =__file__, parser = 'lalr')
-	tree = p.parse(code)
-	return tree
-
-
 class ChangeTypes(Visitor):
 
 
@@ -296,10 +298,20 @@ class ChangeTypes(Visitor):
 def load_json(string):
     return re.findall("localVar\": {\n\t\t\"function\": \"(.+(?=\"))\",\n\t\t\"type\": \"(.+(?=\"))\",\n\t\t\"name\": \"(.+(?=\"))", string, re.MULTILINE)
 
+# create tree from file.c
+def createTree(filename):
+	with open(filename, 'r') as file:
+		code = file.read()
 
-#exchange, according to replacements
-def change(tree, path):
-	with open(path, "r") as myfile:
+	path = getEnvVar('SOURCE_PATH')
+	grammar_file = path + '/src/rules.lark'
+	p = Lark.open(grammar_file, rel_to =__file__, parser = 'lalr')
+	tree = p.parse(code)
+	return tree
+
+# exchange, according to replacements
+def change(tree, path_config):
+	with open(path_config, "r") as myfile:
 		reps = load_json(myfile.read())
 
 	global reps_dict
@@ -312,6 +324,13 @@ def change(tree, path):
 
 	return tree
 
+# remove multi declaration
+def removeMultiDecl(tree):
+	return RemoveMultiDec().visit(tree)
+
+# print tree to code
+def printCode(tree):
+	return Printer().transform(tree)
 
 
 def main():
@@ -319,7 +338,7 @@ def main():
 		print("Argument missing.")
 		sys.exit(1)
 
-	tree = createTree()
+	tree = createTree(sys.argv[1])
 
 	code_orig = Printer().transform(tree)
 

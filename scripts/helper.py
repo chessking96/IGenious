@@ -7,6 +7,12 @@ def call(arg):
         print("Error")
         sys.exit(-1)
 
+def call_background(arg):
+    res = subprocess.call([arg], shell=True, stdout=open(os.devnull, 'w')) #remove shell...
+    if res != 0:
+        print("Call Error")
+        sys.exit(-1)
+
 def getEnvVar(arg):
     return os.getenv(arg)
 

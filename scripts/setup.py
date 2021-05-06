@@ -1,4 +1,6 @@
-from helper import call, getEnvVar, nameWithoutExtension
+#!/usr/bin/python
+
+from helper import call, call_background, getEnvVar, nameWithoutExtension
 import sys, re
 
 def createMain():
@@ -91,10 +93,10 @@ def igenSetup():
         call('cd ' + file_path + ' && mkdir IGen && cp ' + file_name + ' IGen/')
         call('cd ' + file_path + ' && cp ' + 'random_range.c' + ' IGen/')
         call('cd ' + file_path + ' && cp ' + 'main.c' + ' IGen/')
-        call('python3 ' + scripts_path + '/multidecl.py ' + file_path + 'IGen/ ' + file_name)
-        call('cd ' + file_path + 'IGen && python3 ' + igen_path + '/bin/igen.py main.c')
-        call('cd ' + file_path + 'IGen && python3 ' + igen_path + '/bin/igen.py random_range.c')
-        call('cd ' + file_path + 'IGen && python3 ' + igen_path + '/bin/igen.py rmd_' + file_name)
+        call('python3 ' + scripts_path + '/removeMultiDecl.py ' + file_path + 'IGen/ ' + file_name)
+        call_background('cd ' + file_path + 'IGen && python3 ' + igen_path + '/bin/igen.py main.c')
+        call_background('cd ' + file_path + 'IGen && python3 ' + igen_path + '/bin/igen.py random_range.c')
+        call_background('cd ' + file_path + 'IGen && python3 ' + igen_path + '/bin/igen.py rmd_' + file_name)
 
         call('cp ' + src_path + '/igen_CMakeLists.txt ' + file_path + 'IGen/CMakeLists.txt')
 
@@ -102,6 +104,7 @@ def cleanUp():
     # main
     with open(file_path + 'IGen/igen_main.c', 'r') as myfile:
         c_old = myfile.read()
+
     substitute = 'printf\("BeforeIGenReplacement"\);'
 
     err1 = '\tint max = 0;\n'
@@ -119,19 +122,18 @@ def cleanUp():
 
     ans1 = '\tchar* answer = "false";\n'
     ans2 = '\tdouble th = ' + str(precision) + ';\n'
-    ans3 = '\tprintf("%i' + r"\\n" + '", (int)_ia_cmpgt_dd(_ia_set_dd(-th, 0, th, 0), diff_max));\n'
-    ans4 = '\tif((int)_ia_cmpgt_dd(_ia_set_dd(-th, 0, th, 0), diff_max) == 1){\n'
-    ans5 = '\t\tanswer = "true";\n'
-    ans6 = '\t}\n'
-    ans7 = '\tfile = fopen("sat.cov", "w");\n'
-    ans8 = '\tfprintf(file, "%s' + r"\\n" + '", answer);\n'
-    ans9 = '\tfclose(file);\n'
-    ans = ans1 + ans2 + ans3 + ans4 + ans5 + ans6 + ans7 + ans8 + ans9
+    ans3 = '\tif((int)_ia_cmpgt_dd(_ia_set_dd(-th, 0, th, 0), diff_max) == 1){\n'
+    ans4 = '\t\tanswer = "true";\n'
+    ans5 = '\t}\n'
+    ans6 = '\tfile = fopen("sat.cov", "w");\n'
+    ans7 = '\tfprintf(file, "%s' + r"\\n" + '", answer);\n'
+    ans8 = '\tfclose(file);\n'
+    ans = ans1 + ans2 + ans3 + ans4 + ans5 + ans6 + ans7 + ans8
 
-    p1 = '\tprintf("1: %.20f %.20f' + r"\\n" + '", y[max].lh, y[max].ll);\n'
-    p2 = '\tprintf("2: %.20f %.20f' + r"\\n" + '", y[max].uh, y[max].ul);\n'
-    p3 = '\tprintf("3: %.20f %.20f' + r"\\n" + '", diff_max.lh, diff_max.ll);\n'
-    p4 = '\tprintf("4: %.20f %.20f' + r"\\n" + '", diff_max.uh, diff_max.ul);\n'
+    p1 = '\tprintf("1: %.17f %.17f' + r"\\n" + '", y[max].lh, y[max].ll);\n'
+    p2 = '\tprintf("2: %.17f %.17f' + r"\\n" + '", y[max].uh, y[max].ul);\n'
+    p3 = '\tprintf("3: %.17f %.17f' + r"\\n" + '", diff_max.lh, diff_max.ll);\n'
+    p4 = '\tprintf("4: %.17f %.17f' + r"\\n" + '", diff_max.uh, diff_max.ul);\n'
     p = p1 + p2 + p3 + p4
 
     code = err + ans + p
