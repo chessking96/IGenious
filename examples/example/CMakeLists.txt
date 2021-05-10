@@ -1,9 +1,9 @@
 # ================================================================================
 # Add here user defined variables
 # ================================================================================
-set(IGEN_LIB             ../../../../../IGen/igen_lib)
-set(IGEN_COMMON          ../../../../../IGen/common)
-set(MPREAL               ../../../../../IGen/third-party/mpreal)
+set(IGEN_LIB             ../../../IGen/igen_lib)
+set(IGEN_COMMON          ../../../IGen/common)
+set(MPREAL               ../../../IGen/third-party/mpreal)
 if (NOT DEFINED IGEN_VEC)
     set(IGEN_VEC "NO")   # Use IGen with vectorized output by default
 endif()
@@ -17,7 +17,7 @@ set(CONFIG_DEBUG "OFF")              # ON or OFF
 set(CONFIG_GENERATE_ASSEMBLY "OFF")  # ON or OFF
 set(CMAKE_VERBOSE_MAKEFILE "OFF")    # ON or OFF
 set(CONFIG_FLAGS "-O3 -march=native -frounding-math")
-set(CONFIG_LIBRARIES m crlibm)
+set(CONFIG_LIBRARIES m)
 #set(CONFIG_LIBRARIES mpfi mpfr yalaa prim m gaol gdtoa crlibm)    # Used libraries, e.g. crlibm, mpfr
 
 # ================================================================================
@@ -39,7 +39,7 @@ include_directories(
 #AUX_SOURCE_DIRECTORY(netlib NETLIB_SRC)
 
 set(SOURCE_FILES
-	cleaned_igen_main.c
+	igen_example.c
 )
 
 

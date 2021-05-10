@@ -54,7 +54,7 @@ def createMain():
     timeE6 = '\tfclose(file);\n'
     timeE = timeE1 + timeE2 + timeE3 + timeE4 + timeE5 + timeE6
 
-    rep = '\tprintf("BeforeIGenReplacement");\n'
+    rep = '\tprintf("BeforeIGenReplacement\\n");\n'
 
     main_end = '}\n'
 
@@ -105,7 +105,7 @@ def cleanUp():
     with open(file_path + 'IGen/igen_main.c', 'r') as myfile:
         c_old = myfile.read()
 
-    substitute = 'printf\("BeforeIGenReplacement"\);'
+    substitute = 'printf\("BeforeIGenReplacement' + r'\\' + 'n"\);'
 
     err1 = '\tint max = 0;\n'
     err2 = '\tdd_I diff_max = _ia_zero_dd();\n'
@@ -128,13 +128,14 @@ def cleanUp():
     ans6 = '\tfile = fopen("sat.cov", "w");\n'
     ans7 = '\tfprintf(file, "%s' + r"\\n" + '", answer);\n'
     ans8 = '\tfclose(file);\n'
-    ans = ans1 + ans2 + ans3 + ans4 + ans5 + ans6 + ans7 + ans8
+    ans9 = '\tprintf("%s' + r"\\n" + '", answer);\n'
+    ans = ans1 + ans2 + ans3 + ans4 + ans5 + ans6 + ans7 + ans8 + ans9
 
-    p1 = '\tprintf("1: %.17f %.17f' + r"\\n" + '", y[max].lh, y[max].ll);\n'
-    p2 = '\tprintf("2: %.17f %.17f' + r"\\n" + '", y[max].uh, y[max].ul);\n'
-    p3 = '\tprintf("3: %.17f %.17f' + r"\\n" + '", diff_max.lh, diff_max.ll);\n'
-    p4 = '\tprintf("4: %.17f %.17f' + r"\\n" + '", diff_max.uh, diff_max.ul);\n'
-    p = p1 + p2 + p3 + p4
+    p1 = '\tprintf("Debug: %.20g %.20g' + r"\\n" + '", y[0].lh, y[0].ll);\n'
+    p2 = '\tprintf("Debug: %.20g %.20g' + r"\\n" + '", y[0].uh, y[0].ul);\n'
+    p3 = '\tprintf("Diff lower bound: %.17g %.17g' + r"\\n" + '", diff_max.lh, diff_max.ll);\n'
+    p4 = '\tprintf("Diff upper bound: %.17g %.17g' + r"\\n" + '", diff_max.uh, diff_max.ul);\n'
+    p =  p1 + p2 + p3 + p4
 
     code = err + ans + p
 
@@ -157,13 +158,13 @@ def cleanUp():
     c3 = '\tsrand(42);\n'
     c4 = '}\n'
     c5 = 'dd_I getRandomDouble() {\n'
-    c6 = '\tlong double r1 = ((long double)rand())/(RAND_MAX);\n'
-    c7 = '\tlong double r2 = ((long double)rand())/(RAND_MAX);\n'
-    c8 = '\treturn _ia_set_dd(-r1, -r2, r1, r2);\n'
+    c6 = '\tdouble r1 = ((double)rand())/(RAND_MAX);\n'
+    c65 = '\tdouble r2 = ((double)rand())/(RAND_MAX);\n'
+    c7 = '\tdd_I a = _ia_set_dd(-r1, 0, r1, 0);\n'
+    c8 = '\treturn a;\n'
     c9 = '}\n'
 
-    c = c1 + c2 + c3 + c4 + c5 + c6 + c7 + c8 + c9
-
+    c = c1 + c2 + c3 + c4 + c5 + c6 + c65 + c7 + c8 + c9
 
     with open (file_path + 'IGen/cleaned_igen_random_range.c', 'w') as myfile:
             myfile.write(c)
@@ -173,8 +174,8 @@ if __name__ == "__main__":
     num_input = 32
     is_output = True
     num_output = 32
-    repetitions = 100000
-    precision = 0.0000001
+    repetitions = 1000000
+    precision = 0.1
 
     # arguments: filepath filename, functionname
     if len(sys.argv) != 4:

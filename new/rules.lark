@@ -1,32 +1,31 @@
-start: program
-program: (decl)*
-decl: comment | func_dec | func | preproc -> decl
+start: program -> start
+program: (decl)* -> program
+decl: comment | funcdecl | func | leftover -> decl
 
-// Preprocessor and comments
-preproc: /#[^\n]*/ -> preprocstmt
-comment: longcomment | shortcomment -> comment
-longcomment: ccomment -> longcomment
-shortcomment: CPP_COMMENT -> shorcomment
-
-// functions
-func_dec: WORD CNAME "(" arguments ")" ";" ->funcdecl
-func: WORD CNAME "(" arguments ")" "{" stmts "}" -> func
-arguments: [(argument ",")* argument] -> arguments
-argument: types CNAME -> argument
-
+comment.2: CPP_COMMENT | C_COMMENT
+funcdecl.2: type CNAME "(" args ")" ";" -> funcdecl
+func.2: type CNAME "(" args ")" "{" stmts "}" -> func
+leftover.1: /(.|\n)+/
 
 stmts: (stmt)* -> stmts
-stmt: vardeclwith | vardeclwithout | multivardecl | returnstmt | expr ";" | assignment -> stmt
 
-returnstmt: "return" expr ";" -> returnstmt
-funccall: CNAME "(" exprlist ");" -> funccall
-exprlist: [(expr ",")* expr] -> exprlist
+stmt: vardecl | assignment -> stmt
 
-vardeclwithout: types CNAME ";" -> vardeclwithout
-vardeclwith: types CNAME "=" expr ";" -> vardeclwith
-multivardecl: types CNAME ("," CNAME)+ ";" -> multivardecl
+vardecl: multivardeclwithout
 
-type1: "char" -> char | "signed" "char" ->signedchar | "unsigned" "char" -> unsignedchar | "short" -> short | "short" "int" -> shortint
+assignment: expr "=" expr ";"
+
+expr: CNAME | NUMBER | "(" expr ")" | expr binop expr
+
+binop: "+" | "-" | "*"
+
+multivardeclwithout: type CNAME ("," CNAME)+ ";" -> multivardeclwithout
+
+type: type1 | type2 | type3 | type4 | type5 | type6 | type7 | type8 | ftype -> ftype | void -> void | type "*"
+args: [(arg ",")* arg] -> args
+arg: type CNAME -> arg
+
+type1: "char" -> char | "signed" "char" -> signedchar | "unsigned" "char" -> unsignedchar | "short" -> short | "short" "int" -> shortint
 type2: "signed" "short" ->signedshort | "signed" "short" "int" -> signedshortint| "unsigned" "short" -> unsignedshort
 type3: "unsigned" "short" "int" -> unsignedshortint | "int" -> int | "signed" -> signed | "signed" "int" -> signedint | "unsigned" -> unsigned
 type4: "unsigned" "int" -> unsignedint | "long" -> long | "long" "int" -> longint | "signed" "long" -> signedlong
@@ -35,37 +34,11 @@ type6: "long" "long" -> longlong | "long" "long" "int" -> longlongint | "signed"
 type7: "signed" "long" "long" "int" -> signedlonglongint | "unsigned" "long" "long" -> unsignedlonglong
 type8: "unsigned" "long" "long" "int" -> unsignedlonglongint
 
-type: type1 | type2 | type3 | type4 | type5 | type6 | type7 | type8 -> type
-
-dtype: "float" -> float | "double" -> double | "long" "double" -> longdouble
-
-types: type | dtype -> dtype | types "*"
-
-
-
-
-expr: exprnumber | exprbraces | expropexpr | exprop | exprcname -> expr
-
-exprnumber: NUMBER -> exprnumber
-exprbraces: "(" expr ")" -> exprbraces
-expropexpr: expr op expr -> expropexpr
-exprop: op expr -> exprop
-exprcname: CNAME -> exprcname
-
-assignment: expr "=" expr ";"
-
-ccomment: C_COMMENT
-
-op: "+" -> plus
-  | "-" -> minus
-  | "/" -> div
-  | "&" -> andspecial
-  | "*" -> star
-
+ftype: "float" -> float | "double" -> double | "long" "double" -> longdouble
+void: "void" -> void
 
 %import common.NUMBER
 %import common.CNAME
-%import common.WORD
 %import common.CPP_COMMENT
 %import common.C_COMMENT
 %import common.WS

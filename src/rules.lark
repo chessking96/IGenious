@@ -16,9 +16,10 @@ argument: types CNAME -> argument
 
 
 stmts: (stmt)* -> stmts
-stmt: vardeclwith | vardeclwithout | multivardecl | returnstmt | expr ";" | assignment -> stmt
+stmt: vardeclwith | vardeclwithout | multivardecl | returnstmt | rstmtw | expr ";" | assignment -> stmt
 
 returnstmt: "return" expr ";" -> returnstmt
+rstmtw: "return" ";" -> rstmtw
 funccall: CNAME "(" exprlist ");" -> funccall
 exprlist: [(expr ",")* expr] -> exprlist
 

@@ -5,7 +5,7 @@ import sys
 import json
 import os, re
 
-from helper import getEnvVar
+from helper import getEnvVar, load_json
 
 class Printer(Transformer):
 	def preprocstmt(self, s):
@@ -45,7 +45,6 @@ class Printer(Transformer):
 			res += s[i]
 		return res
 
-
 	def typespointer(self, s):
 		return s[0] + "*"
 
@@ -63,16 +62,22 @@ class Printer(Transformer):
 
 	def type2(self, s):
 		return s
+
 	def type3(self, s):
 		return s
+
 	def type4(self, s):
 		return s
+
 	def type5(self, s):
 		return s
+
 	def type6(self, s):
 		return s
+
 	def type7(self, s):
 		return s
+
 	def type8(self, s):
 		return s
 
@@ -175,10 +180,8 @@ class Printer(Transformer):
 	def longcomment(self, s):
 		return s[0]
 
-
 	def ccomment(self, s):
 		return str(s[0])
-
 
 	def func(self, s):
 		return s[0] + ' ' + s[1] + '(' + str(s[2]) + '){\n' + str(s[3]) + '\n}\n'
@@ -206,6 +209,9 @@ class Printer(Transformer):
 
 	def stmt(self, s):
 		return str(s[0]) + ';'
+
+	def rstmtw(self, s):
+		return "return"
 
 	def assignment(self, s):
 		return s[0] + " = " + s[1]
@@ -294,10 +300,6 @@ class ChangeTypes(Visitor):
 				newtype = str(reps_dict.get((fun_name, name)))
 				s.children[3].children[i].children[0].children[0] = Tree((newtype), [])
 
-# self made json load, as standard json load doesn't work for this file
-def load_json(string):
-    return re.findall("localVar\": {\n\t\t\"function\": \"(.+(?=\"))\",\n\t\t\"type\": \"(.+(?=\"))\",\n\t\t\"name\": \"(.+(?=\"))", string, re.MULTILINE)
-
 # create tree from file.c
 def createTree(filename):
 	with open(filename, 'r') as file:
@@ -307,6 +309,7 @@ def createTree(filename):
 	grammar_file = path + '/src/rules.lark'
 	p = Lark.open(grammar_file, rel_to =__file__, parser = 'lalr')
 	tree = p.parse(code)
+
 	return tree
 
 # exchange, according to replacements
@@ -345,7 +348,6 @@ def main():
 	afterrm = RemoveMultiDec().visit(tree)
 
 	code_after_remove = Printer().transform(afterrm)
-
 
 	afterrep = change(tree, "config_temp.json")
 

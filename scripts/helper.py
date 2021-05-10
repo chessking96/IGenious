@@ -1,5 +1,5 @@
 import subprocess
-import os, sys
+import os, sys, re
 
 def call(arg):
     res = subprocess.call([arg], shell=True) #remove shell...
@@ -18,3 +18,7 @@ def getEnvVar(arg):
 
 def nameWithoutExtension(arg):
     return os.path.splitext(arg)[0]
+
+# self made json load, as standard json load doesn't work for this file
+def load_json(string):
+    return re.findall("localVar\": {\n\t\t\"function\": \"(.+(?=\"))\",\n\t\t\"type\": \"(.+(?=\"))\",\n\t\t\"name\": \"(.+(?=\"))", string, re.MULTILINE)

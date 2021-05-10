@@ -3,11 +3,8 @@ import re
 def main():
 	with open ("main.c", "r") as myfile:
 		c = myfile.read()
-	#print(c)
 
-	#exp1 = r'printf\("%d\\n"'
 	exp1 = 'printf\("BeforeIGenReplacement"\);'
-	#print(exp1)
 
 	# calculate error
 	c1 = '\tint max = 0;\n'
@@ -45,14 +42,11 @@ def main():
 	p7 = '\tfprintf(file, "%s' + r"\\n" + '", answer);\n'
 	p8 = '\tfclose(file);\n'
 
-	#c_new = c_new + p5 + p0 + p1 + p15 + p2 + p3 + p4
 	c_new = c_new + p2 + p3 + p4 + p5 + p6 + p7 + p8
 
-	#print(c_new)
 
 	c = re.sub(exp1, c_new, c)
 
-	#print(c)
 
 	f = open("main.c", "w+")
 	f.write(c)

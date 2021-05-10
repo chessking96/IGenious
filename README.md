@@ -20,4 +20,5 @@ From Ubuntu 20.04:
 This example might run for a very long time.
 ```bash
 ./scripts/rerun.sh examples/DFT16/ DFT16.c DFT16 DFT16
+
 ```

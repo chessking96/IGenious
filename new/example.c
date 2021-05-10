@@ -1,5 +1,9 @@
-void example(){
-	int c;
-	int d;
-	long double e, f, g, h;
+#include <stdlib.h>
+#include <stdio.h>
+
+
+int main(){
+	srand(42);
+	double r = ((double)rand())/(RAND_MAX);
+	printf("%.20g\n", r);
 }

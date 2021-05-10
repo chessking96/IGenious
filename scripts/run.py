@@ -12,19 +12,21 @@ def load_json(string):
 
 
 def main():
-    # change variables
+    if len(sys.argv) != 3:
+        print("Incorrect number of arguments: " + str(len(sys.argv)))
+        sys.exit(-1)
+    # change variable types
     scripts_path = getEnvVar("SOURCE_PATH") + '/scripts'
     call('python ' + scripts_path + '/changeTypes.py ' + sys.argv[1] + ' ' + sys.argv[2])
 
+    # call IGen
     igen_path = getEnvVar('IGEN_PATH')
     call_background('python3 ' + igen_path + '/bin/igen.py' + ' IGen/chg_rmd_' + sys.argv[2] + '.c')
 
+    # compile and execute
     call('cp' + ' IGen/chg_rmd_' + sys.argv[2]+ '.c' + ' IGen/make_code.c')
-
     call_background("cd IGen && cmake . && make")
     call("./IGen/some_app")
-
-    return 0
 
 
 if __name__ == "__main__":
