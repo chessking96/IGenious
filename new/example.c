@@ -1,9 +1,10 @@
-#include <stdlib.h>
-#include <stdio.h>
-
-
 int main(){
-	srand(42);
-	double r = ((double)rand())/(RAND_MAX);
-	printf("%.20g\n", r);
+	float x = 1.0;
+	double y = 2.0;
+	long double z = 3.0;
+	
+}
+
+void fun(float f, double g){
+	float t = 3.432;
 }

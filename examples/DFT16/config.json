@@ -1,0 +1,9 @@
+{
+  "args": ["long double", 32, "pointer", "output", "long double", 32, "pointer", "input"],
+  "is_input": true,
+  "num_input": 32,
+  "is_output": true,
+  "num_output": 32,
+  "repetitions": 1000000,
+  "precision": 1e-04
+}

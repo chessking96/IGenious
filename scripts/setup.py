@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 from helper import call, call_background, getEnvVar, nameWithoutExtension
-import sys, re
+import sys, re, json
 
 def createMain():
     # includes
@@ -21,28 +21,43 @@ def createMain():
     init = init1 + init2
 
     input = ''
-    if is_input:
-        input1 = '\tlong double* x = malloc(' + str(num_input) + ' * sizeof(long double));\n'
-        input2 = '\tfor(int i = 0; i < ' + str(num_input) + '; i++){\n'
-        input3 = '\t\tlong double h = getRandomDouble();\n'
-        input4 = '\t\tx[i] = h;\n'
-        input5 = '\t}\n'
-        input = input1 + input2 + input3 + input4 + input5
+    for i in range(int(len(inputs) / 4)):
+        type = inputs[i * 4]
+        length = inputs[i * 4 + 1]
+        pointer = inputs[i * 4 + 2]
+        inputORoutput = inputs[i * 4 + 3]
 
-    output = ''
-    if is_output:
-        output1 = '\tlong double* y = malloc(' + str(num_output) + ' * sizeof(long double));\n'
-        output = output1
+        if pointer == 'pointer':
+            input1 = '\t' + type + '* x_' + str(i) + ' = malloc(' + str(length) + ' * sizeof(long double));\n'
+            input2 = '\tfor(int i = 0; i < ' + str(length) + '; i++){\n'
+            if inputORoutput == 'input':
+                input3 = '\t\t' + type + ' h = getRandomDouble();\n'
+            elif inputORoutput == 'output':
+                input3 = '\t\t' + type + ' h = 0.0;\n'
+            else:
+                print("Error in config file.")
+                sys.exit(-1)
+            input4 = '\t\tx_' + str(i) + '[i] = h;\n'
+            input5 = '\t}\n'
+            input_part = input1 + input2 + input3 + input4 + input5
+        else:
+            print()
+
+
+        input += input_part
+
 
     timeS1 = '\tclock_t start = clock();\n'
     timeS2 = '\tfor(int i = 0; i < ' + str(repetitions) + '; i++){\n'
     timeS = timeS1 + timeS2
 
     arguments = ''
-    if is_output:
-        arguments += 'y'
-    if is_input:
-        arguments += ', x'
+
+    if int(len(inputs) / 4) >= 1:
+        arguments += 'x_0'
+
+    for i in range(1, int(len(inputs) / 4)):
+        arguments += ', x_' + str(i)
 
     call = '\t\t' + function_name + '(' + arguments + ');\n'
 
@@ -58,7 +73,7 @@ def createMain():
 
     main_end = '}\n'
 
-    main = main_start + init + input + output + timeS + call + timeE + rep + main_end
+    main = main_start + init + input + timeS + call + timeE + rep + main_end
     code = include + main
 
     with open (file_path + 'main.c', 'w') as myfile:
@@ -107,11 +122,13 @@ def cleanUp():
 
     substitute = 'printf\("BeforeIGenReplacement' + r'\\' + 'n"\);'
 
+    pr = 'x_0'
+
     err1 = '\tint max = 0;\n'
     err2 = '\tdd_I diff_max = _ia_zero_dd();\n'
     err3 = '\tfor(int i = 0; i < ' + str(num_output) + '; i++){\n'
-    err4 = '\t\tdd_I lower_bound = _ia_set_dd(y[i].lh, y[i].ll, -y[i].lh, -y[i].ll);\n'
-    err5 = '\t\tdd_I upper_bound = _ia_set_dd(-y[i].uh, -y[i].ul, y[i].uh, y[i].ul);\n'
+    err4 = '\t\tdd_I lower_bound = _ia_set_dd(' + pr + '[i].lh, ' + pr + '[i].ll, -' + pr + '[i].lh, -' + pr + '[i].ll);\n'
+    err5 = '\t\tdd_I upper_bound = _ia_set_dd(-' + pr + '[i].uh, -' + pr + '[i].ul, ' + pr + '[i].uh, ' + pr + '[i].ul);\n'
     err6 = '\t\tdd_I diff = _ia_sub_dd(upper_bound, lower_bound);\n'
     err7 = '\t\tif(_ia_cmpgt_dd(diff, diff_max)){\n'
     err8 = '\t\t\tdiff_max = diff;\n'
@@ -131,8 +148,10 @@ def cleanUp():
     ans9 = '\tprintf("%s' + r"\\n" + '", answer);\n'
     ans = ans1 + ans2 + ans3 + ans4 + ans5 + ans6 + ans7 + ans8 + ans9
 
-    p1 = '\tprintf("Debug: %.20g %.20g' + r"\\n" + '", y[0].lh, y[0].ll);\n'
-    p2 = '\tprintf("Debug: %.20g %.20g' + r"\\n" + '", y[0].uh, y[0].ul);\n'
+    dr = 'x_0'
+
+    p1 = '\tprintf("Debug: %.20g %.20g' + r"\\n" + '", ' + dr + '[0].lh, ' + dr + '[0].ll);\n'
+    p2 = '\tprintf("Debug: %.20g %.20g' + r"\\n" + '", ' + dr + '[0].uh, ' + dr + '[0].ul);\n'
     p3 = '\tprintf("Diff lower bound: %.17g %.17g' + r"\\n" + '", diff_max.lh, diff_max.ll);\n'
     p4 = '\tprintf("Diff upper bound: %.17g %.17g' + r"\\n" + '", diff_max.uh, diff_max.ul);\n'
     p =  p1 + p2 + p3 + p4
@@ -159,23 +178,17 @@ def cleanUp():
     c4 = '}\n'
     c5 = 'dd_I getRandomDouble() {\n'
     c6 = '\tdouble r1 = ((double)rand())/(RAND_MAX);\n'
-    c65 = '\tdouble r2 = ((double)rand())/(RAND_MAX);\n'
     c7 = '\tdd_I a = _ia_set_dd(-r1, 0, r1, 0);\n'
     c8 = '\treturn a;\n'
     c9 = '}\n'
 
-    c = c1 + c2 + c3 + c4 + c5 + c6 + c65 + c7 + c8 + c9
+    c = c1 + c2 + c3 + c4 + c5 + c6 + c7 + c8 + c9
 
-    with open (file_path + 'IGen/cleaned_igen_random_range.c', 'w') as myfile:
+    with open(file_path + 'IGen/cleaned_igen_random_range.c', 'w') as myfile:
             myfile.write(c)
 
 if __name__ == "__main__":
-    is_input = True
-    num_input = 32
-    is_output = True
-    num_output = 32
-    repetitions = 1000000
-    precision = 0.1
+
 
     # arguments: filepath filename, functionname
     if len(sys.argv) != 4:
@@ -185,6 +198,25 @@ if __name__ == "__main__":
     file_path = sys.argv[1] + 'analysis/'
     file_name = sys.argv[2]
     function_name = sys.argv[3]
+
+    with open(file_path + '/../config.json', 'r') as myfile:
+        data = json.load(myfile)
+        inputs = data['args']
+
+    if len(inputs) % 4 != 0:
+        printf("Config file is not valid.")
+        sys.exit(-1)
+
+
+
+
+    is_input = data['is_input']
+    num_input = data['num_input']
+    is_output = data['is_output']
+    num_output = data['num_output']
+    repetitions = data['repetitions']
+    precision = data['precision']
+
 
     nameWOExt = nameWithoutExtension(file_name)
     prec_path = getEnvVar('CORVETTE_PATH') # path to precimonious
