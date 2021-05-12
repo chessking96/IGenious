@@ -122,20 +122,34 @@ def cleanUp():
 
     substitute = 'printf\("BeforeIGenReplacement' + r'\\' + 'n"\);'
 
-    pr = 'x_0'
+    if errorType == 'highestAbsolute':
 
-    err1 = '\tint max = 0;\n'
-    err2 = '\tdd_I diff_max = _ia_zero_dd();\n'
-    err3 = '\tfor(int i = 0; i < ' + str(num_output) + '; i++){\n'
-    err4 = '\t\tdd_I lower_bound = _ia_set_dd(' + pr + '[i].lh, ' + pr + '[i].ll, -' + pr + '[i].lh, -' + pr + '[i].ll);\n'
-    err5 = '\t\tdd_I upper_bound = _ia_set_dd(-' + pr + '[i].uh, -' + pr + '[i].ul, ' + pr + '[i].uh, ' + pr + '[i].ul);\n'
-    err6 = '\t\tdd_I diff = _ia_sub_dd(upper_bound, lower_bound);\n'
-    err7 = '\t\tif(_ia_cmpgt_dd(diff, diff_max)){\n'
-    err8 = '\t\t\tdiff_max = diff;\n'
-    err9 = '\t\t\tmax = i;\n'
-    err10 = '\t\t}\n'
-    err11 = '\t}\n'
-    err = err1 + err2 + err3 + err4 + err5 + err6 + err7 + err8 + err9 + err10 + err11
+        pre_err1 = '\tint max = 0;\n'
+        pre_err2 = '\tint imax = 0;\n'
+        pre_err3 = '\tdd_I diff_max = _ia_zero_dd();\n'
+        err = pre_err1 + pre_err2 + pre_err3
+
+
+        for i in range(int(len(inputs) / 4)):
+            type = inputs[i * 4]
+            length = inputs[i * 4 + 1]
+            pointer = inputs[i * 4 + 2]
+            inputORoutput = inputs[i * 4 + 3]
+
+            if inputORoutput == 'output':
+
+                varName = 'x_' + str(i)
+
+                err1 = '\tfor(int i = 0; i < ' + str(length) + '; i++){\n'
+                err2 = '\t\tdd_I lower_bound = _ia_set_dd(' + varName + '[i].lh, ' + varName + '[i].ll, -' + varName + '[i].lh, -' + varName + '[i].ll);\n'
+                err3 = '\t\tdd_I upper_bound = _ia_set_dd(-' + varName + '[i].uh, -' + varName + '[i].ul, ' + varName + '[i].uh, ' + varName + '[i].ul);\n'
+                err4 = '\t\tdd_I diff = _ia_sub_dd(upper_bound, lower_bound);\n'
+                err5 = '\t\tif(_ia_cmpgt_dd(diff, diff_max)){\n'
+                err6 = '\t\t\tdiff_max = diff;\n'
+                err7 = '\t\t\tmax = i;\n'
+                err8 = '\t\t}\n'
+                err9 = '\t}\n'
+                err += err1 + err2 + err3 + err4 + err5 + err6 + err7 + err8 + err9
 
     ans1 = '\tchar* answer = "false";\n'
     ans2 = '\tdouble th = ' + str(precision) + ';\n'
@@ -207,15 +221,9 @@ if __name__ == "__main__":
         printf("Config file is not valid.")
         sys.exit(-1)
 
-
-
-
-    is_input = data['is_input']
-    num_input = data['num_input']
-    is_output = data['is_output']
-    num_output = data['num_output']
     repetitions = data['repetitions']
     precision = data['precision']
+    errorType = data['errortype']
 
 
     nameWOExt = nameWithoutExtension(file_name)
