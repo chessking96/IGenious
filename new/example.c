@@ -1,7 +1,7 @@
 int main(){
-	float x = 1.0;
-	double y = 2.0;
-	long double z = 3.0;
+	int a, b = 3;
+	
+	printf("%i %i", a, b);
 	
 }
 

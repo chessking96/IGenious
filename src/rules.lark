@@ -9,8 +9,8 @@ longcomment: ccomment -> longcomment
 shortcomment: CPP_COMMENT -> shorcomment
 
 // functions
-func_dec: WORD CNAME "(" arguments ")" ";" ->funcdecl
-func: WORD CNAME "(" arguments ")" "{" stmts "}" -> func
+func_dec: types CNAME "(" arguments ")" ";" ->funcdecl
+func: types CNAME "(" arguments ")" "{" stmts "}" -> func
 arguments: [(argument ",")* argument] -> arguments
 argument: types CNAME -> argument
 

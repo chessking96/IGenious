@@ -1,0 +1,3 @@
+/home/user/master-thesis/scripts/removeSameLineDecl/CMakeFiles/rebuild_cache.dir
+/home/user/master-thesis/scripts/removeSameLineDecl/CMakeFiles/edit_cache.dir
+/home/user/master-thesis/scripts/removeSameLineDecl/CMakeFiles/clang_ast_visitor.dir

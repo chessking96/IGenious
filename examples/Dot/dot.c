@@ -1,6 +1,4 @@
-#include <stdlib.h>
-
-double dot(double* x, double* y){
+long double dot(long double* x, long double* y){
   double  t = 0;
   int n = 10;
   for (int i = 0; i < n; i ++){
@@ -11,9 +9,3 @@ double dot(double* x, double* y){
 }
 
 
-int main(){
-  double* x = malloc(sizeof(double) * 10);
-  double* y = malloc(sizeof(double) * 10);
-
-  dot(x, y);
-}
