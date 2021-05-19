@@ -19,6 +19,5 @@ From Ubuntu 20.04:
 ## Usage
 This example might run for a very long time.
 ```bash
-./scripts/rerun.sh examples/DFT16/ DFT16.c DFT16 DFT16
-
+python3 scripts/rerun.py examples/example/ example.c func example
 ```

@@ -39,6 +39,10 @@ if __name__ == "__main__":
     for rep in reps:
         reps_dict[(rep[0], rep[2])] = rep[1]
 
+    count_float = 0
+    count_double = 0
+    count_longdouble = 0
+
     for i in range(len(lines) - 9, 0, -8):
         typeBeg = lines[i + 0]
         typeEnd = lines[i + 1]
@@ -67,7 +71,12 @@ if __name__ == "__main__":
         if type == None:
             continue
 
-
+        if type == 'float':
+            count_float += 1
+        if type == 'double':
+            count_double += 1
+        if type == 'long double':
+            count_longdouble += 1
 
         line = typeBegLine - 1
         i = typeBegCol - 1
@@ -92,5 +101,4 @@ if __name__ == "__main__":
     with open('IGen/chg_rmd_' + file_name, 'w') as myfile:
         myfile.write(replaced_code)
 
-    #print(replaced_code)
-    # print('f:', count_float, 'd:', count_double, 'dd:', count_longdouble)
+    print('f:', count_float, 'd:', count_double, 'dd:', count_longdouble)

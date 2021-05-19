@@ -1,0 +1,45 @@
+start: program -> start
+program: (decl)* -> program
+decl: comment | funcdecl | func | leftover -> decl
+
+comment.2: CPP_COMMENT | C_COMMENT
+funcdecl.2: type CNAME "(" args ")" ";" -> funcdecl
+func.2: type CNAME "(" args ")" "{" stmts "}" -> func
+leftover.1: /(.|\n)+/
+
+stmts: (stmt)* -> stmts
+
+stmt: vardecl | assignment -> stmt
+
+vardecl: multivardeclwithout
+
+assignment: expr "=" expr ";"
+
+expr: CNAME | NUMBER | "(" expr ")" | expr binop expr
+
+binop: "+" | "-" | "*"
+
+multivardeclwithout: type CNAME ("," CNAME)+ ";" -> multivardeclwithout
+
+type: type1 | type2 | type3 | type4 | type5 | type6 | type7 | type8 | ftype -> ftype | void -> void | type "*"
+args: [(arg ",")* arg] -> args
+arg: type CNAME -> arg
+
+type1: "char" -> char | "signed" "char" -> signedchar | "unsigned" "char" -> unsignedchar | "short" -> short | "short" "int" -> shortint
+type2: "signed" "short" ->signedshort | "signed" "short" "int" -> signedshortint| "unsigned" "short" -> unsignedshort
+type3: "unsigned" "short" "int" -> unsignedshortint | "int" -> int | "signed" -> signed | "signed" "int" -> signedint | "unsigned" -> unsigned
+type4: "unsigned" "int" -> unsignedint | "long" -> long | "long" "int" -> longint | "signed" "long" -> signedlong
+type5: "signed" "long" "int" -> signedlongint | "unsigned" "long" -> unsignedlong | "unsigned" "long" "int" -> unsignedlongint
+type6: "long" "long" -> longlong | "long" "long" "int" -> longlongint | "signed" "long" "long" -> signedlonglong
+type7: "signed" "long" "long" "int" -> signedlonglongint | "unsigned" "long" "long" -> unsignedlonglong
+type8: "unsigned" "long" "long" "int" -> unsignedlonglongint
+
+ftype: "float" -> float | "double" -> double | "long" "double" -> longdouble
+void: "void" -> void
+
+%import common.NUMBER
+%import common.CNAME
+%import common.CPP_COMMENT
+%import common.C_COMMENT
+%import common.WS
+%ignore WS

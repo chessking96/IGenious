@@ -101,8 +101,6 @@ if __name__ == "__main__":
 
         blocks[(typeBegLine, typeBegCol)] = (block, minLine, maxLine)
 
-
-
     for (line, col) in sorted(blocks.keys(), reverse = True):
         (block, minLine, maxLine) = blocks.get((line, col))
         del(code[minLine:maxLine])

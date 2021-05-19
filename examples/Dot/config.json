@@ -1,6 +1,7 @@
 {
-  "args": ["long double", 32, "pointer", "output", "long double", 32, "pointer", "input"],
+  "args": ["long double", 32, "pointer", "input", "long double", 32, "pointer", "input"],
   "repetitions": 1000000,
   "precision": 0.0001,
-  "errortype": "highestAbsolute"
+  "errortype": "highestAbsolute",
+  "return": ["long double", 1, "scalar"]
 }

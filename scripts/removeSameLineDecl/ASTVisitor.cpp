@@ -79,6 +79,7 @@ class ASTMainVisitor : public RecursiveASTVisitor<ASTMainVisitor> {
         return true;
     }
 
+
     bool ActionVarDecl(VarDecl *var) {
         //SourceRange varLocRange = var->getSourceRange();
 
@@ -159,6 +160,8 @@ class ASTMainVisitor : public RecursiveASTVisitor<ASTMainVisitor> {
 
         /* Process return statement */
         if (auto *res = dyn_cast<ReturnStmt>(st)) {
+            res->getBeginLoc();
+            cout << "hi\n";
             return true;
         }
         return true;

@@ -41,7 +41,7 @@ def createMain():
             input5 = '\t}\n'
             input_part = input1 + input2 + input3 + input4 + input5
         else:
-            print()
+            print("Not implemented yet")
 
 
         input += input_part
@@ -105,16 +105,18 @@ def precimoniousSetup():
     call('cp ' + src_path + '/normal_CMakeLists.txt ' + file_path + 'CMakeLists.txt')
 
 def igenSetup():
-        call('cd ' + file_path + ' && mkdir IGen && cp ' + file_name + ' IGen/')
-        call('cd ' + file_path + ' && cp ' + 'random_range.c' + ' IGen/')
-        call('cd ' + file_path + ' && cp ' + 'main.c' + ' IGen/')
-        print("setup", file_path, file_name)
-        call('python3 ' + scripts_path + '/rsld.py ' + file_path + 'IGen/ ' + file_name)
-        call_background('cd ' + file_path + 'IGen && python3 ' + igen_path + '/bin/igen.py main.c')
-        call_background('cd ' + file_path + 'IGen && python3 ' + igen_path + '/bin/igen.py random_range.c')
-        call_background('cd ' + file_path + 'IGen && python3 ' + igen_path + '/bin/igen.py rmd_' + file_name)
+    call('cd ' + file_path + ' && mkdir IGen && cp ' + file_name + ' IGen/')
+    call('cd ' + file_path + ' && cp ' + 'random_range.c' + ' IGen/')
+    call('cd ' + file_path + ' && cp ' + 'main.c' + ' IGen/')
+    print("setup", file_path, file_name)
 
-        call('cp ' + src_path + '/igen_CMakeLists.txt ' + file_path + 'IGen/CMakeLists.txt')
+    # remove same line declarations
+    call('python3 ' + scripts_path + '/rsld.py ' + file_path + 'IGen/ ' + file_name)
+    call_background('cd ' + file_path + 'IGen && python3 ' + igen_path + '/bin/igen.py main.c')
+    call_background('cd ' + file_path + 'IGen && python3 ' + igen_path + '/bin/igen.py random_range.c')
+    call_background('cd ' + file_path + 'IGen && python3 ' + igen_path + '/bin/igen.py rmd_' + file_name)
+
+    call('cp ' + src_path + '/igen_CMakeLists.txt ' + file_path + 'IGen/CMakeLists.txt')
 
 def cleanUp():
     # main
@@ -203,8 +205,6 @@ def cleanUp():
             myfile.write(c)
 
 if __name__ == "__main__":
-
-
     # arguments: filepath filename, functionname
     if len(sys.argv) != 4:
         print("Wrong number of arguments.")
@@ -226,7 +226,6 @@ if __name__ == "__main__":
     repetitions = data['repetitions']
     precision = data['precision']
     errorType = data['errortype']
-
 
     nameWOExt = nameWithoutExtension(file_name)
     prec_path = getEnvVar('CORVETTE_PATH') # path to precimonious

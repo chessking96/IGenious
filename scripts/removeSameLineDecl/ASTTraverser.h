@@ -15,6 +15,7 @@ protected:
     void _traverseAST(clang::Expr* st);
     void _traverseAST(clang::Decl* st);
 
+
 public:
     template<typename T>
     explicit ASTTraverser(T* st) {

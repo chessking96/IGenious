@@ -1,3 +1,0 @@
-/home/user/master-thesis/examples/example/CMakeFiles/rebuild_cache.dir
-/home/user/master-thesis/examples/example/CMakeFiles/edit_cache.dir
-/home/user/master-thesis/examples/example/CMakeFiles/some_app.dir

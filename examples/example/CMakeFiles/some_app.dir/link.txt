@@ -1,1 +1,0 @@
-gcc -std=c11 -Wno-deprecated -O3 -march=native -frounding-math   CMakeFiles/some_app.dir/igen_example.c.o  -o some_app  -lm 
