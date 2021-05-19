@@ -4,8 +4,8 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_CXX
-  "/home/user/master-thesis/scripts/removeSameLineDecl/ASTTraverser.cpp" "/home/user/master-thesis/scripts/removeSameLineDecl/CMakeFiles/clang_ast_visitor.dir/ASTTraverser.cpp.o"
-  "/home/user/master-thesis/scripts/removeSameLineDecl/ASTVisitor.cpp" "/home/user/master-thesis/scripts/removeSameLineDecl/CMakeFiles/clang_ast_visitor.dir/ASTVisitor.cpp.o"
+  "/home/user/master-thesis/scripts/changeTypes/ASTTraverser.cpp" "/home/user/master-thesis/scripts/changeTypes/CMakeFiles/clang_ast_visitor.dir/ASTTraverser.cpp.o"
+  "/home/user/master-thesis/scripts/changeTypes/ASTVisitor.cpp" "/home/user/master-thesis/scripts/changeTypes/CMakeFiles/clang_ast_visitor.dir/ASTVisitor.cpp.o"
   )
 set(CMAKE_CXX_COMPILER_ID "Clang")
 

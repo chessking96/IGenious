@@ -24,7 +24,7 @@ using namespace clang::driver;
 using namespace clang::tooling;
 using namespace llvm;
 
-typedef vector< tuple<string,string, string, string, string, string, string> > myList;
+typedef vector< tuple<string,string, string, string, string, string, string, string> > myList;
 
 Rewriter rewriter;
 CompilerInstance* mainCI;
@@ -104,6 +104,7 @@ class ASTMainVisitor : public RecursiveASTVisitor<ASTMainVisitor> {
         typeBeg = var->getTypeSourceInfo()->getTypeLoc().getSourceRange().getBegin().printToString(rewriter.getSourceMgr());
         typeEnd = var->getTypeSourceInfo()->getTypeLoc().getSourceRange().getEnd().printToString(rewriter.getSourceMgr());
         varName = var->getDeclName().getAsString();
+        string funName = ((FunctionDecl*)var->getParentFunctionOrMethod())->getNameAsString();
 
         if(var->hasInit()){
           initBeg = var->getInit()->getSourceRange().getBegin().printToString(rewriter.getSourceMgr());
@@ -113,7 +114,7 @@ class ASTMainVisitor : public RecursiveASTVisitor<ASTMainVisitor> {
         string begin = var->getSourceRange().getBegin().printToString(rewriter.getSourceMgr());
         string end = var->getSourceRange().getEnd().printToString(rewriter.getSourceMgr());
 
-        auto tup = make_tuple(typeBeg, typeEnd, varName, initBeg, initEnd, begin, end);
+        auto tup = make_tuple(typeBeg, typeEnd, varName, funName, initBeg, initEnd, begin, end);
         varList->push_back(tup);
         //has definition? has init?
         //processedLocation = varLocRange.getEnd();
@@ -240,6 +241,7 @@ int main(int argc, const char **argv) {
     string file_path = argv[3];
     string file_name = argv[4];
 
+
     CommonOptionsParser op(argc, argv, MyToolCategory);
 
     /* create a new Clang Tool instance (a LibTooling environment) */
@@ -254,7 +256,7 @@ int main(int argc, const char **argv) {
     //FileID fid = rewriter.getSourceMgr().getMainFileID();
     //rewriter.getEditBuffer(fid).write(outs());
     ofstream myfile;
-    myfile.open (file_path + "vars.txt");
+    myfile.open ("IGen/vars2.txt");
     for(size_t i = 0; i < varList->size(); i++){
         myfile << get<0>(varList->at(i)) << "\n";
         myfile << get<1>(varList->at(i)) << "\n";
@@ -263,6 +265,7 @@ int main(int argc, const char **argv) {
         myfile << get<4>(varList->at(i)) << "\n";
         myfile << get<5>(varList->at(i)) << "\n";
         myfile << get<6>(varList->at(i)) << "\n";
+        myfile << get<7>(varList->at(i)) << "\n";
     }
     myfile.close();
 

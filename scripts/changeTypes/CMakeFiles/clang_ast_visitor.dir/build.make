@@ -43,10 +43,10 @@ RM = /usr/bin/cmake -E remove -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/user/master-thesis/scripts/removeSameLineDecl
+CMAKE_SOURCE_DIR = /home/user/master-thesis/scripts/changeTypes
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/user/master-thesis/scripts/removeSameLineDecl
+CMAKE_BINARY_DIR = /home/user/master-thesis/scripts/changeTypes
 
 # Include any dependencies generated for this target.
 include CMakeFiles/clang_ast_visitor.dir/depend.make
@@ -59,29 +59,29 @@ include CMakeFiles/clang_ast_visitor.dir/flags.make
 
 CMakeFiles/clang_ast_visitor.dir/ASTVisitor.cpp.o: CMakeFiles/clang_ast_visitor.dir/flags.make
 CMakeFiles/clang_ast_visitor.dir/ASTVisitor.cpp.o: ASTVisitor.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/master-thesis/scripts/removeSameLineDecl/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/clang_ast_visitor.dir/ASTVisitor.cpp.o"
-	/home/user/master-thesis/scripts/removeSameLineDecl/../../../IGen/third-party/llvm-project-11.0.1/install/bin/clang++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/clang_ast_visitor.dir/ASTVisitor.cpp.o -c /home/user/master-thesis/scripts/removeSameLineDecl/ASTVisitor.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/master-thesis/scripts/changeTypes/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Building CXX object CMakeFiles/clang_ast_visitor.dir/ASTVisitor.cpp.o"
+	/home/user/master-thesis/scripts/changeTypes/../../../IGen/third-party/llvm-project-11.0.1/install/bin/clang++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/clang_ast_visitor.dir/ASTVisitor.cpp.o -c /home/user/master-thesis/scripts/changeTypes/ASTVisitor.cpp
 
 CMakeFiles/clang_ast_visitor.dir/ASTVisitor.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/clang_ast_visitor.dir/ASTVisitor.cpp.i"
-	/home/user/master-thesis/scripts/removeSameLineDecl/../../../IGen/third-party/llvm-project-11.0.1/install/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/user/master-thesis/scripts/removeSameLineDecl/ASTVisitor.cpp > CMakeFiles/clang_ast_visitor.dir/ASTVisitor.cpp.i
+	/home/user/master-thesis/scripts/changeTypes/../../../IGen/third-party/llvm-project-11.0.1/install/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/user/master-thesis/scripts/changeTypes/ASTVisitor.cpp > CMakeFiles/clang_ast_visitor.dir/ASTVisitor.cpp.i
 
 CMakeFiles/clang_ast_visitor.dir/ASTVisitor.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/clang_ast_visitor.dir/ASTVisitor.cpp.s"
-	/home/user/master-thesis/scripts/removeSameLineDecl/../../../IGen/third-party/llvm-project-11.0.1/install/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/user/master-thesis/scripts/removeSameLineDecl/ASTVisitor.cpp -o CMakeFiles/clang_ast_visitor.dir/ASTVisitor.cpp.s
+	/home/user/master-thesis/scripts/changeTypes/../../../IGen/third-party/llvm-project-11.0.1/install/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/user/master-thesis/scripts/changeTypes/ASTVisitor.cpp -o CMakeFiles/clang_ast_visitor.dir/ASTVisitor.cpp.s
 
 CMakeFiles/clang_ast_visitor.dir/ASTTraverser.cpp.o: CMakeFiles/clang_ast_visitor.dir/flags.make
 CMakeFiles/clang_ast_visitor.dir/ASTTraverser.cpp.o: ASTTraverser.cpp
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/master-thesis/scripts/removeSameLineDecl/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/clang_ast_visitor.dir/ASTTraverser.cpp.o"
-	/home/user/master-thesis/scripts/removeSameLineDecl/../../../IGen/third-party/llvm-project-11.0.1/install/bin/clang++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/clang_ast_visitor.dir/ASTTraverser.cpp.o -c /home/user/master-thesis/scripts/removeSameLineDecl/ASTTraverser.cpp
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/user/master-thesis/scripts/changeTypes/CMakeFiles --progress-num=$(CMAKE_PROGRESS_2) "Building CXX object CMakeFiles/clang_ast_visitor.dir/ASTTraverser.cpp.o"
+	/home/user/master-thesis/scripts/changeTypes/../../../IGen/third-party/llvm-project-11.0.1/install/bin/clang++  $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -o CMakeFiles/clang_ast_visitor.dir/ASTTraverser.cpp.o -c /home/user/master-thesis/scripts/changeTypes/ASTTraverser.cpp
 
 CMakeFiles/clang_ast_visitor.dir/ASTTraverser.cpp.i: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/clang_ast_visitor.dir/ASTTraverser.cpp.i"
-	/home/user/master-thesis/scripts/removeSameLineDecl/../../../IGen/third-party/llvm-project-11.0.1/install/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/user/master-thesis/scripts/removeSameLineDecl/ASTTraverser.cpp > CMakeFiles/clang_ast_visitor.dir/ASTTraverser.cpp.i
+	/home/user/master-thesis/scripts/changeTypes/../../../IGen/third-party/llvm-project-11.0.1/install/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/user/master-thesis/scripts/changeTypes/ASTTraverser.cpp > CMakeFiles/clang_ast_visitor.dir/ASTTraverser.cpp.i
 
 CMakeFiles/clang_ast_visitor.dir/ASTTraverser.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/clang_ast_visitor.dir/ASTTraverser.cpp.s"
-	/home/user/master-thesis/scripts/removeSameLineDecl/../../../IGen/third-party/llvm-project-11.0.1/install/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/user/master-thesis/scripts/removeSameLineDecl/ASTTraverser.cpp -o CMakeFiles/clang_ast_visitor.dir/ASTTraverser.cpp.s
+	/home/user/master-thesis/scripts/changeTypes/../../../IGen/third-party/llvm-project-11.0.1/install/bin/clang++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/user/master-thesis/scripts/changeTypes/ASTTraverser.cpp -o CMakeFiles/clang_ast_visitor.dir/ASTTraverser.cpp.s
 
 # Object files for target clang_ast_visitor
 clang_ast_visitor_OBJECTS = \
@@ -158,7 +158,7 @@ clang_ast_visitor: ../../../IGen/third-party/llvm-project-11.0.1/install/lib/lib
 clang_ast_visitor: ../../../IGen/third-party/llvm-project-11.0.1/install/lib/libLLVMBinaryFormat.a
 clang_ast_visitor: ../../../IGen/third-party/llvm-project-11.0.1/install/lib/libLLVMDemangle.a
 clang_ast_visitor: CMakeFiles/clang_ast_visitor.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/user/master-thesis/scripts/removeSameLineDecl/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable clang_ast_visitor"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/user/master-thesis/scripts/changeTypes/CMakeFiles --progress-num=$(CMAKE_PROGRESS_3) "Linking CXX executable clang_ast_visitor"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/clang_ast_visitor.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
@@ -171,6 +171,6 @@ CMakeFiles/clang_ast_visitor.dir/clean:
 .PHONY : CMakeFiles/clang_ast_visitor.dir/clean
 
 CMakeFiles/clang_ast_visitor.dir/depend:
-	cd /home/user/master-thesis/scripts/removeSameLineDecl && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/user/master-thesis/scripts/removeSameLineDecl /home/user/master-thesis/scripts/removeSameLineDecl /home/user/master-thesis/scripts/removeSameLineDecl /home/user/master-thesis/scripts/removeSameLineDecl /home/user/master-thesis/scripts/removeSameLineDecl/CMakeFiles/clang_ast_visitor.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/user/master-thesis/scripts/changeTypes && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/user/master-thesis/scripts/changeTypes /home/user/master-thesis/scripts/changeTypes /home/user/master-thesis/scripts/changeTypes /home/user/master-thesis/scripts/changeTypes /home/user/master-thesis/scripts/changeTypes/CMakeFiles/clang_ast_visitor.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : CMakeFiles/clang_ast_visitor.dir/depend
 

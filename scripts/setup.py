@@ -108,6 +108,7 @@ def igenSetup():
         call('cd ' + file_path + ' && mkdir IGen && cp ' + file_name + ' IGen/')
         call('cd ' + file_path + ' && cp ' + 'random_range.c' + ' IGen/')
         call('cd ' + file_path + ' && cp ' + 'main.c' + ' IGen/')
+        print("setup", file_path, file_name)
         call('python3 ' + scripts_path + '/rsld.py ' + file_path + 'IGen/ ' + file_name)
         call_background('cd ' + file_path + 'IGen && python3 ' + igen_path + '/bin/igen.py main.c')
         call_background('cd ' + file_path + 'IGen && python3 ' + igen_path + '/bin/igen.py random_range.c')
@@ -212,6 +213,7 @@ if __name__ == "__main__":
     file_path = sys.argv[1] + 'analysis/'
     file_name = sys.argv[2]
     function_name = sys.argv[3]
+
 
     with open(file_path + '../config.json', 'r') as myfile:
         data = json.load(myfile)

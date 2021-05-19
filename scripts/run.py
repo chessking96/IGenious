@@ -15,11 +15,14 @@ def main():
     if len(sys.argv) != 3:
         print("Incorrect number of arguments: " + str(len(sys.argv)))
         sys.exit(-1)
+
+    file_path = sys.argv[1] + 'analysis/'
+    file_name_wo = sys.argv[2]
+    file_name = file_name_wo + '.c'
+
     # change variable types
     scripts_path = getEnvVar("SOURCE_PATH") + '/scripts'
-    call('python ' + scripts_path + '/changeTypes.py ' + sys.argv[1] + ' ' + sys.argv[2])
-    sys.exit(-1)
-    
+    call('python ' + scripts_path + '/changeTypes.py ' + file_path + 'IGen/ ' + file_name)
     # call IGen
     igen_path = getEnvVar('IGEN_PATH')
     call_background('python3 ' + igen_path + '/bin/igen.py' + ' IGen/chg_rmd_' + sys.argv[2] + '.c')
