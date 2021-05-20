@@ -159,11 +159,14 @@ class ASTMainVisitor : public RecursiveASTVisitor<ASTMainVisitor> {
         }
 
         /* Process return statement */
-        if (auto *res = dyn_cast<ReturnStmt>(st)) {
-            res->getBeginLoc();
-            cout << "hi\n";
+        /*if (auto *res = dyn_cast<ReturnStmt>(st)) {
+            string s;
+            s = res->getBeginLoc().printToString(rewriter.getSourceMgr());
+            cout << s << "\n";
+            s = res->getEndLoc().printToString(rewriter.getSourceMgr());
+            cout << s << "\n";
             return true;
-        }
+        }*/
         return true;
     }
 

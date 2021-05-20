@@ -46,7 +46,10 @@ def createMain():
 
         input += input_part
 
-
+    if returnInfo[0] == "True":
+        return1 = '\t' + returnInfo[1] + ' return_value = 0;\n'
+    else:
+        return1 = ''
     timeS1 = '\tclock_t start = clock();\n'
     timeS2 = '\tfor(int i = 0; i < ' + str(repetitions) + '; i++){\n'
     timeS = timeS1 + timeS2
@@ -55,11 +58,15 @@ def createMain():
 
     if int(len(inputs) / 4) >= 1:
         arguments += 'x_0'
-
     for i in range(1, int(len(inputs) / 4)):
         arguments += ', x_' + str(i)
 
-    call = '\t\t' + function_name + '(' + arguments + ');\n'
+
+    if returnInfo[0] == "True":
+        call = '\t\treturn_value = ' + function_name + '(' + arguments + ');\n'
+    else:
+        call = '\t\t' + function_name + '(' + arguments + ');\n'
+
 
     timeE1 = '\t}\n'
     timeE2 = '\tclock_t end = clock();\n'
@@ -73,7 +80,7 @@ def createMain():
 
     main_end = '}\n'
 
-    main = main_start + init + input + timeS + call + timeE + rep + main_end
+    main = main_start + init + input + return1 + timeS + call + timeE + rep + main_end
     code = include + main
 
     with open (file_path + 'main.c', 'w') as myfile:
@@ -154,6 +161,16 @@ def cleanUp():
                 err9 = '\t}\n'
                 err += err1 + err2 + err3 + err4 + err5 + err6 + err7 + err8 + err9
 
+        if returnInfo[0] == "True":
+            ret1 = '\tdd_I lower_bound = _ia_set_dd(' + 'return_value' + '.lh, ' + 'return_value' + '.ll, -' + 'return_value' + '.lh, -' + 'return_value' + '.ll);\n'
+            ret2 = '\tdd_I upper_bound = _ia_set_dd(-' + 'return_value' + '.uh, -' + 'return_value' + '.ul, ' + 'return_value' + '.uh, ' + 'return_value' + '.ul);\n'
+            ret3 = '\tdd_I diff = _ia_sub_dd(upper_bound, lower_bound);\n'
+            ret4 = '\tif(_ia_cmpgt_dd(diff, diff_max)){\n'
+            ret5 = '\t\tdiff_max = diff;\n'
+            ret6 = '\t\tmax = -1;\n'
+            ret7 = '\t}\n'
+            err += ret1 + ret2 + ret3 + ret4 + ret5 + ret6 + ret7
+
     ans1 = '\tchar* answer = "false";\n'
     ans2 = '\tdouble th = ' + str(precision) + ';\n'
     ans3 = '\tif((int)_ia_cmpgt_dd(_ia_set_dd(-th, 0, th, 0), diff_max) == 1){\n'
@@ -226,6 +243,7 @@ if __name__ == "__main__":
     repetitions = data['repetitions']
     precision = data['precision']
     errorType = data['errortype']
+    returnInfo = data['return']
 
     nameWOExt = nameWithoutExtension(file_name)
     prec_path = getEnvVar('CORVETTE_PATH') # path to precimonious
