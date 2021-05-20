@@ -184,8 +184,10 @@ def cleanUp():
 
     dr = 'x_0'
 
-    p1 = '\tprintf("Debug: %.20g %.20g' + r"\\n" + '", ' + dr + '[0].lh, ' + dr + '[0].ll);\n'
-    p2 = '\tprintf("Debug: %.20g %.20g' + r"\\n" + '", ' + dr + '[0].uh, ' + dr + '[0].ul);\n'
+    #p1 = '\tprintf("Debug: %.20g %.20g' + r"\\n" + '", ' + dr + '[0].lh, ' + dr + '[0].ll);\n'
+    #p2 = '\tprintf("Debug: %.20g %.20g' + r"\\n" + '", ' + dr + '[0].uh, ' + dr + '[0].ul);\n'
+    p1 = ''
+    p2 = ''
     p3 = '\tprintf("Diff lower bound: %.17g %.17g' + r"\\n" + '", diff_max.lh, diff_max.ll);\n'
     p4 = '\tprintf("Diff upper bound: %.17g %.17g' + r"\\n" + '", diff_max.uh, diff_max.ul);\n'
     p =  p1 + p2 + p3 + p4
