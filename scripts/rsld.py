@@ -99,12 +99,13 @@ if __name__ == "__main__":
             decl = type + name + ";"
             block += decl + '\n';
 
-        blocks[(typeBegLine, typeBegCol)] = (block, minLine, maxLine)
+        blocks[minLine] = (block, minLine, maxLine)
 
-    for (line, col) in sorted(blocks.keys(), reverse = True):
-        (block, minLine, maxLine) = blocks.get((line, col))
-        del(code[minLine:maxLine])
-        code[line - 1] = block
+
+    for minLine in sorted(blocks.keys(), reverse = True):
+        (block, minLine, maxLine) = blocks.get(minLine)
+        del(code[minLine-1:maxLine])
+        code.insert(minLine-1, block)
 
     # save replaced code
     replaced_code = ''
