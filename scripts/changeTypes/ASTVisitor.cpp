@@ -10,13 +10,15 @@
 #include "clang/Tooling/Tooling.h"
 #include "clang/Rewrite/Core/Rewriter.h"
 
+#include <sstream>
+#include <fstream>
+#include <map>
+
 /* Other headers */
 #include <iostream>
 #include "vector"
-#include <tuple>
 #include "ASTVisitor.h"
 #include "ASTTraverser.h"
-#include <fstream>
 
 using namespace std;
 using namespace clang;
@@ -24,14 +26,11 @@ using namespace clang::driver;
 using namespace clang::tooling;
 using namespace llvm;
 
-typedef vector< tuple<string,string, string, string, string, string, string, string> > myList;
-
 Rewriter rewriter;
 CompilerInstance* mainCI;
 int numFunctions = 0;
 
-myList* varList = new myList();
-
+map<tuple<string>, string> vars;
 
 /* Apply a custom category to all command-line options so that they are the only ones displayed. */
 llvm::cl::OptionCategory MyToolCategory("my-tool options");
@@ -68,7 +67,6 @@ class ASTMainVisitor : public RecursiveASTVisitor<ASTMainVisitor> {
     bool ActionFunctionDecl(FunctionDecl *fund) {
         numFunctions++;
         string funcName = fund->getNameAsString();
-        //outs() << funcName << " found\n";
 
         if (fund->doesThisDeclarationHaveABody()) {
 //            /* Traverse AST below this node */
@@ -80,44 +78,34 @@ class ASTMainVisitor : public RecursiveASTVisitor<ASTMainVisitor> {
     }
 
     bool ActionVarDecl(VarDecl *var) {
-        //SourceRange varLocRange = var->getSourceRange();
+        SourceRange varLocRange = var->getSourceRange();
 
         //if(!var->getType()->isRealFloatingType()) {
             /* Return if it is not floating point. This does not support pointers, e.g. double*. */
         //    return true;
         //}
 
-//        outs() << var->getType().getAsString() << "\n";
-
-        /* To handle same-line-declarations, test that begin location is not already processed */
-        //if (processedLocation < varLocRange.getBegin()) {
-        //    SourceRange typeRange = var->getTypeSourceInfo()->getTypeLoc().getSourceRange();
-
-        //    rewriter.ReplaceText(typeRange, "real_t");
-        //}
-        string typeBeg = "";
-        string typeEnd = "";
-        string varName = "";
-        string initBeg = "";
-        string initEnd = "";
-
-        typeBeg = var->getTypeSourceInfo()->getTypeLoc().getSourceRange().getBegin().printToString(rewriter.getSourceMgr());
-        typeEnd = var->getTypeSourceInfo()->getTypeLoc().getSourceRange().getEnd().printToString(rewriter.getSourceMgr());
-        varName = var->getDeclName().getAsString();
+        string orig_type = var->getType().getAsString();
+        string varName = var->getNameAsString();
         string funName = ((FunctionDecl*)var->getParentFunctionOrMethod())->getNameAsString();
 
-        if(var->hasInit()){
-          initBeg = var->getInit()->getSourceRange().getBegin().printToString(rewriter.getSourceMgr());
-          initEnd = var->getInit()->getSourceRange().getEnd().printToString(rewriter.getSourceMgr());
+
+        auto it = vars.find(funName + "#" + varName);
+        if(it != vars.end()){
+            string type = it->second;
+            if(orig_type == "long double *"){ // just for now
+              goto end;
+            }
+            SourceRange typeRange = var->getTypeSourceInfo()->getTypeLoc().getSourceRange();
+            rewriter.ReplaceText(typeRange, type);
         }
+        end:
+        /* To handle same-line-declarations, test that begin location is not already processed */
+        //if (processedLocation < varLocRange.getBegin()) {
 
-        string begin = var->getSourceRange().getBegin().printToString(rewriter.getSourceMgr());
-        string end = var->getSourceRange().getEnd().printToString(rewriter.getSourceMgr());
+        //}
 
-        auto tup = make_tuple(typeBeg, typeEnd, varName, funName, initBeg, initEnd, begin, end);
-        varList->push_back(tup);
-        //has definition? has init?
-        //processedLocation = varLocRange.getEnd();
+        processedLocation = varLocRange.getEnd();
         return true;
     }
 
@@ -233,14 +221,59 @@ public:
 };
 
 int main(int argc, const char **argv) {
-    if(argc != 5){
-      cout << "Error: wrong number of arguments:\n";
-      return -1;
+    // read config from config files
+    std::ifstream t("config_temp.json");
+    std::stringstream buffer;
+    buffer << t.rdbuf();
+    string line;
+
+    string funname = "";
+    string type = "";
+    string varname = "";
+
+    while(getline(buffer, line)){
+      if (line.find("function") != string::npos) {
+        auto pos = line.find(": \"") + 3;
+        while(line[pos] != '\"'){
+          funname += line[pos];
+          pos++;
+        }
+      }
+      if (line.find("type") != string::npos) {
+        auto pos = line.find(": \"") + 3;
+        while(line[pos] != '\"'){
+          type += line[pos];
+          pos++;
+        }
+        if(type == "longdouble"){
+          type = "long double";
+        }else if(type == "longdouble*"){
+          type = "long double *";
+        }
+      }
+      if (line.find("name") != string::npos) {
+        auto pos = line.find(": \"") + 3;
+        while(line[pos] != '\"'){
+          varname += line[pos];
+          pos++;
+        }
+      }
+
+      if(funname != "" && type != "" && varname != ""){
+        vars.insert(make_pair(funname + "#" + varname, type));
+        funname = "";
+        type = "";
+        varname = "";
+      }
     }
 
-    string file_path = argv[3];
-    string file_name = argv[4];
 
+    /*for(auto iter = vars.begin(); iter != vars.end(); ++iter)
+    {
+      auto k = iter->first;
+      auto v = iter->second;
+      cout << v << "\n";
+    }*/
 
     CommonOptionsParser op(argc, argv, MyToolCategory);
 
@@ -250,24 +283,10 @@ int main(int argc, const char **argv) {
     /* run the Clang Tool, creating a new FrontendAction */
     int result = Tool.run(newFrontendActionFactory<ExampleFrontendAction>().get());
 
-
     /* print out the rewritten source code */
     //errs() << "\nFound " << numFunctions << " functions.\n\n";
-    //FileID fid = rewriter.getSourceMgr().getMainFileID();
-    //rewriter.getEditBuffer(fid).write(outs());
-    ofstream myfile;
-    myfile.open ("IGen/vars2.txt");
-    for(size_t i = 0; i < varList->size(); i++){
-        myfile << get<0>(varList->at(i)) << "\n";
-        myfile << get<1>(varList->at(i)) << "\n";
-        myfile << get<2>(varList->at(i)) << "\n";
-        myfile << get<3>(varList->at(i)) << "\n";
-        myfile << get<4>(varList->at(i)) << "\n";
-        myfile << get<5>(varList->at(i)) << "\n";
-        myfile << get<6>(varList->at(i)) << "\n";
-        myfile << get<7>(varList->at(i)) << "\n";
-    }
-    myfile.close();
+    FileID fid = rewriter.getSourceMgr().getMainFileID();
+    rewriter.getEditBuffer(fid).write(outs());
 
     return result;
 }

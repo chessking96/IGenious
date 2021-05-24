@@ -4627,18 +4627,20 @@ clang/Tooling/Tooling.h
 /home/user/master-thesis/scripts/changeTypes/clang/Tooling/Tooling.h
 clang/Rewrite/Core/Rewriter.h
 /home/user/master-thesis/scripts/changeTypes/clang/Rewrite/Core/Rewriter.h
+sstream
+-
+fstream
+-
+map
+-
 iostream
 -
 vector
 /home/user/master-thesis/scripts/changeTypes/vector
-tuple
--
 ASTVisitor.h
 /home/user/master-thesis/scripts/changeTypes/ASTVisitor.h
 ASTTraverser.h
 /home/user/master-thesis/scripts/changeTypes/ASTTraverser.h
-fstream
--
 
 /home/user/master-thesis/scripts/changeTypes/ASTVisitor.h
 iostream

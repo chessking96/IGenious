@@ -31,7 +31,7 @@ def createMain():
             input1 = '\t' + type + '* x_' + str(i) + ' = malloc(' + str(length) + ' * sizeof(long double));\n'
             input2 = '\tfor(int i = 0; i < ' + str(length) + '; i++){\n'
             if inputORoutput == 'input':
-                input3 = '\t\t' + type + ' h = getRandomDouble();\n'
+                input3 = '\t\t' + type + ' h = getRandomDoubleDouble();\n'
             elif inputORoutput == 'output':
                 input3 = '\t\t' + type + ' h = 0.0;\n'
             else:
@@ -120,7 +120,7 @@ def igenSetup():
     # remove same line declarations
     call('python3 ' + scripts_path + '/rsld.py ' + file_path + 'IGen/ ' + file_name)
     call_background('cd ' + file_path + 'IGen && python3 ' + igen_path + '/bin/igen.py main.c')
-    call_background('cd ' + file_path + 'IGen && python3 ' + igen_path + '/bin/igen.py random_range.c')
+    # call_background('cd ' + file_path + 'IGen && python3 ' + igen_path + '/bin/igen.py random_range.c')
     call_background('cd ' + file_path + 'IGen && python3 ' + igen_path + '/bin/igen.py rmd_' + file_name)
 
     call('cp ' + src_path + '/igen_CMakeLists.txt ' + file_path + 'IGen/CMakeLists.txt')
@@ -208,17 +208,32 @@ def cleanUp():
         myfile.write(c_new)
 
     # random_range
-    c1 = '#include <stdlib.h>\n'
-    c2 = 'void initRandomSeed(){\n'
-    c3 = '\tsrand(42);\n'
-    c4 = '}\n'
-    c5 = 'dd_I getRandomDouble() {\n'
-    c6 = '\tdouble r1 = ((double)rand())/(RAND_MAX);\n'
-    c7 = '\tdd_I a = _ia_set_dd(-r1, 0, r1, 0);\n'
-    c8 = '\treturn a;\n'
-    c9 = '}\n'
+    init1 = '#include <stdlib.h>\n'
+    init2 = 'void initRandomSeed(){\n'
+    init3 = '\tsrand(42);\n'
+    init4 = '}\n'
+    init = init1 + init2 + init3 + init4
 
-    c = c1 + c2 + c3 + c4 + c5 + c6 + c7 + c8 + c9
+    dd1 = 'dd_I getRandomDoubleDouble() {\n'
+    dd2 = '\tdouble r1 = ((double)rand())/(RAND_MAX);\n'
+    dd3 = '\tdd_I a = _ia_set_dd(-r1, 0, r1, 0);\n'
+    dd4 = '\treturn a;\n'
+    dd5 = '}\n'
+    dd = dd1 + dd2 + dd3 + dd4 + dd5
+
+    d1 = 'double getRandomDouble() {\n'
+    d2 = '\tdouble r = ((double)rand())/(RAND_MAX);\n'
+    d3 = '\treturn r;\n'
+    d4 = '}\n'
+    d = d1  + d2 + d3 + d4
+
+    f1 = 'float getRandomFloat() {\n'
+    f2 = '\tdouble r = ((float)rand())/(RAND_MAX);\n'
+    f3 = '\treturn r;\n'
+    f4 = '}\n'
+    f = f1  + f2 + f3 + f4
+
+    c = init + dd + d + f
 
     with open(file_path + 'IGen/cleaned_igen_random_range.c', 'w') as myfile:
             myfile.write(c)

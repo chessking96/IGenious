@@ -25,10 +25,9 @@ def main():
     call('python ' + scripts_path + '/changeTypes.py ' + file_path + 'IGen/ ' + file_name)
     # call IGen
     igen_path = getEnvVar('IGEN_PATH')
-    call_background('python3 ' + igen_path + '/bin/igen.py' + ' IGen/chg_rmd_' + sys.argv[2] + '.c')
-
+    call_background('python3 ' + igen_path + '/bin/igen.py' + ' IGen/chg_rmd_' + file_name)
     # compile and execute
-    call('cp' + ' IGen/chg_rmd_' + sys.argv[2]+ '.c' + ' IGen/make_code.c')
+    call('cp' + ' IGen/chg_rmd_' + file_name + ' IGen/make_code.c')
     call_background("cd IGen && cmake . && make")
     call("./IGen/some_app")
 
