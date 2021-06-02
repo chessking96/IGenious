@@ -32,6 +32,10 @@ int numFunctions = 0;
 
 map<tuple<string>, string> vars;
 
+string argTypes = "";
+
+
+
 /* Apply a custom category to all command-line options so that they are the only ones displayed. */
 llvm::cl::OptionCategory MyToolCategory("my-tool options");
 
@@ -74,6 +78,21 @@ class ASTMainVisitor : public RecursiveASTVisitor<ASTMainVisitor> {
 //            NodeTraverser n(body);
         }
 
+
+        int numArgs = fund->getNumParams();
+
+        for(int i = 0; i < numArgs; i++){
+          string argName = fund->parameters()[i]->getNameAsString();
+          string orig_type = fund->parameters()[i]->getType().getAsString();
+          string funName = fund->getNameAsString();
+          auto it = vars.find(funName + "#" + argName);
+          if(it != vars.end()){
+              string type = it->second;
+              argTypes += funName + ", " + argName + ", " + type + "\n";
+          }
+
+        }
+
         return true;
     }
 
@@ -90,16 +109,17 @@ class ASTMainVisitor : public RecursiveASTVisitor<ASTMainVisitor> {
         string funName = ((FunctionDecl*)var->getParentFunctionOrMethod())->getNameAsString();
 
 
+
         auto it = vars.find(funName + "#" + varName);
         if(it != vars.end()){
             string type = it->second;
-            if(orig_type == "long double *"){ // just for now
-              goto end;
-            }
+            //if(orig_type == "long double *"){ // just for now
+            //  goto end;
+            //}
             SourceRange typeRange = var->getTypeSourceInfo()->getTypeLoc().getSourceRange();
             rewriter.ReplaceText(typeRange, type);
         }
-        end:
+        //end:
         /* To handle same-line-declarations, test that begin location is not already processed */
         //if (processedLocation < varLocRange.getBegin()) {
 
@@ -227,6 +247,7 @@ int main(int argc, const char **argv) {
     buffer << t.rdbuf();
     string line;
 
+    argTypes = "";
     string funname = "";
     string type = "";
     string varname = "";
@@ -287,6 +308,11 @@ int main(int argc, const char **argv) {
     //errs() << "\nFound " << numFunctions << " functions.\n\n";
     FileID fid = rewriter.getSourceMgr().getMainFileID();
     rewriter.getEditBuffer(fid).write(outs());
+
+    // write arg types to file
+    ofstream myfile ("IGen/funargs.txt");
+    myfile << argTypes;
+    myfile.close();
 
     return result;
 }

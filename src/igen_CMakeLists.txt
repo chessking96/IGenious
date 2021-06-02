@@ -39,7 +39,7 @@ include_directories(
 #AUX_SOURCE_DIRECTORY(netlib NETLIB_SRC)
 
 set(SOURCE_FILES
-	cleaned_igen_main.c
+	cleaned_igen_casts_main.c
 )
 
 

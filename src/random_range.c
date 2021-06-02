@@ -11,6 +11,6 @@ double getRandomDouble() {
 	return r;
 }
 float getRandomFloat() {
-	double r = ((float)rand())/(RAND_MAX);
+	float r = ((float)rand())/(RAND_MAX);
 	return r;
 }

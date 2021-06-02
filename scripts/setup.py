@@ -3,7 +3,7 @@
 from helper import call, call_background, getEnvVar, nameWithoutExtension
 import sys, re, json
 
-def createMain():
+def createMain(func_name):
     # includes
     inc1 = '#include "random_range.c"\n'
     inc2 = '#include "' + file_name + '"\n'
@@ -20,20 +20,53 @@ def createMain():
     init2 = '\tinitRandomSeed();\n'
     init = init1 + init2
 
+
+    # read in casts
+
+    if cast:
+        with open('IGen/funargs.txt', 'r') as myfile:
+            funargs = myfile.read().split('\n')
+
+
+        for i in range(len(funargs) - 1):
+            line = funargs[i]
+            fun_name = line.split(',')[0]
+            var_type = line.split(',')[2]
+            if function_name == fun_name:
+                types.append(var_type)
+
     input = ''
     for i in range(int(len(inputs) / 4)):
         type = inputs[i * 4]
+        if cast:
+            type_2 = types[i]
+        else:
+            type_2 = type
+
+        if type_2 == " long double *":
+            type_2 = "long double"
+        if type_2 == " double*":
+            type_2 = "double"
+        if type_2 == " float*":
+            type_2 = "float"
+
+        if cast:
+            types[i] = type_2
         length = inputs[i * 4 + 1]
         pointer = inputs[i * 4 + 2]
         inputORoutput = inputs[i * 4 + 3]
-
         if pointer == 'pointer':
-            input1 = '\t' + type + '* x_' + str(i) + ' = malloc(' + str(length) + ' * sizeof(long double));\n'
+            input1 = '\t' + type_2 + '* x_' + str(i) + ' = malloc(' + str(length) + ' * sizeof(long double));\n' # sizeof(long double) potentially to big
             input2 = '\tfor(int i = 0; i < ' + str(length) + '; i++){\n'
             if inputORoutput == 'input':
-                input3 = '\t\t' + type + ' h = getRandomDoubleDouble();\n'
+                if type_2 == "long double":
+                    input3 = '\t\t' + type_2 + ' h = getRandomDoubleDouble();\n'
+                elif type_2 == "double":
+                    input3 = '\t\t' + type_2 + ' h = getRandomDouble();\n'
+                elif type_2 == "float":
+                    input3 = '\t\t' + type_2 + ' h = getRandomFloat();\n'
             elif inputORoutput == 'output':
-                input3 = '\t\t' + type + ' h = 0.0;\n'
+                input3 = '\t\t' + type_2 + ' h = 0;\n'
             else:
                 print("Error in config file.")
                 sys.exit(-1)
@@ -56,9 +89,12 @@ def createMain():
 
     arguments = ''
 
+
+
     if int(len(inputs) / 4) >= 1:
         arguments += 'x_0'
     for i in range(1, int(len(inputs) / 4)):
+
         arguments += ', x_' + str(i)
 
 
@@ -83,8 +119,12 @@ def createMain():
     main = main_start + init + input + return1 + timeS + call + timeE + rep + main_end
     code = include + main
 
-    with open (file_path + 'main.c', 'w') as myfile:
-        myfile.write(code)
+    if cast:
+        with open ('IGen/' + func_name, 'w') as myfile:
+            myfile.write(code)
+    else:
+        with open (file_path + func_name, 'w') as myfile:
+            myfile.write(code)
 
 def precimoniousSetup():
     call('cp ' + src_path + '/random_range.c ' + file_path)
@@ -127,8 +167,12 @@ def igenSetup():
 
 def cleanUp():
     # main
-    with open(file_path + 'IGen/igen_main.c', 'r') as myfile:
-        c_old = myfile.read()
+    if cast:
+        with open('IGen/igen_casts_main.c', 'r') as myfile:
+            c_old = myfile.read()
+    else:
+        with open(file_path + 'IGen/igen_main.c', 'r') as myfile:
+            c_old = myfile.read()
 
     substitute = 'printf\("BeforeIGenReplacement' + r'\\' + 'n"\);'
 
@@ -147,19 +191,30 @@ def cleanUp():
             inputORoutput = inputs[i * 4 + 3]
 
             if inputORoutput == 'output':
-
-                varName = 'x_' + str(i)
-
-                err1 = '\tfor(int i = 0; i < ' + str(length) + '; i++){\n'
-                err2 = '\t\tdd_I lower_bound = _ia_set_dd(' + varName + '[i].lh, ' + varName + '[i].ll, -' + varName + '[i].lh, -' + varName + '[i].ll);\n'
-                err3 = '\t\tdd_I upper_bound = _ia_set_dd(-' + varName + '[i].uh, -' + varName + '[i].ul, ' + varName + '[i].uh, ' + varName + '[i].ul);\n'
-                err4 = '\t\tdd_I diff = _ia_sub_dd(upper_bound, lower_bound);\n'
-                err5 = '\t\tif(_ia_cmpgt_dd(diff, diff_max)){\n'
-                err6 = '\t\t\tdiff_max = diff;\n'
-                err7 = '\t\t\tmax = i;\n'
-                err8 = '\t\t}\n'
-                err9 = '\t}\n'
-                err += err1 + err2 + err3 + err4 + err5 + err6 + err7 + err8 + err9
+                if cast and types[i] == "long double":
+                    varName = 'x_' + str(i)
+                    err1 = '\tfor(int i = 0; i < ' + str(length) + '; i++){\n'
+                    err2 = '\t\tdd_I lower_bound = _ia_set_dd(' + varName + '[i].lh, ' + varName + '[i].ll, -' + varName + '[i].lh, -' + varName + '[i].ll);\n'
+                    err3 = '\t\tdd_I upper_bound = _ia_set_dd(-' + varName + '[i].uh, -' + varName + '[i].ul, ' + varName + '[i].uh, ' + varName + '[i].ul);\n'
+                    err4 = '\t\tdd_I diff = _ia_sub_dd(upper_bound, lower_bound);\n'
+                    err5 = '\t\tif(_ia_cmpgt_dd(diff, diff_max)){\n'
+                    err6 = '\t\t\tdiff_max = diff;\n'
+                    err7 = '\t\t\tmax = i;\n'
+                    err8 = '\t\t}\n'
+                    err9 = '\t}\n'
+                    err += err1 + err2 + err3 + err4 + err5 + err6 + err7 + err8 + err9
+                else:
+                    varName = 'x_' + str(i)
+                    err1 = '\tfor(int i = 0; i < ' + str(length) + '; i++){\n'
+                    err2 = '\t\tdd_I lower_bound = _ia_set_dd(' + varName + '[i].lo, ' + str(0) + ', -' + varName + '[i].lo, -' + str(0) + ');\n'
+                    err3 = '\t\tdd_I upper_bound = _ia_set_dd(-' + varName + '[i].up, -' + str(0) + ', ' + varName + '[i].up, ' + str(0) + ');\n'
+                    err4 = '\t\tdd_I diff = _ia_sub_dd(upper_bound, lower_bound);\n'
+                    err5 = '\t\tif(_ia_cmpgt_dd(diff, diff_max)){\n'
+                    err6 = '\t\t\tdiff_max = diff;\n'
+                    err7 = '\t\t\tmax = i;\n'
+                    err8 = '\t\t}\n'
+                    err9 = '\t}\n'
+                    err += err1 + err2 + err3 + err4 + err5 + err6 + err7 + err8 + err9
 
         if returnInfo[0] == "True":
             ret1 = '\tdd_I lower_bound = _ia_set_dd(' + 'return_value' + '.lh, ' + 'return_value' + '.ll, -' + 'return_value' + '.lh, -' + 'return_value' + '.ll);\n'
@@ -204,43 +259,50 @@ def cleanUp():
     code = '#include "igen_chg_rmd_' + file_name + '"'
     c_new = re.sub(substitute, code, c_new)
 
-    with open(file_path + 'IGen/cleaned_igen_main.c', 'w') as myfile:
-        myfile.write(c_new)
+    if cast:
+        with open('IGen/cleaned_igen_casts_main.c', 'w') as myfile:
+            myfile.write(c_new)
+    else:
+        with open(file_path + 'IGen/cleaned_igen_casts_main.c', 'w') as myfile:
+            myfile.write(c_new)
 
-    # random_range
-    init1 = '#include <stdlib.h>\n'
-    init2 = 'void initRandomSeed(){\n'
-    init3 = '\tsrand(42);\n'
-    init4 = '}\n'
-    init = init1 + init2 + init3 + init4
+    if not cast:
+        # random_range
+        init1 = '#include <stdlib.h>\n'
+        init2 = 'void initRandomSeed(){\n'
+        init3 = '\tsrand(42);\n'
+        init4 = '}\n'
+        init = init1 + init2 + init3 + init4
 
-    dd1 = 'dd_I getRandomDoubleDouble() {\n'
-    dd2 = '\tdouble r1 = ((double)rand())/(RAND_MAX);\n'
-    dd3 = '\tdd_I a = _ia_set_dd(-r1, 0, r1, 0);\n'
-    dd4 = '\treturn a;\n'
-    dd5 = '}\n'
-    dd = dd1 + dd2 + dd3 + dd4 + dd5
+        dd1 = 'dd_I getRandomDoubleDouble() {\n'
+        dd2 = '\tdouble r1 = ((double)rand())/(RAND_MAX);\n'
+        dd3 = '\tdd_I a = _ia_set_dd(-r1, 0, r1, 0);\n'
+        dd4 = '\treturn a;\n'
+        dd5 = '}\n'
+        dd = dd1 + dd2 + dd3 + dd4 + dd5
 
-    d1 = 'double getRandomDouble() {\n'
-    d2 = '\tdouble r = ((double)rand())/(RAND_MAX);\n'
-    d3 = '\treturn r;\n'
-    d4 = '}\n'
-    d = d1  + d2 + d3 + d4
+        d1 = 'f64_I getRandomDouble() {\n'
+        d2 = '\tdouble r = ((double)rand())/(RAND_MAX);\n'
+        d3 = '\tf64_I a = _ia_set_f64(-r, r);\n'
+        d4 = '\treturn a;\n'
+        d5 = '}\n'
+        d = d1 + d2 + d3 + d4 + d5
 
-    f1 = 'float getRandomFloat() {\n'
-    f2 = '\tdouble r = ((float)rand())/(RAND_MAX);\n'
-    f3 = '\treturn r;\n'
-    f4 = '}\n'
-    f = f1  + f2 + f3 + f4
+        f1 = 'f32_I getRandomFloat() {\n'
+        f2 = '\tfloat r = ((float)rand())/(RAND_MAX);\n'
+        f3 = '\tf32_I a = _ia_set_f32(-r, r);\n'
+        f4 = '\treturn a;\n'
+        f5 = '}\n'
+        f = f1  + f2 + f3 + f4 + f5
 
-    c = init + dd + d + f
+        c = init + dd + d + f
 
-    with open(file_path + 'IGen/cleaned_igen_random_range.c', 'w') as myfile:
-            myfile.write(c)
+        with open(file_path + 'IGen/cleaned_igen_random_range.c', 'w') as myfile:
+                myfile.write(c)
 
 if __name__ == "__main__":
-    # arguments: filepath filename, functionname
-    if len(sys.argv) != 4:
+    # arguments: filepath filename, functionname, cast
+    if len(sys.argv) != 5:
         print("Wrong number of arguments.")
         sys.exit(-1)
 
@@ -248,30 +310,63 @@ if __name__ == "__main__":
     file_name = sys.argv[2]
     function_name = sys.argv[3]
 
+    types = []
 
-    with open(file_path + '../config.json', 'r') as myfile:
-        data = json.load(myfile)
-        inputs = data['args']
+    # use same file for run (just for now)
+    if sys.argv[4] == "yes":
+        cast = True
+    else:
+        cast = False
 
-    if len(inputs) % 4 != 0:
-        printf("Config file is not valid.")
-        sys.exit(-1)
+    if cast:
+        with open('../config.json', 'r') as myfile:
+            data = json.load(myfile)
+            inputs = data['args']
+        if len(inputs) % 4 != 0:
+            printf("Config file is not valid.")
+            sys.exit(-1)
 
-    repetitions = data['repetitions']
-    precision = data['precision']
-    errorType = data['errortype']
-    returnInfo = data['return']
+        repetitions = data['repetitions']
+        precision = data['precision']
+        errorType = data['errortype']
+        returnInfo = data['return']
 
-    nameWOExt = nameWithoutExtension(file_name)
-    prec_path = getEnvVar('CORVETTE_PATH') # path to precimonious
-    scripts_path = getEnvVar('SOURCE_PATH') + '/scripts' # path to scripts
-    src_path = getEnvVar('SOURCE_PATH') + '/src'
-    igen_path = getEnvVar('IGEN_PATH')
-    shared_lib = prec_path + '/src/Passes.so'
+        nameWOExt = nameWithoutExtension(file_name)
+        prec_path = getEnvVar('CORVETTE_PATH') # path to precimonious
+        scripts_path = getEnvVar('SOURCE_PATH') + '/scripts' # path to scripts
+        src_path = getEnvVar('SOURCE_PATH') + '/src'
+        igen_path = getEnvVar('IGEN_PATH')
+        shared_lib = prec_path + '/src/Passes.so'
 
-    createMain()
-    precimoniousSetup()
-    print("Precimonious setup finished.")
-    igenSetup()
-    cleanUp()
-    print("IGen setup finished.")
+        createMain('casts_main.c')
+        call_background('cd ' + 'IGen && python3 ' + igen_path + '/bin/igen.py casts_main.c')
+        cleanUp()
+
+
+    else:
+
+        with open(file_path + '../config.json', 'r') as myfile:
+            data = json.load(myfile)
+            inputs = data['args']
+
+        if len(inputs) % 4 != 0:
+            printf("Config file is not valid.")
+            sys.exit(-1)
+
+        repetitions = data['repetitions']
+        precision = data['precision']
+        errorType = data['errortype']
+        returnInfo = data['return']
+
+        nameWOExt = nameWithoutExtension(file_name)
+        prec_path = getEnvVar('CORVETTE_PATH') # path to precimonious
+        scripts_path = getEnvVar('SOURCE_PATH') + '/scripts' # path to scripts
+        src_path = getEnvVar('SOURCE_PATH') + '/src'
+        igen_path = getEnvVar('IGEN_PATH')
+        shared_lib = prec_path + '/src/Passes.so'
+        createMain('main.c')
+        precimoniousSetup()
+        print("Precimonious setup finished.")
+        igenSetup()
+        cleanUp()
+        print("IGen setup finished.")

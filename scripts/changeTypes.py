@@ -17,3 +17,12 @@ if __name__ == "__main__":
     # for now, to make sure, that c++ is compiled and run
     call('cd ' + scripts_path + '/changeTypes && cmake . && make')
     call(scripts_path + '/changeTypes/clang_ast_visitor IGen/rmd_' + file_name + ' -- ' + file_path + ' ' + file_name + ' > IGen/chg_rmd_' + file_name)
+
+    with open('IGen/funargs.txt', 'r') as myfile:
+        funargs = myfile.read()
+
+    with open('config_temp.json', 'r') as myfile:
+        config = myfile.read()
+
+    print(funargs)
+    # print(config)

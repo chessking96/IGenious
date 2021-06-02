@@ -12,17 +12,24 @@ def load_json(string):
 
 
 def main():
-    if len(sys.argv) != 3:
+    if len(sys.argv) != 4:
         print("Incorrect number of arguments: " + str(len(sys.argv)))
         sys.exit(-1)
 
     file_path = sys.argv[1] + 'analysis/'
+    file_path_wo = sys.argv[1]
     file_name_wo = sys.argv[2]
     file_name = file_name_wo + '.c'
+    func_name = sys.argv[3]
 
     # change variable types
     scripts_path = getEnvVar("SOURCE_PATH") + '/scripts'
     call('python ' + scripts_path + '/changeTypes.py ' + file_path + 'IGen/ ' + file_name)
+
+    # add casts to main file
+    source_path = getEnvVar('SOURCE_PATH')
+    call('python3 ' + source_path + '/scripts/setup.py ' + file_path_wo + ' ' + file_name + ' ' + func_name + ' yes')
+
     # call IGen
     igen_path = getEnvVar('IGEN_PATH')
     call_background('python3 ' + igen_path + '/bin/igen.py' + ' IGen/chg_rmd_' + file_name)

@@ -4,13 +4,13 @@ import os, sys, re
 def call(arg):
     res = subprocess.call([arg], shell=True) #remove shell...
     if res != 0:
-        print("Error")
+        print("Call Error", arg)
         sys.exit(-1)
 
 def call_background(arg):
     res = subprocess.call([arg], shell=True, stdout=open(os.devnull, 'w')) #remove shell...
     if res != 0:
-        print("Call Error")
+        print("Call Error", arg)
         sys.exit(-1)
 
 def getEnvVar(arg):
