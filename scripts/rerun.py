@@ -24,7 +24,7 @@ if __name__ == "__main__":
 
     # Run
     corvette_path = getEnvVar('CORVETTE_PATH')
-    call('cd ' + path + '/analysis && python2 -O ' + corvette_path
+    call('cd ' + path + 'analysis && python2 -O ' + corvette_path
     + '/scripts/dd2.py ' + file_name_wo + '.bc search_' + file_name_wo
     + '.json config_' + file_name_wo + '.json ' + path + ' ' + file_name_wo + ' ' + func_name)
     print('Run succeeded')

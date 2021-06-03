@@ -21,7 +21,7 @@ def createMain(func_name):
     init = init1 + init2
 
 
-    # read in casts
+    # read in types
 
     if cast:
         with open('IGen/funargs.txt', 'r') as myfile:

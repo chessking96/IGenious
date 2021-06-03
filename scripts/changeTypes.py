@@ -23,6 +23,3 @@ if __name__ == "__main__":
 
     with open('config_temp.json', 'r') as myfile:
         config = myfile.read()
-
-    print(funargs)
-    # print(config)

@@ -12,7 +12,7 @@ def load_json(string):
 
 
 def main():
-    if len(sys.argv) != 4:
+    if len(sys.argv) != 5:
         print("Incorrect number of arguments: " + str(len(sys.argv)))
         sys.exit(-1)
 
@@ -21,6 +21,7 @@ def main():
     file_name_wo = sys.argv[2]
     file_name = file_name_wo + '.c'
     func_name = sys.argv[3]
+    search_counter = sys.argv[4]
 
     # change variable types
     scripts_path = getEnvVar("SOURCE_PATH") + '/scripts'
@@ -37,6 +38,15 @@ def main():
     call('cp' + ' IGen/chg_rmd_' + file_name + ' IGen/make_code.c')
     call_background("cd IGen && cmake . && make")
     call("./IGen/some_app")
+
+    # collect results
+    call('mkdir config_' + search_counter)
+    call('mv IGen/cleaned_igen_casts_main.c config_' + search_counter)
+    call('cp IGen/cleaned_igen_random_range.c config_' + search_counter)
+    call('mv IGen/igen_chg_rmd_' + file_name + ' config_' + search_counter)
+    call('mv config_temp.json' + ' config_' + search_counter)
+    call('cp sat.cov' + ' config_' + search_counter)
+    call('cp score.cov' + ' config_' + search_counter)
 
 
 if __name__ == "__main__":

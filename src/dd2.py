@@ -23,7 +23,10 @@ def run_config(search_config, original_config, bitcode):
   utilities.print_config(search_config, "config_temp.json")
   print "** Exploring configuration #" + str(search_counter)
   #result = transform2.transform(bitcode, "config_temp.json")
-  subprocess.check_call(["python3 ../../../scripts/run.py " + sys.argv[4] + " " + sys.argv[5]], shell=True) #remove shell=True...
+  res = subprocess.check_call(["python3 ../../../scripts/run.py " + sys.argv[4] + " " + sys.argv[5] + ' ' + sys.argv[6] + ' ' + str(search_counter)], shell=True) #remove shell=True...
+  if res != 0:
+    print("dd2 error", arg)
+    sys.exit(-1)
   answer = ''
   with open("sat.cov", "r") as myfile:
   	answer = myfile.read()
@@ -32,8 +35,7 @@ def run_config(search_config, original_config, bitcode):
   	result = 0
   else:
   	result = 1
-  print(result)
-  #result = run.run("config_tem.json")
+
   if result == 1:
     utilities.print_config(search_config, "VALID_config_" + bitcode + "_" + str(search_counter) + ".json")
     utilities.log_config(search_config, "VALID", "log.dd", search_counter)
