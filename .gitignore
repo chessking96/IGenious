@@ -1,2 +1,3 @@
-examples/*/analysis
+examples/*/analysis_*
+examples/*/config_*
 scripts/__pychache__/
