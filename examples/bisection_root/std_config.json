@@ -1,0 +1,11 @@
+{
+  "filename": "DFT16.c",
+  "functionname": "DFT16",
+  "args": [],
+  "repetitions": 1,
+  "precision": 4,
+  "errortype": "highestAbsolute",
+  "return": ["True", "long double", 1, "scalar"],
+  "vectorized": "no",
+  "maxpreciterations": 200
+}

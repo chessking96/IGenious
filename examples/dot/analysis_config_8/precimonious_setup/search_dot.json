@@ -1,0 +1,17 @@
+{"config": [
+	{"localVar": {
+		"function": "dot",
+		"name": "t",
+		"type": ["float", "double", "longdouble"]
+	}},
+	{"localVar": {
+		"function": "dot",
+		"name": "x",
+		"type": ["float*", "double*", "longdouble*"]
+	}},
+	{"localVar": {
+		"function": "dot",
+		"name": "y",
+		"type": ["float*", "double*", "longdouble*"]
+	}}
+]}

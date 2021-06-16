@@ -1,0 +1,3 @@
+matmul, x, long double *
+matmul, y, long double *
+matmul, z, long double *

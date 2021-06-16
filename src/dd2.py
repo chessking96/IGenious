@@ -17,9 +17,13 @@ search_counter = 0
 #         -1 some internal transformation error happens
 #         -2 some internal transformation error happens
 #         -3 some internal transformation error happens
+#         -10 timeout
 #
 def run_config(search_config, original_config, bitcode):
   global search_counter
+  if search_counter > 10:
+      printf("Timeout!")
+      return -10
   utilities.print_config(search_config, "config_temp.json")
   print "** Exploring configuration #" + str(search_counter)
   #result = transform2.transform(bitcode, "config_temp.json")
@@ -151,12 +155,15 @@ def dd_search_config(change_set, type_set, switch_set, search_config, original_c
       # apply change for variables in delta
       to_highest_precision(delta_change, delta_type, switch_set)
       # record i if config passes
-      if run_config(search_config, original_config, bitcode) == 1 and utilities.get_dynamic_score() < original_score:
+      result_run = run_config(search_config, original_config, bitcode)
+      if result_run == 1 and utilities.get_dynamic_score() < original_score:
         score = utilities.get_dynamic_score()
         if score < min_score or min_score == -1:
           pass_inx = i
           inv_is_better = False
           min_score = score
+      if result_run == -10:
+          return
 
     delta_inv_change = delta_inv_change_set[i]
     delta_inv_type = delta_inv_type_set[i]
@@ -167,12 +174,15 @@ def dd_search_config(change_set, type_set, switch_set, search_config, original_c
       # apply change for variables in delta inverse
       to_highest_precision(delta_inv_change, delta_inv_type, delta_inv_switch)
       # record i if config passes
-      if run_config(search_config, original_config, bitcode) == 1 and utilities.get_dynamic_score() < original_score:
+      result_run = run_config(search_config, original_config, bitcode)
+      if result_run == 1 and utilities.get_dynamic_score() < original_score:
         score = utilities.get_dynamic_score()
         if score < min_score or min_score == -1:
           pass_inx = i
           inv_is_better = True
           min_score = score
+      if result_run == -10:
+          return
 
   #
   # recursively search in pass delta or pass delta inverse
@@ -219,7 +229,8 @@ def dd_search_config(change_set, type_set, switch_set, search_config, original_c
 def search_config(change_set, type_set, switch_set, search_config, original_config, bitcode, original_score):
   # search from bottom up
   to_2nd_highest_precision(change_set, type_set, switch_set)
-  if run_config(search_config, original_config, bitcode) != 1 or utilities.get_dynamic_score() > original_score:
+  result_run = run_config(search_config, original_config, bitcode)
+  if result_run != 1 or utilities.get_dynamic_score() > original_score:
     dd_search_config(change_set, type_set, switch_set, search_config, original_config, bitcode, 2, original_score)
   # remove types and switches that cannot be changed
   for i in xrange(0, len(change_set)):

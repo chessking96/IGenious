@@ -310,7 +310,7 @@ int main(int argc, const char **argv) {
     rewriter.getEditBuffer(fid).write(outs());
 
     // write arg types to file
-    ofstream myfile ("IGen/funargs.txt");
+    ofstream myfile ("funargs.txt");
     myfile << argTypes;
     myfile.close();
 

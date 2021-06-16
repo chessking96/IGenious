@@ -1,7 +1,0 @@
-{
-  "args": [],
-  "repetitions": 1,
-  "precision": 0.000001,
-  "errortype": "highestAbsolute",
-  "return": ["True", "long double", 1, "scalar"]
-}

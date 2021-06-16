@@ -1,0 +1,11 @@
+{
+  "filename": "funarc.c",
+  "functionname": "funarc",
+  "args": [],
+  "repetitions": 1,
+  "precision": 7,
+  "errortype": "highestAbsolute",
+  "return": ["True", "long double", 1, "scalar"],
+  "vectorized": "no",
+  "maxpreciterations": 200
+}

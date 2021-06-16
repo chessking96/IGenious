@@ -4,49 +4,44 @@ import sys, os
 import json
 import re
 import subprocess
-from helper import call, call_background, getEnvVar
-
-# self made json load, as standard json load doesn't work for this file
-def load_json(string):
-    return re.findall("localVar\": {\n\t\t\"function\": \"(.+(?=\"))\",\n\t\t\"type\": \"(.+(?=\"))\",\n\t\t\"name\": \"(.+(?=\"))", string, re.MULTILINE)
-
+from helper import call, call_background, getEnvVar, load_json, readConfig
+import changeTypes, setup
 
 def main():
-    if len(sys.argv) != 5:
+    if len(sys.argv) != 4:
         print("Incorrect number of arguments: " + str(len(sys.argv)))
         sys.exit(-1)
 
-    file_path = sys.argv[1] + 'analysis/'
-    file_path_wo = sys.argv[1]
-    file_name_wo = sys.argv[2]
-    file_name = file_name_wo + '.c'
-    func_name = sys.argv[3]
-    search_counter = sys.argv[4]
+    path = sys.argv[1]
+    config_file = sys.argv[2]
+    search_counter = sys.argv[3]
 
-    # change variable types
-    scripts_path = getEnvVar("SOURCE_PATH") + '/scripts'
-    call('python ' + scripts_path + '/changeTypes.py ' + file_path + 'IGen/ ' + file_name)
+    # Read information from config file
+    config_path = os.path.join(path, config_file)
+    file_name, function_name, args, ret, rep, prec, err_type, is_vect, max_iter = readConfig('../../' + config_file)
 
-    # add casts to main file
-    source_path = getEnvVar('SOURCE_PATH')
-    call('python3 ' + source_path + '/scripts/setup.py ' + file_path_wo + ' ' + file_name + ' ' + func_name + ' yes')
+    # Change variable types in source file
+    changeTypes.run(file_name)
 
-    # call IGen
-    igen_path = getEnvVar('IGEN_PATH')
-    call_background('python3 ' + igen_path + '/bin/igen.py' + ' IGen/chg_rmd_' + file_name)
-    # compile and execute
-    call('cp' + ' IGen/chg_rmd_' + file_name + ' IGen/make_code.c')
-    call_background("cd IGen && cmake . && make")
-    call("./IGen/some_app")
+    # Add casts to main file
+    setup.run(path, file_name, function_name, args, ret, rep, prec, err_type, search_counter)
 
-    # collect results
-    call('mkdir config_' + search_counter)
-    call('mv IGen/cleaned_igen_casts_main.c config_' + search_counter)
-    call('cp IGen/cleaned_igen_random_range.c config_' + search_counter)
-    call('mv IGen/igen_chg_rmd_' + file_name + ' config_' + search_counter)
-    call('mv config_temp.json' + ' config_' + search_counter)
-    call('cp sat.cov' + ' config_' + search_counter)
-    call('cp score.cov' + ' config_' + search_counter)
+    # Create folder of current run and move created files into it
+    new_folder = '../' + str(search_counter)
+    call('mkdir ' + new_folder)
+    call('cp cleaned_igen_chg_main.c ' + new_folder + '/cleaned_igen_main.c')
+    call('cp ../igen_setup/random_range_igen.c ' + new_folder)
+    call('cp igen_chg_rmd_' + file_name + ' ' + new_folder)
+    call('cp ../igen_setup/CMakeLists.txt ' + new_folder)
+
+    # Compile and execute
+    call_background('cd ' + new_folder + ' && cmake . && make')
+    print('Start exec')
+    call('../' + search_counter + '/some_app')
+    print('Finish exec')
+    print()
+
+
 
 
 if __name__ == "__main__":

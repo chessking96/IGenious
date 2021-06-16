@@ -1,0 +1,22 @@
+{"config": [
+	{"localVar": {
+		"function": "matmul",
+		"name": "sum",
+		"type": "longdouble"
+	}},
+	{"localVar": {
+		"function": "matmul",
+		"name": "x",
+		"type": "longdouble*"
+	}},
+	{"localVar": {
+		"function": "matmul",
+		"name": "y",
+		"type": "longdouble*"
+	}},
+	{"localVar": {
+		"function": "matmul",
+		"name": "z",
+		"type": "longdouble*"
+	}}
+]}

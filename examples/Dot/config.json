@@ -1,7 +1,0 @@
-{
-  "args": ["long double", 100000, "pointer", "input", "long double", 100000, "pointer", "input"],
-  "repetitions": 1,
-  "precision": 0.000000001,
-  "errortype": "highestAbsolute",
-  "return": ["True", "long double", 1, "scalar"]
-}

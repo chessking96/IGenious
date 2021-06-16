@@ -3,23 +3,15 @@ import sys, os
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from helper import call, getEnvVar, call_background
 
-if __name__ == "__main__":
-    # arguments: filename (with absolute path)
-    if len(sys.argv) != 3:
-        print("Wrong number of arguments.")
-        sys.exit(-1)
-
+def run(file_path, file_name):
     scripts_path = getEnvVar('SOURCE_PATH') + '/scripts'
-
-    file_path = sys.argv[1]
-    file_name = sys.argv[2]
 
     # for now, to make sure, that c++ is compiled
     call_background('cd ' + scripts_path + '/removeSameLineDecl && cmake . && make')
 
-    call(scripts_path + '/removeSameLineDecl/clang_ast_visitor ' + file_path + file_name + ' -- ' + file_path + ' ' + file_name)
+    call(scripts_path + '/removeSameLineDecl/clang_ast_visitor ' + os.path.join(file_path, file_name) + ' -- ' + file_path + '/ ' + file_name)
 
-    with open(file_path + 'vars.txt', 'r') as myfile:
+    with open(file_path + '/vars.txt', 'r') as myfile:
         data = myfile.read()
 
     lines = data.split('\n')
@@ -31,7 +23,7 @@ if __name__ == "__main__":
     vars = {}
 
     # read code
-    with open(file_path + file_name, 'r') as myfile:
+    with open(os.path.join(file_path, file_name), 'r') as myfile:
         code = myfile.read().split('\n')
 
     for i in range(0, len(lines) - 1, 7):
@@ -111,5 +103,5 @@ if __name__ == "__main__":
     replaced_code = ''
     for line in code:
         replaced_code += line + '\n'
-    with open(file_path + 'rmd_' + file_name, 'w') as myfile:
+    with open(file_path + '/rmd_' + file_name, 'w') as myfile:
         myfile.write(replaced_code)

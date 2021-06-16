@@ -1,0 +1,17 @@
+{
+	"localVar": {
+		"function": "dot",
+		"type": "longdouble",
+		"name": "t",
+	},
+	"localVar": {
+		"function": "dot",
+		"type": "longdouble*",
+		"name": "x",
+	},
+	"localVar": {
+		"function": "dot",
+		"type": "longdouble*",
+		"name": "y",
+	},
+}

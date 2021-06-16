@@ -1,0 +1,3 @@
+/home/user/master-thesis/examples/matmul/analysis_config_6#vec/precimonious_setup/build/CMakeFiles/rebuild_cache.dir
+/home/user/master-thesis/examples/matmul/analysis_config_6#vec/precimonious_setup/build/CMakeFiles/edit_cache.dir
+/home/user/master-thesis/examples/matmul/analysis_config_6#vec/precimonious_setup/build/CMakeFiles/some_app.dir
