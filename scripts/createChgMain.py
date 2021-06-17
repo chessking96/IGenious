@@ -49,7 +49,7 @@ def createMain(file_name, function_name, args, ret, rep):
         inputORoutput = arg[3]
 
         if pointer == 'pointer':
-            input1 = '\t' + type_2 + '* x_' + str(i) + ' = malloc(' + str(length) + ' * sizeof(long double));\n' # sizeof(long double) potentially to big
+            input1 = '\t' + type_2 + '* x_' + str(i) + ' = malloc(' + str(length) + ' * sizeof(' + type_2 + '));\n' # sizeof(long double) potentially to big
             input2 = '\tfor(int i = 0; i < ' + str(length) + '; i++){\n'
             if inputORoutput == 'input':
                 if type_2 == "long double":
