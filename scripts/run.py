@@ -5,7 +5,7 @@ import json
 import re
 import subprocess
 from helper import call, call_background, getEnvVar, load_json, readConfig
-import changeTypes, setup
+import changeTypes, createChgMain
 
 def main():
     if len(sys.argv) != 4:
@@ -24,7 +24,7 @@ def main():
     changeTypes.run(file_name)
 
     # Add casts to main file
-    setup.run(path, file_name, function_name, args, ret, rep, prec, err_type, search_counter)
+    createChgMain.run(path, file_name, function_name, args, ret, rep, prec, err_type, search_counter)
 
     # Create folder of current run and move created files into it
     new_folder = '../' + str(search_counter)

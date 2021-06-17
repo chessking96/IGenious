@@ -1,7 +1,7 @@
 #!/usr/bin/python
 import sys, os
 from helper import call, getEnvVar, nameWithoutExtension, readConfig
-import setupNew as setup
+import setupCode
 
 if __name__ == "__main__":
     # Arguments: folder_path, config_name
@@ -24,7 +24,7 @@ if __name__ == "__main__":
     file_name_wo = nameWithoutExtension(file_name)
 
     # Run setup
-    setup.run(path, config_folder_path, file_name, function_name, args, ret, rep, prec, err_type, is_vect)
+    setupCode.run(path, config_folder_path, file_name, function_name, args, ret, rep, prec, err_type, is_vect)
 
     # Run precimonious
     corvette_path = getEnvVar('CORVETTE_PATH') # precimonious path
