@@ -1,3 +1,4 @@
-examples/*/analysis_*
-examples/*/config_*
+
 scripts/__pychache__/
+examples/*/analysis_config_*
+examples/*/config_*.json

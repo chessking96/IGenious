@@ -1,3 +1,0 @@
-/home/user/master-thesis/examples/matmul/analysis_config_6/0/CMakeFiles/rebuild_cache.dir
-/home/user/master-thesis/examples/matmul/analysis_config_6/0/CMakeFiles/edit_cache.dir
-/home/user/master-thesis/examples/matmul/analysis_config_6/0/CMakeFiles/some_app.dir

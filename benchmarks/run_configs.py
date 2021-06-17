@@ -3,7 +3,7 @@ import sys, os
 sys.path.insert(1, os.path.join(sys.path[0], '../scripts'))
 from helper import call, readConfig, json
 
-fast = True # change here to make a quick test
+fast = False # change here to make a quick test
 path = 'examples/'
 
 if fast:

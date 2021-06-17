@@ -1,2 +1,0 @@
-dot, x, long double *
-dot, y, long double *
