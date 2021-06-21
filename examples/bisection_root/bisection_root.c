@@ -1,12 +1,11 @@
 //partially from gsl - bisection.c
 long double fun(long double x){
-  long double y = x + 0.024351;
-  return y;
+  return x * x * x - 0.234235434 * x - x * x * 134.1236734;
 }
 
 long double bisection_root(){
-  long double x_left = -2.0;
-  long double x_right = 2.0;
+  long double x_left = -2.04563456;
+  long double x_right = 2.24523650;
 
   long double a, b, c, d, e;
   long double fa, fb, fc;
@@ -16,7 +15,7 @@ long double bisection_root(){
 
   long double root = (x_left + x_right) * 0.5;
 
-  int max_iters = 1000;
+  int max_iters = 40;
   int iters = 0;
   while(1){
     // break if mux number of iterations is reached

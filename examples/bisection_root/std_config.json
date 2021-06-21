@@ -1,6 +1,6 @@
 {
-  "filename": "DFT16.c",
-  "functionname": "DFT16",
+  "filename": "bisection_root.c",
+  "functionname": "bisection_root",
   "args": [],
   "repetitions": 1,
   "precision": 4,

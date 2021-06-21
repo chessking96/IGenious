@@ -3,16 +3,16 @@ import sys, os
 sys.path.insert(1, os.path.join(sys.path[0], '../scripts'))
 from helper import call, readConfig, json
 
-fast = False # change here to make a quick test
+fast = True # change here to make a quick test
 path = 'examples/'
 
 if fast:
-    precisions =  [6]
+    precisions =  [14]
 else:
     precisions = [4, 6, 8, 10, 12, 14, 16, 18]
 
 if fast:
-    max_prec_iters = [1]
+    max_prec_iters = [100]
 else:
     max_prec_iters = [200]
 
@@ -23,7 +23,10 @@ else:
 
 error_types = ['highestAbsolute']
 
-folders = ['DFT16', 'DFT16dd', 'dot', 'matmul', 'simpsons']
+if fast:
+    folders = ['matmul']
+else:
+    folders = ['bisection_root', 'DFT16', 'DFT16dd', 'dot', 'matmul', 'simpsons']
 
 for prec in precisions:
     for max_iter in max_prec_iters:

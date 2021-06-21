@@ -45,6 +45,7 @@ def main():
     call('cp sat.cov ' + new_folder)
     call('cp score.cov ' + new_folder)
     call('cp precision.cov ' + new_folder)
+    call('cp config_temp.json ' + new_folder)
 
 
 

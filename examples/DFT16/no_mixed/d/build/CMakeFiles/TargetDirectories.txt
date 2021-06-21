@@ -1,0 +1,3 @@
+/home/user/master-thesis/examples/DFT16/no_mixed/d/build/CMakeFiles/rebuild_cache.dir
+/home/user/master-thesis/examples/DFT16/no_mixed/d/build/CMakeFiles/edit_cache.dir
+/home/user/master-thesis/examples/DFT16/no_mixed/d/build/CMakeFiles/some_app.dir

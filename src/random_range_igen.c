@@ -33,7 +33,7 @@ dd_I getRandomDDI() {
 }
 
 dd_I getRandomDoubleDoubleInterval() {
-	return getRandomDDI();
+	return _ia_cast_f64_to_dd(_ia_cast_dd_to_f64(getRandomDDI()));
 }
 f64_I getRandomDoubleInterval() {
 	return _ia_cast_dd_to_f64(getRandomDDI());
