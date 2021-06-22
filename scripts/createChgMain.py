@@ -39,7 +39,7 @@ def createMain(file_name, function_name, args, ret, rep):
             types.append(var_type)
     input = ''
     for i in range(len(args)):
-        arg = args[1]
+        arg = args[i]
 
         #type = arg[0]
         type_2 = types[i]
