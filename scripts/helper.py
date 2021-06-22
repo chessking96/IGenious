@@ -48,5 +48,18 @@ def readConfig(path):
     err_type = data["errortype"]
     use_vectorized = data["vectorized"]
     max_prec_iterations = data["maxpreciterations"]
+    tuning = data["tuning"]
 
-    return file_name, function_name, args, ret, rep, prec, err_type, use_vectorized, max_prec_iterations
+    return file_name, function_name, args, ret, rep, prec, err_type, use_vectorized, max_prec_iterations, tuning
+
+# Standart docker call
+def dockerCall(arg):
+    call_background('docker exec hi ' + arg)
+
+# Docker call with llvm 3.0 activated
+def dockerCall30(arg):
+    dockerCall('bash -c "export LLVM_VERSION=llvm-3.0 && export LD_LIBRARY_PATH=/root/llvm-3.0/lib && export CPATH=/root/llvm-3.0/include:. && export PATH=/root/llvm-3.0/bin:/root/llvm-3.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin && ' + arg + '"')
+
+# Docker call with llvm 3.8 activated
+def dockerCall38(arg):
+    dockerCall('bash -c "export LLVM_VERSION=llvm-3.8 && export LD_LIBRARY_PATH=/root/llvm-3.8/lib && export CPATH=/root/llvm-3.8/include:. && export PATH=/root/llvm-3.8/bin:/root/llvm-3.8/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin && ' + arg + '"')

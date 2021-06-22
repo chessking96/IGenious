@@ -7,7 +7,7 @@ fast = True # change here to make a quick test
 path = 'examples/'
 
 if fast:
-    precisions =  [14]
+    precisions =  [10]
 else:
     precisions = [4, 6, 8, 10, 12, 14, 16, 18]
 
@@ -28,6 +28,8 @@ if fast:
 else:
     folders = ['bisection_root', 'DFT16', 'DFT16dd', 'dot', 'matmul', 'simpsons']
 
+tuning = 'precimonious'
+
 for prec in precisions:
     for max_iter in max_prec_iters:
         for vec in vectorized:
@@ -35,7 +37,7 @@ for prec in precisions:
                 for i in range(len(folders)):
                     folder_name = folders[i]
                     std_config_name = 'std_config.json'
-                    file_name, function_name, args, ret, rep, _precision, _err_type, _use_vectorized, _maxpreciterations = readConfig(path + folder_name + '/' + std_config_name)
+                    file_name, function_name, args, ret, rep, _precision, _err_type, _use_vectorized, _maxpreciterations, _tuning = readConfig(path + folder_name + '/' + std_config_name)
                     args_prepared = '['
                     for i in range(len(args) - 1):
                         arg = args[i]
@@ -55,7 +57,8 @@ for prec in precisions:
                     new_config += '\t"precision": ' + str(prec) + ',\n'
                     new_config += '\t"errortype": "' + err + '",\n'
                     new_config += '\t"vectorized": "' + str(vec) + '",\n'
-                    new_config += '\t"maxpreciterations": ' + str(max_iter) + '\n'
+                    new_config += '\t"maxpreciterations": ' + str(max_iter) + ',\n'
+                    new_config += '\t"tuning": "' + tuning + '"\n'
                     new_config += '}'
 
                     config_name = 'config_' + str(prec)

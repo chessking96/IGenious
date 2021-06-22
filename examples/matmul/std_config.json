@@ -7,5 +7,6 @@
   "errortype": "highestAbsolute",
   "return": ["False", "", 0, ""],
   "vectorized": "no",
-  "maxpreciterations": 200
+  "maxpreciterations": 200,
+  "tuning": "precimonious"
 }

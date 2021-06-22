@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import sys, os
-from helper import call, getEnvVar, nameWithoutExtension, readConfig
+from helper import call, getEnvVar, nameWithoutExtension, readConfig, dockerCall30
 import setupCode
 
 if __name__ == "__main__":
@@ -20,17 +20,28 @@ if __name__ == "__main__":
 
     # Read information from config file
     config_path = os.path.join(path, config_file)
-    file_name, function_name, args, ret, rep, prec, err_type, is_vect, max_iter = readConfig(config_path)
+    file_name, function_name, args, ret, rep, prec, err_type, is_vect, max_iter, tuning = readConfig(config_path)
     file_name_wo = nameWithoutExtension(file_name)
 
     # Run setup
-    setupCode.run(path, config_folder_path, file_name, function_name, args, ret, rep, prec, err_type, is_vect)
+    setupCode.run(path, config_folder_path, file_name, function_name, args, ret, rep, prec, err_type, is_vect, tuning)
 
-    # Run precimonious
+    # Run precimonious/hifptuner
+    if tuning == 'precimonious':
+        tuner_folder_name = '/precimonious_setup'
+    else:
+        tuner_folder_name = '/hifptuner_setup'
+
     corvette_path = getEnvVar('CORVETTE_PATH') # precimonious path
-    prec_path = config_folder_path + '/precimonious_setup'
-    ret = call('cd ' + prec_path + ' && python2 -O ' + corvette_path
-    + '/scripts/dd2.py ' + file_name_wo + '.bc search_' + file_name_wo
-    + '.json config_' + file_name_wo + '.json ' + path + ' ' + config_file + ' ' + str(max_iter))
+    hifptuner_path = getEnvVar('HIFP_PATH') # HiFPTuner path
+    tuner_path = config_folder_path + tuner_folder_name
+
+    if tuning == 'precimonious':
+        call('cd ' + tuner_path + ' && python2 -O ' + corvette_path
+        + '/scripts/dd2.py ' + file_name_wo + '.bc search_' + file_name_wo
+        + '.json config_' + file_name_wo + '.json ' + path + ' ' + config_file + ' ' + str(max_iter))
+    else:
+        call('cd ' + tuner_path + ' && python2 -O ' + hifptuner_path + '/precimonious/scripts/dd2_prof.py ' + file_name_wo + '.bc search_' + file_name_wo
+        + '.json config_' + file_name_wo + '.json sorted_partition.json ' + path + ' ' + config_file + ' ' + str(max_iter))
 
     print('Run succeeded')

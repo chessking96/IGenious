@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from helper import call, call_background, getEnvVar, nameWithoutExtension
+from helper import call, call_background, getEnvVar, nameWithoutExtension, dockerCall, dockerCall30, dockerCall38
 import sys, re, json, os
 import rsld as rsld
 
@@ -103,41 +103,93 @@ def createMain(prec_path, file_name, function_name, args, ret, rep):
     with open(os.path.join(prec_path, 'main.c'), 'w') as myfile:
         myfile.write(code)
 
-def precimoniousSetup(main_path, config_folder_path, file_name, function_name, args, ret, rep):
+def precimoniousSetup(main_path, config_folder_path, file_name, function_name, args, ret, rep, tuning):
 
-    # Get some important locations
-    src_path = getEnvVar('SOURCE_PATH') + '/src'
-    prec_path = os.path.join(config_folder_path, 'precimonious_setup')
-    file_name_wo_ext = nameWithoutExtension(file_name)
-    shared_lib = os.path.join(getEnvVar('CORVETTE_PATH'), 'src/Passes.so')
+    if tuning == 'precimonious':
+        # Get some important locations
+        src_path = getEnvVar('SOURCE_PATH') + '/src'
+        prec_path = os.path.join(config_folder_path, 'precimonious_setup')
+        file_name_wo_ext = nameWithoutExtension(file_name)
+        shared_lib = os.path.join(getEnvVar('CORVETTE_PATH'), 'src/Passes.so')
 
-    # Create folder for precimonious and copy files into it
-    call('mkdir ' + prec_path)
-    createMain(prec_path, file_name, function_name, args, ret, rep)
-    call('cp ' + os.path.join(src_path, 'random_range.c') + ' ' + prec_path)
-    call('cp ' + os.path.join(src_path, 'random_range_igen.c') + ' ' + prec_path)
-    call('cp ' + os.path.join(main_path, file_name) + ' ' + prec_path)
-    call('cp ' + src_path + '/normal_CMakeLists.txt ' + os.path.join(prec_path, 'CMakeLists.txt'))
+        # Create folder for precimonious and copy files into it
+        call('mkdir ' + prec_path)
+        createMain(prec_path, file_name, function_name, args, ret, rep)
+        call('cp ' + os.path.join(src_path, 'random_range.c') + ' ' + prec_path)
+        call('cp ' + os.path.join(src_path, 'random_range_igen.c') + ' ' + prec_path)
+        call('cp ' + os.path.join(main_path, file_name) + ' ' + prec_path)
+        call('cp ' + src_path + '/normal_CMakeLists.txt ' + os.path.join(prec_path, 'CMakeLists.txt'))
 
-    # Precimonious calls
-    call('cd ' + prec_path + ' && clang -emit-llvm -c ' + 'main.c' + ' -o '
-    + file_name_wo_ext + '.bc')
-    call('cd ' + prec_path + ' && opt -load ' + shared_lib + ' -create-call-dependency '
-    + file_name_wo_ext + '.bc --call-main ' + function_name + ' > '
-    + file_name_wo_ext +  '.tmp')
-    call('rm ' + prec_path + '/' + file_name_wo_ext +  '.tmp')
-    call('touch ' + os.path.join(prec_path, 'exclude.txt')) # would allow to exclude variables from analysis
-    call('cd ' + prec_path + ' && opt -load ' + shared_lib + ' -config-file --only-arrays --only-scalars --funs --pformat '
-    + file_name_wo_ext + '.bc --filename config_' + file_name_wo_ext + '.json > '
-    + file_name_wo_ext + '.tmp')
-    call('rm ' + prec_path + '/' + file_name_wo_ext +  '.tmp')
-    call('cd ' + prec_path + ' && opt -load ' + shared_lib + ' -search-file --original-type --only-arrays --only-scalars --funs '
-    + file_name_wo_ext + '.bc --filename search_' + file_name_wo_ext + '.json > '
-    + file_name_wo_ext +  '.tmp')
-    call('rm ' + prec_path + '/' + file_name_wo_ext +  '.tmp')
+        # Precimonious calls
+        call('cd ' + prec_path + ' && clang -emit-llvm -c ' + 'main.c' + ' -o '
+        + file_name_wo_ext + '.bc')
+        call('cd ' + prec_path + ' && opt -load ' + shared_lib + ' -create-call-dependency '
+        + file_name_wo_ext + '.bc --call-main ' + function_name + ' > '
+        + file_name_wo_ext +  '.tmp')
+        call('rm ' + prec_path + '/' + file_name_wo_ext +  '.tmp')
+        call('touch ' + os.path.join(prec_path, 'exclude.txt')) # would allow to exclude variables from analysis
+        call('cd ' + prec_path + ' && opt -load ' + shared_lib + ' -config-file --only-arrays --only-scalars --funs --pformat '
+        + file_name_wo_ext + '.bc --filename config_' + file_name_wo_ext + '.json > '
+        + file_name_wo_ext + '.tmp')
+        call('rm ' + prec_path + '/' + file_name_wo_ext +  '.tmp')
+        call('cd ' + prec_path + ' && opt -load ' + shared_lib + ' -search-file --original-type --only-arrays --only-scalars --funs '
+        + file_name_wo_ext + '.bc --filename search_' + file_name_wo_ext + '.json > '
+        + file_name_wo_ext +  '.tmp')
+        call('rm ' + prec_path + '/' + file_name_wo_ext +  '.tmp')
 
-    # Test build
-    call_background('cd ' + prec_path + ' && mkdir build && cd build && cmake .. && make && ./some_app')
+        # Test build
+        call_background('cd ' + prec_path + ' && mkdir build && cd build && cmake .. && make && ./some_app')
+
+    elif tuning == 'hifptuner':
+        # Get some location
+        src_path = getEnvVar('SOURCE_PATH') + '/src'
+        hifp_path = os.path.join(config_folder_path, 'hifptuner_setup')
+        file_name_wo_ext = nameWithoutExtension(file_name)
+        shared_lib = '/root/precimonious/src/Passes.so'
+
+        # Create folder for HiFPTuner and copy files into it
+        call('mkdir ' + hifp_path)
+        createMain(hifp_path, file_name, function_name, args, ret, rep)
+        call('cp ' + os.path.join(src_path, 'random_range.c') + ' ' + hifp_path)
+        call('cp ' + os.path.join(src_path, 'random_range_igen.c') + ' ' + hifp_path)
+        call('cp ' + os.path.join(main_path, file_name) + ' ' + hifp_path)
+        call('cp ' + src_path + '/normal_CMakeLists.txt ' + os.path.join(hifp_path, 'CMakeLists.txt'))
+
+        # Prepare container for hifptuner
+        dockerCall('rm -rf analysis')
+        dockerCall('mkdir analysis')
+        curr_path =  config_folder_path + '/hifptuner_setup/'
+        call('docker cp ' + curr_path + file_name + ' hi:/root/analysis')
+        call('docker cp ' + curr_path + 'main.c hi:/root/analysis')
+        call('docker cp ' + curr_path + 'random_range.c hi:/root/analysis')
+
+        # Run HiFPTuner
+        dockerCall30('clang -emit-llvm -c ' + 'analysis/main.c' + ' -o ' + 'analysis/' + file_name_wo_ext + '.bc')
+        dockerCall30('cd analysis && opt -load ' + shared_lib + ' -create-call-dependency '
+        + file_name_wo_ext + '.bc --call-main ' + function_name + ' > '
+        + file_name_wo_ext +  '.tmp')
+        dockerCall('rm /root/analysis/' + file_name_wo_ext +  '.tmp')
+        dockerCall('touch analysis/exclude.txt')
+        dockerCall30('cd analysis && opt -load ' + shared_lib + ' -config-file --only-arrays --only-scalars --funs --pformat '
+        + file_name_wo_ext + '.bc --filename config_' + file_name_wo_ext + '.json > '
+        + file_name_wo_ext + '.tmp')
+        dockerCall('rm /root/analysis/' + file_name_wo_ext +  '.tmp')
+        dockerCall30('cd analysis && opt -load ' + shared_lib + ' -search-file --original-type --only-arrays --only-scalars --funs '
+        + file_name_wo_ext + '.bc --filename search_' + file_name_wo_ext + '.json > '
+        + file_name_wo_ext +  '.tmp')
+        dockerCall('rm /root/analysis/' + file_name_wo_ext +  '.tmp')
+        dockerCall30('cd analysis && ../HiFPTuner/scripts/compile.sh ' + file_name_wo_ext + '.bc')
+        dockerCall38('cd analysis && ../HiFPTuner/scripts/analyze.sh json_' + file_name_wo_ext + '.bc')
+        dockerCall38('cd analysis && python -O ../HiFPTuner/src/graphAnalysis/varDepGraph_pro.py')
+
+        # Get configs out of docker
+        call('docker cp hi:/root/analysis/ ' + hifp_path)
+        call('mv ' + hifp_path + '/analysis/* ' + hifp_path)
+        call('rm -r ' + hifp_path + '/analysis')
+
+    else:
+        print("This tuning method is not supported.")
+        sys.exit(-1)
 
 def addPrecisionSupport(file_name, prec_path, igen_path, err_type, args, ret, precision):
 
@@ -259,18 +311,24 @@ def fixHeaderIssue(igen_path):
     with open(igen_path + '/main.c', 'w') as myfile:
         myfile.write(code_new)
 
-def igenSetup(config_folder_path, file_name, err_type, args, ret, precision, is_vec):
+def igenSetup(config_folder_path, file_name, err_type, args, ret, precision, is_vec, tuning):
     # Get some important locations
     src_path = getEnvVar('SOURCE_PATH') + '/src'
     igen_src = getEnvVar('IGEN_PATH')
     igen_path = os.path.join(config_folder_path, 'igen_setup') # Folder for newly creaded IGen files
     prec_path = os.path.join(config_folder_path, 'precimonious_setup')
+    hifp_path = os.path.join(config_folder_path, 'hifptuner_setup')
+
+    if tuning == 'precimonious':
+        tuner_path = prec_path
+    else:
+        tuner_path = hifp_path
 
     # Create folder for precimonious and copy files into it
     call('mkdir ' + igen_path)
     call('cp ' + src_path + '/random_range_igen.c ' + igen_path)
-    call('cp ' + prec_path + '/main.c ' + igen_path)
-    call('cp ' + os.path.join(prec_path, file_name) + ' ' + igen_path)
+    call('cp ' + tuner_path + '/main.c ' + igen_path)
+    call('cp ' + os.path.join(tuner_path, file_name) + ' ' + igen_path)
     if is_vec == 'True':
         cmake = '/igen_CMakeLists_vec.txt'
     else:
@@ -286,17 +344,17 @@ def igenSetup(config_folder_path, file_name, err_type, args, ret, precision, is_
     # Add precision support
     fixHeaderIssue(igen_path)
     call_background('cd ' + igen_path + ' && python3 ' + igen_src + '/bin/igen.py main.c')
-    addPrecisionSupport(file_name, prec_path, igen_path, err_type, args, ret, precision)
+    addPrecisionSupport(file_name, tuner_path, igen_path, err_type, args, ret, precision)
 
     # Test build
     call_background('cd ' + igen_path + ' && mkdir build && cd build && cmake .. && make && ./some_app')
 
-def run(main_path, config_folder_path, file_name, function_name, args, ret, rep, prec, err_type, is_vec):
+def run(main_path, config_folder_path, file_name, function_name, args, ret, rep, prec, err_type, is_vec, tuning):
 
     # Precimonious setup
-    precimoniousSetup(main_path, config_folder_path, file_name, function_name, args, ret, rep)
+    precimoniousSetup(main_path, config_folder_path, file_name, function_name, args, ret, rep, tuning)
     print("Precimonious setup finished.")
 
     # IGen setup
-    igenSetup(config_folder_path, file_name, err_type, args, ret, prec, is_vec)
+    igenSetup(config_folder_path, file_name, err_type, args, ret, prec, is_vec, tuning)
     print("IGen setup finished.")
