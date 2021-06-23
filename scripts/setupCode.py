@@ -2,7 +2,7 @@
 
 from helper import call, call_background, getEnvVar, nameWithoutExtension, dockerCall, dockerCall30, dockerCall38
 import sys, re, json, os
-import rsld as rsld
+import rsld
 
 def createMain(prec_path, file_name, function_name, args, ret, rep):
 

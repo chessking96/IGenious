@@ -2,10 +2,11 @@
   "filename": "bisection_root.c",
   "functionname": "bisection_root",
   "args": [],
-  "repetitions": 1,
+  "repetitions": 1000000,
   "precision": 4,
   "errortype": "highestAbsolute",
   "return": ["True", "long double", 1, "scalar"],
   "vectorized": "no",
-  "maxpreciterations": 200
+  "maxpreciterations": 200,
+  "tuning": "precimonious"
 }

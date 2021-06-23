@@ -7,5 +7,6 @@
   "precision": 4,
   "errortype": "highestAbsolute",
   "vectorized": "no",
-  "maxpreciterations": 200
+  "maxpreciterations": 200,
+  "tuning": "precimonious"
 }

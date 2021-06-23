@@ -246,7 +246,6 @@ int main(int argc, const char **argv) {
     std::stringstream buffer;
     buffer << t.rdbuf();
     string line;
-
     argTypes = "";
     string funname = "";
     string type = "";
@@ -287,7 +286,6 @@ int main(int argc, const char **argv) {
         varname = "";
       }
     }
-
 
     /*for(auto iter = vars.begin(); iter != vars.end(); ++iter)
     {

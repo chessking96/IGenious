@@ -34,6 +34,16 @@ def main():
     call('cp igen_chg_rmd_' + file_name + ' ' + new_folder)
     call('cp ../igen_setup/CMakeLists.txt ' + new_folder)
 
+    #Add IGen dd lib, as igen sometimes doesn't
+
+    with open(new_folder + '/igen_chg_rmd_' + file_name, 'r') as myfile:
+        code = myfile.read()
+        code = '#include "igen_dd_lib.h"\n' + code
+        code = '#include "igen_lib.h"\n' + code
+
+    with open(new_folder + '/igen_chg_rmd_' + file_name, 'w') as myfile:
+        myfile.write(code)
+
     # Compile and execute
     call_background('cd ' + new_folder + ' && cmake . && make')
     print('Start exec')

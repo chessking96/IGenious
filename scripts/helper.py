@@ -11,7 +11,7 @@ def call(arg):
             sys.exit(-1)
 
 def call_background(arg):
-    res = subprocess.call([arg], shell=True, stdout=open(os.devnull, 'w')) #remove shell...
+    res = subprocess.call([arg], shell=True, stdout=open(os.devnull, 'w'), stderr=open(os.devnull, 'w')) #remove shell...
     if res != 0:
         if res == 10:
             print('Timeout2')
