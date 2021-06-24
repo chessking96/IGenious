@@ -4,34 +4,15 @@ import matplotlib.pyplot as plt
 sys.path.insert(1, os.path.join(sys.path[0], '../scripts'))
 from helper import load_json, nameWithoutExtension
 
-if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        print("Incorrect number of arguments: " + str(len(sys.argv)))
-        sys.exit(-1)
-    folder_name = sys.argv[1]
-    config_name = sys.argv[2]
-
-    name_wo_ext = nameWithoutExtension(config_name)
-    path = 'examples/' + folder_name + '/analysis_' + name_wo_ext
-
-    # Check if path exists
-    if not os.path.exists(path):
-        print('This folder/cofiguration pair does not exist.')
-        sys.exit(-1)
-
-    # Iterate over runs
-    run = 0
-
-    # Helpers to read config_file
-    f_type = ['float', 'float*']
-    d_type = ['double', 'double*']
-    dd_type = ['longdouble', 'longdouble*']
-
+def read_results(path):
     # Variables for results
     times = []
     sats = []
     precs = []
     names = [] # Create some name for each config depending on number of dd/d/f
+
+    # Iterate over runs
+    run = 0
 
     # Read results
     while(True):
@@ -93,6 +74,46 @@ if __name__ == "__main__":
             precs_sat.append(precs[i])
             names_sat.append(names[i])
 
+    return times_sat, precs_sat, names_sat
+
+if __name__ == "__main__":
+    if len(sys.argv) != 3:
+        print("Incorrect number of arguments: " + str(len(sys.argv)))
+        sys.exit(-1)
+    folder_name = sys.argv[1]
+    precision = sys.argv[2]
+
+    # Helpers to read config_file
+    f_type = ['float', 'float*']
+    d_type = ['double', 'double*']
+    dd_type = ['longdouble', 'longdouble*']
+
+    # Precismonious
+    # Build path
+    config_name = 'config_' + str(precision) + '#' + 'precimonious.json'
+    name_wo_ext = nameWithoutExtension(config_name)
+    path = 'examples/' + folder_name + '/analysis_' + name_wo_ext
+
+    # Check if path exists
+    if not os.path.exists(path):
+        print('This folder/configuration pair does not exist.')
+        sys.exit(-1)
+
+    times_sat_prec, precs_sat_prec, names_sat_prec = read_results(path)
+
+    # HiFPTuner
+    # Build path
+    config_name = 'config_' + str(precision) + '#' + 'hifptuner.json'
+    name_wo_ext = nameWithoutExtension(config_name)
+    path = 'examples/' + folder_name + '/analysis_' + name_wo_ext
+
+    # Check if path exists
+    if not os.path.exists(path):
+        print('This folder/configuration pair does not exist.')
+        sys.exit(-1)
+
+    times_sat_hi, precs_sat_hi, names_sat_hi = read_results(path)
+
     # Read nonmixed results
     types_fix = ['dd', 'd', 'f']
     precs_fix = []
@@ -112,11 +133,17 @@ if __name__ == "__main__":
             precs_fix.append(prec)
 
 
-    # Plot points from tuning
-    colors = len(precs_sat) * ['blue']
-    plt.scatter(precs_sat, times_sat, c = colors)
-    for i, txt in enumerate(names_sat):
-        plt.annotate(txt, (precs_sat[i], times_sat[i]))
+    # Plot points from tuning Precimonious
+    colors = len(precs_sat_prec) * ['blue']
+    plt.scatter(precs_sat_prec, times_sat_prec, c = colors)
+    for i, txt in enumerate(names_sat_prec):
+        plt.annotate(txt, (precs_sat_prec[i], times_sat_prec[i]))
+
+    # Plot points from tuning HiFPTuner
+    colors = len(precs_sat_hi) * ['red']
+    plt.scatter(precs_sat_hi, times_sat_hi, c = colors)
+    for i, txt in enumerate(names_sat_hi):
+        plt.annotate(txt, (precs_sat_hi[i], times_sat_hi[i]))
 
     # Plot fixed points
     colors = len(precs_fix) * ['green']

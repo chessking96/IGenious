@@ -7,12 +7,12 @@ fast = True # change here to make a quick test
 path = 'examples/'
 
 if fast:
-    precisions =  [-10]
+    precisions =  [4]
 else:
     precisions = [4, 6, 8, 10, 12, 14, 16, 18]
 
 if fast:
-    max_prec_iters = [1]
+    max_prec_iters = [5]
 else:
     max_prec_iters = [200]
 
