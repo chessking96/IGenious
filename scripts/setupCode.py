@@ -347,7 +347,7 @@ def igenSetup(config_folder_path, file_name, err_type, args, ret, precision, is_
     addPrecisionSupport(file_name, tuner_path, igen_path, err_type, args, ret, precision)
 
     # Test build
-    call_background('cd ' + igen_path + ' && mkdir build && cd build && cmake .. && make && ./some_app')
+    # call_background('cd ' + igen_path + ' && mkdir build && cd build && cmake .. && make && ./some_app')
 
 def run(main_path, config_folder_path, file_name, function_name, args, ret, rep, prec, err_type, is_vec, tuning):
 

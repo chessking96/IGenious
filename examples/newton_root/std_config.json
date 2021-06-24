@@ -1,0 +1,12 @@
+{
+  "filename": "newton_root.c",
+  "functionname": "newton_root",
+  "args": [],
+  "repetitions": 500000,
+  "precision": 4,
+  "errortype": "highestAbsolute",
+  "return": ["True", "long double", 1, "scalar"],
+  "vectorized": "no",
+  "maxpreciterations": 200,
+  "tuning": "precimonious"
+}

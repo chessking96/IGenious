@@ -34,12 +34,13 @@ def main():
     call('cp igen_chg_rmd_' + file_name + ' ' + new_folder)
     call('cp ../igen_setup/CMakeLists.txt ' + new_folder)
 
-    #Add IGen dd lib, as igen sometimes doesn't
-
+    #Add IGen dd lib and math lib, as igen sometimes doesn't
     with open(new_folder + '/igen_chg_rmd_' + file_name, 'r') as myfile:
         code = myfile.read()
         code = '#include "igen_dd_lib.h"\n' + code
         code = '#include "igen_lib.h"\n' + code
+        code = '#include "igen_math.h"\n' + code
+        code = '#include "igen_dd_math.h"\n' + code
 
     with open(new_folder + '/igen_chg_rmd_' + file_name, 'w') as myfile:
         myfile.write(code)

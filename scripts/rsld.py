@@ -104,7 +104,5 @@ def run(file_path, file_name):
     for line in code:
         replaced_code += line + '\n'
 
-
-
     with open(file_path + '/rmd_' + file_name, 'w') as myfile:
         myfile.write(replaced_code)

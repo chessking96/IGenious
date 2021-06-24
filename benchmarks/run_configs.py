@@ -24,9 +24,9 @@ else:
 error_types = ['highestAbsolute']
 
 if fast:
-    folders = ['bisection_root', 'DFT16', 'DFT16dd', 'dot', 'matmul', 'simpsons']
+    folders = ['newton_root', 'funarc', 'bisection_root', 'DFT16', 'DFT16dd', 'dot', 'matmul', 'simpsons']
 else:
-    folders = ['bisection_root', 'DFT16', 'DFT16dd', 'dot', 'matmul', 'simpsons']
+    folders = ['newton_root', 'funarc', 'bisection_root', 'DFT16', 'DFT16dd', 'dot', 'matmul', 'simpsons']
 
 tunings = ['precimonious', 'hifptuner']
 

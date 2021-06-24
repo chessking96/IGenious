@@ -23,7 +23,7 @@ long double funarc()
   long double h, t1, t2, dppi;
   long double s1;
 
-    int n = 10000000;
+    int n = 1000000;
     dppi = 3.14159265358979323846;
     s1 = 0.0;
     t1 = 0.0;
