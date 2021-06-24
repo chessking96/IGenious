@@ -10,7 +10,7 @@ int main() {
   initRandomSeed();
   dd_I return_value = _ia_set_dd(-0, 0.0, 0, 0.0);
   clock_t start = clock();
-  for (long i = 0; i < 1; i++) {
+  for (long i = 0; i < 1000000; i++) {
     return_value = bisection_root();
   }
   clock_t end = clock();
