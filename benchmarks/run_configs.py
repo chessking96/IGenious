@@ -30,6 +30,9 @@ else:
 
 tunings = ['precimonious', 'hifptuner']
 
+# Start docker container
+call('docker start hi')
+
 for prec in precisions:
     for max_iter in max_prec_iters:
         for vec in vectorized:
