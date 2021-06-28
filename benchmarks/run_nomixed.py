@@ -10,8 +10,8 @@ error_types = ['highestAbsolute']
 src_path = getEnvVar('SOURCE_PATH') + '/src'
 
 #folders = ['DFT16', 'DFT16dd', 'dot', 'matmul', 'simpsons']
-folders = ['DFT16', 'DFT16dd', 'dot', 'matmul', 'simpsons', 'bisection_root']
-file_names = ['DFT16.c', 'DFT16.c', 'dot.c', 'matmul.c', 'simpsons.c', 'bisection_root.c']
+folders = ['funarc', 'DFT16', 'DFT16dd', 'dot', 'matmul', 'simpsons', 'bisection_root']
+file_names = ['funarc.c', 'DFT16.c', 'DFT16.c', 'dot.c', 'matmul.c', 'simpsons.c', 'bisection_root.c']
 types = ['dd', 'd', 'f']
 
 for i in range(len(folders)):

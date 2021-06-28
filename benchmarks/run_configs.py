@@ -7,7 +7,7 @@ fast = True # change here to make a quick test
 path = 'examples/'
 
 if fast:
-    precisions =  [4]
+    precisions =  [-10]
 else:
     precisions = [4, 6, 8, 10, 12, 14, 16, 18]
 

@@ -1,3 +1,4 @@
 examples/*/analysis_config_*
 examples/*/config_*.json
 scripts/__pycache__/*
+examples/*/no_mixed/*/build
