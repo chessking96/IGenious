@@ -1,3 +1,0 @@
-/home/user/master-thesis/examples/matmul/no_mixed/dd/build/CMakeFiles/rebuild_cache.dir
-/home/user/master-thesis/examples/matmul/no_mixed/dd/build/CMakeFiles/edit_cache.dir
-/home/user/master-thesis/examples/matmul/no_mixed/dd/build/CMakeFiles/some_app.dir

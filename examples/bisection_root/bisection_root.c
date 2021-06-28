@@ -7,9 +7,6 @@ long double bisection_root(){
   long double x_left = -2.04563456;
   long double x_right = 2.24523650;
 
-  long double a, b, c, d, e;
-  long double fa, fb, fc;
-
   long double f_lower = fun(x_left);
   long double f_upper = fun(x_right);
 
