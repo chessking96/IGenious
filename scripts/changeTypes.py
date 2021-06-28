@@ -11,6 +11,7 @@ def run(file_name):
     # Make sure, that the clang_ast_vistor latest version is compiled
     call_background('cd ' + scripts_path + '/changeTypes && cmake . && make')
 
+
     # Run clang_ast_visitor
     call(scripts_path + '/changeTypes/clang_ast_visitor ../igen_setup/rmd_' + file_name + ' -- ' + ' > chg_rmd_' + file_name)
 

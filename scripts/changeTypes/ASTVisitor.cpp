@@ -30,7 +30,7 @@ Rewriter rewriter;
 CompilerInstance* mainCI;
 int numFunctions = 0;
 
-map<tuple<string>, string> vars;
+map<string, string> vars;
 
 string argTypes = "";
 
@@ -116,6 +116,7 @@ class ASTMainVisitor : public RecursiveASTVisitor<ASTMainVisitor> {
             //if(orig_type == "long double *"){ // just for now
             //  goto end;
             //}
+            //cout << type << " \n";
             SourceRange typeRange = var->getTypeSourceInfo()->getTypeLoc().getSourceRange();
             rewriter.ReplaceText(typeRange, type);
         }
@@ -279,6 +280,17 @@ int main(int argc, const char **argv) {
         }
       }
 
+      if (line.find("call") != string::npos){
+        getline(buffer, line);
+        getline(buffer, line);
+        getline(buffer, line);
+        getline(buffer, line);
+        getline(buffer, line);
+        funname = "";
+        type = "";
+        varname = "";
+      }
+
       if(funname != "" && type != "" && varname != ""){
         vars.insert(make_pair(funname + "#" + varname, type));
         funname = "";
@@ -291,7 +303,7 @@ int main(int argc, const char **argv) {
     {
       auto k = iter->first;
       auto v = iter->second;
-      cout << v << "\n";
+      cout << k << " " << v << "\n";
     }*/
 
     CommonOptionsParser op(argc, argv, MyToolCategory);
