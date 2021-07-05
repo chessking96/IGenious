@@ -337,8 +337,8 @@ def igenSetup(config_folder_path, file_name, err_type, args, ret, precision, is_
     with open(igen_path + '/random_range_igen.c', 'r') as myfile:
         code_old = myfile.read()
 
-    substitute = 'double factor = 1;'
-    code_replace = 'double factor = ' + str(input_range) + ';'
+    substitute = 'int factor = 1;'
+    code_replace = 'int factor = ' + str(input_range) + ';'
     code_new = re.sub(substitute, code_replace, code_old)
 
     with open(igen_path + '/random_range_igen.c', 'w') as myfile:

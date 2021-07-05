@@ -37,7 +37,36 @@ def createMain(file_name, function_name, args, ret, rep, input_prec):
             if var_type[-1] == ' ':
                 var_type = var_type[:-1]
             types.append(var_type)
-    input = ''
+
+    # Get function signature
+
+    if ret[0] == "True":
+        typedef_text = '\ttypedef dd_I (*FunctionType)('
+    else:
+        typedef_text = '\ttypedef void (*FunctionType)('
+
+    if len(types) >= 1:
+        if types[0] == 'long double':
+            typedef_text += 'dd_I*'
+        elif types[0] == 'double':
+            typedef_text += 'f64_I*'
+        elif types[0] == 'float':
+            typedef_text += 'f32_I*'
+    for i in range(1, len(types)):
+        if types[i] == 'long double':
+            typedef_text += ', dd_I*'
+        elif types[i] == 'double':
+            typedef_text += ', f64_I*'
+        elif types[i] == 'float':
+            typedef_text += ', f32_I*'
+    typedef_text += ');\n'
+
+    typedef_text += '\tlong * addresses = malloc(' + str(rep) + ' * sizeof(long));\n'
+    typedef_text += '\tfor(int i = 0;i < ' + str(rep) + '; i++){\n'
+    typedef_text += '\taddresses[i] = (long)' + function_name + ';\n'
+    typedef_text += '\t}\n'
+
+    input = typedef_text
     for i in range(len(args)):
         arg = args[i]
 
@@ -71,13 +100,15 @@ def createMain(file_name, function_name, args, ret, rep, input_prec):
 
         input += input_part
 
+
     if ret[0] == "True":
         return1 = '\t' + ret[1] + ' return_value = 0;\n'
     else:
         return1 = ''
+    timeS0 = '\tFunctionType func = ' + function_name + ';\n'
     timeS1 = '\tclock_t start = clock();\n'
     timeS2 = '\tfor(long i = 0; i < ' + str(rep) + '; i++){\n'
-    timeS = timeS1 + timeS2
+    timeS = timeS0 + timeS1 + timeS2
 
     arguments = ''
 
@@ -86,11 +117,15 @@ def createMain(file_name, function_name, args, ret, rep, input_prec):
     for i in range(1, len(args)):
         arguments += ', x_' + str(i)
 
+    # Result of function call must be used, otherwise gcc can optimize the loop away
+
+    call_function = '\t\tfunc = (FunctionType)addresses[i];\n'
 
     if ret[0] == "True":
-        call_function = '\t\treturn_value = ' + function_name + '(' + arguments + ');\n'
+        call_function += '\t\treturn_value = ' + 'func' + '(' + arguments + ');\n'
+
     else:
-        call_function = '\t\t' + function_name + '(' + arguments + ');\n'
+        call_function += '\t\t' + 'func' + '(' + arguments + ');\n'
 
 
     timeE1 = '\t}\n'
@@ -138,6 +173,8 @@ def cleanUp(file_name, function_name, err_type, args, ret, precision):
                 var_type = var_type[:-1]
             types.append(var_type)
 
+
+
     if err_type == 'highestAbsolute':
 
         pre_err1 = '\tint max = 0;\n'
@@ -160,7 +197,7 @@ def cleanUp(file_name, function_name, err_type, args, ret, precision):
                     err3 = '\ttemp.v = ' + varName + '[i];\n'
                     err4 = '\t\tdd_I lower_bound = _ia_set_dd(temp.lh, temp.ll, -temp.lh, -temp.ll);\n'
                     err5 = '\t\tdd_I upper_bound = _ia_set_dd(-temp.uh, -temp.ul, temp.uh, temp.ul);\n'
-                    err6 = '\t\tdd_I diff = _ia_sub_dd(upper_bound, lower_bound);\n'
+                    err6 = '\tdd_I diff = _ia_div_dd(_ia_sub_dd(upper_bound, lower_bound), lower_bound);\n'
                     err7 = '\t\tif(_ia_cmpgt_dd(diff, diff_max)){\n'
                     err8 = '\t\t\tdiff_max = diff;\n'
                     err9 = '\t\t\tmax = i;\n'
@@ -179,7 +216,7 @@ def cleanUp(file_name, function_name, err_type, args, ret, precision):
                         err3 = 'temp = ' + varName + '[i];\n'
                     err4 = '\t\tdd_I lower_bound = _ia_set_dd(temp.lo, ' + str(0) + ', -temp.lo, -' + str(0) + ');\n'
                     err5 = '\t\tdd_I upper_bound = _ia_set_dd(-temp.up, -' + str(0) + ', temp.up, ' + str(0) + ');\n'
-                    err6 = '\t\tdd_I diff = _ia_sub_dd(upper_bound, lower_bound);\n'
+                    err6 = '\tdd_I diff = _ia_div_dd(_ia_sub_dd(upper_bound, lower_bound), lower_bound);\n'
                     err7 = '\t\tif(_ia_cmpgt_dd(diff, diff_max)){\n'
                     err8 = '\t\t\tdiff_max = diff;\n'
                     err9 = '\t\t\tmax = i;\n'
@@ -192,8 +229,16 @@ def cleanUp(file_name, function_name, err_type, args, ret, precision):
             ret2 = '\ttemp.v = return_value;\n'
             ret3 = '\tdd_I lower_bound = _ia_set_dd(temp.lh, temp.ll, -temp.lh, -temp.ll);\n'
             ret4 = '\tdd_I upper_bound = _ia_set_dd(-temp.uh, -temp.ul, temp.uh, temp.ul);\n'
-            ret5 = '\tdd_I diff = _ia_sub_dd(upper_bound, lower_bound);\n'
-            ret6 = '\tif(_ia_cmpgt_dd(diff, diff_max)){\n'
+            ret5 = '\tdd_I diff = _ia_div_dd(_ia_sub_dd(upper_bound, lower_bound), lower_bound);\n'
+            #ret5 += '\tprintf("lower: %.17g %.19g' + r"\\n" + '", lower_bound.uh, lower_bound.ul);\n'
+            #ret5 += '\tprintf("lower: %.17g %.19g' + r"\\n" + '", lower_bound.lh, lower_bound.ll);\n'
+            #ret5 += '\tprintf("upper: %.17g %.19g' + r"\\n" + '", upper_bound.uh, upper_bound.ul);\n'
+            #ret5 += '\tprintf("upper: %.17g %.19g' + r"\\n" + '", upper_bound.lh, upper_bound.ll);\n'
+            #ret5 += '\tprintf("diff: %.17g %.19g' + r"\\n" + '", diff.uh, diff.ul);\n'
+            #ret5 += '\tprintf("diff: %.17g %.19g' + r"\\n" + '", diff.lh, diff.ll);\n'
+            ret6 = '\tif(_ia_cmpgt_dd(_ia_zero_dd(), diff)){\n'
+            ret6 += '\t\tdiff = _ia_neg_dd(diff);}\n'
+            ret6 += '\tif(_ia_cmpgt_dd(diff, diff_max)){\n'
             ret7 = '\t\tdiff_max = diff;\n'
             ret8 = '\t\tmax = -1;\n'
             ret9 = '\t}\n'
@@ -211,10 +256,14 @@ def cleanUp(file_name, function_name, err_type, args, ret, precision):
     ans7 = '\tfprintf(file, "%s' + r"\\n" + '", answer);\n'
     ans8 = '\tfclose(file);\n'
     ans9 = '\tfile = fopen("precision.cov", "w");\n'
+    #ans9 += '\tprintf("Max: %.17g %.19g' + r"\\n" + '", diff_max.uh, diff_max.ul);\n'
+    #ans9 += '\tprintf("Max: %.17g %.19g' + r"\\n" + '", diff_max.lh, diff_max.ll);\n'
     ans10 = '\tdouble prec = ((u_f64i)_ia_cast_dd_to_f64(diff_max)).up;\n'
     ans11 = '\tfprintf(file, "%.17g' + r"\\n" + '", prec);\n'
     ans12 = '\tprintf("Time: %ld' + r"\\n" + '", diff_time);\n'
     ans13 = '\tprintf("Precision constraint: %s' + r"\\n" + '", answer);\n'
+    if ret[0] == "True":
+        ans13 += '\tprintf("result: %.17g' + r"\\n" + '", temp.uh);\n'
     ans = ans1 + ans2 + ans3 + ans4 + ans5 + ans6 + ans7 + ans8 + ans9 + ans10 + ans11 + ans12 + ans13
 
     prints = '\tprintf("Precision: %.17g' + r"\\n" + '", prec);\n'

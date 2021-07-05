@@ -6,10 +6,36 @@ void initRandomSeed(){
 	srand(42);
 }
 
-double getRandomDouble(){
-	double factor = 1;
-	return ((double)rand())/(RAND_MAX) * (factor / 2.0);
+//from Joao
+double getRandomNumUniform(int magnitude){
+
+	int rnum = rand();
+
+	double min = pow(2, magnitude);
+	double max = pow(2, magnitude + 1);
+
+	return (max - min) * ( (double)(rnum + 1) / (double)RAND_MAX ) + min;
 }
+
+double getRandomPositiveDouble(int min_exp, int dyn_range){
+	int rand_magnitude = (int)(((rand() / (double)RAND_MAX) * (dyn_range - min_exp)) + min_exp);
+	return getRandomNumUniform(rand_magnitude);
+}
+
+double getRandomDouble(){
+	int factor = 1;
+	int min_exp = factor - 5;
+	int dyn_range = factor;
+	double r_num = getRandomPositiveDouble(min_exp, dyn_range);
+	if(rand() % 2 == 0){
+		r_num = -r_num;
+	}
+	//printf("%.17g\n", r_num);
+	return r_num;
+}
+
+
+
 
 // from Joao
 dd_I getRandomDDI() {
@@ -28,7 +54,7 @@ dd_I getRandomDDI() {
     double t_up  = fma(a, b, -s_up) + DBL_MIN;
 
     dd_I c = _ia_set_dd(-s_lo, -t_lo, s_up, t_up);
-    
+
     // Do some computation, that immediate casting is not a problem
     c = _ia_add_dd(c, _ia_one_dd());
     c = _ia_sub_dd(c, _ia_one_dd());

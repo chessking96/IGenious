@@ -17,18 +17,18 @@ else:
     max_prec_iters = [200]
 
 if fast:
-    vectorized = [True]
+    vectorized = [True, False]
 else:
-    vectorized = [False]
+    vectorized = [True, False]
 
 error_types = ['highestAbsolute']
 
 if fast:
     #folders = ['newton_root', 'funarc', 'bisection_root', 'DFT16', 'DFT16dd', 'dot', 'matmul', 'simpsons']
-    folders = ['newton_root', 'DFT16', 'simpsons']
+    folders = ['matmul']
 else:
     #folders = ['newton_root', 'funarc', 'bisection_root', 'DFT16', 'DFT16dd', 'dot', 'matmul', 'simpsons']
-    folders = ['simpsons', 'newton_root', 'DFT16']
+    folders = ['simpsons', 'newton_root', 'DFT16', 'dot']
 if fast:
     tunings = ['precimonious']
 else:
@@ -41,9 +41,9 @@ else:
 
 
 if fast:
-    input_ranges = [5]
+    input_ranges = [10]
 else:
-    input_ranges = [1, 10, 100, 1000]
+    input_ranges = [1, 10, 100]
 
 # Start docker container
 call('docker start hi')
