@@ -21,15 +21,17 @@ int main() {
 	int max = 0;
 	int imax = 0;
 	dd_I diff_max = _ia_zero_dd();
-	dd_I lower_bound = _ia_set_dd(return_value.lh, return_value.ll, -return_value.lh, -return_value.ll);
-	dd_I upper_bound = _ia_set_dd(-return_value.uh, -return_value.ul, return_value.uh, return_value.ul);
+	u_ddi temp;
+	temp.v = return_value;
+	dd_I lower_bound = _ia_set_dd(temp.lh, temp.ll, -temp.lh, -temp.ll);
+	dd_I upper_bound = _ia_set_dd(-temp.uh, -temp.ul, temp.uh, temp.ul);
 	dd_I diff = _ia_sub_dd(upper_bound, lower_bound);
 	if(_ia_cmpgt_dd(diff, diff_max)){
 		diff_max = diff;
 		max = -1;
 	}
 	char* answer = "false";
-	double th = 100000;
+	double th = 10000000000;
 	if((int)_ia_cmpgt_dd(_ia_set_dd(-th, 0, th, 0), diff_max) == 1){
 		answer = "true";
 	}
@@ -37,10 +39,10 @@ int main() {
 	fprintf(file, "%s\n", answer);
 	fclose(file);
 	file = fopen("precision.cov", "w");
-	double prec = _ia_cast_dd_to_f64(diff_max).up;
+	double prec = ((u_f64i)_ia_cast_dd_to_f64(diff_max)).up;
 	fprintf(file, "%.17g\n", prec);
+	printf("Time: %ld\n", diff_time);
 	printf("Precision constraint: %s\n", answer);
-	printf("Diff lower bound: %.17g %.17g\n", diff_max.lh, diff_max.ll);
-	printf("Diff upper bound: %.17g %.17g\n", diff_max.uh, diff_max.ul);
+	printf("Precision: %.17g\n", prec);
 
 }

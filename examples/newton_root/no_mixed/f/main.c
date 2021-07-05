@@ -1,5 +1,5 @@
-#include "DFT16.c"
-#include "igen_lib.h"
+#include "igen_dd_lib.h"
+#include "newton_root.c"
 #include "random_range.c"
 #include <fenv.h>
 #include <math.h>
@@ -8,19 +8,10 @@
 int main() {
   fesetround(2048);
   initRandomSeed();
-  f64_I *x_0 = aligned_alloc(32, 32 * sizeof(f64_I));
-  for (int i = 0; i < 32; i++) {
-    f64_I h = {-0.0, 0.0};
-    x_0[i] = h;
-  }
-  f64_I *x_1 = aligned_alloc(32, 32 * sizeof(f64_I));
-  for (int i = 0; i < 32; i++) {
-    f64_I h = getRandomDoubleInterval();
-    x_1[i] = h;
-  }
+  dd_I return_value = _ia_set_dd(-0, 0.0, 0, 0.0);
   clock_t start = clock();
-  for (long i = 0; i < 1000000; i++) {
-    DFT16(x_0, x_1);
+  for (long i = 0; i < 500000; i++) {
+    return_value = newton_root();
   }
   clock_t end = clock();
   long diff_time = (end - start);
@@ -30,16 +21,14 @@ int main() {
 	int max = 0;
 	int imax = 0;
 	dd_I diff_max = _ia_zero_dd();
-	for(int i = 0; i < 32; i++){
-	u_f64i temp;
-temp.v = x_0[i];
-		dd_I lower_bound = _ia_set_dd(temp.lo, 0, -temp.lo, -0);
-		dd_I upper_bound = _ia_set_dd(-temp.up, -0, temp.up, 0);
-		dd_I diff = _ia_sub_dd(upper_bound, lower_bound);
-		if(_ia_cmpgt_dd(diff, diff_max)){
-			diff_max = diff;
-			max = i;
-		}
+	u_ddi temp;
+	temp.v = return_value;
+	dd_I lower_bound = _ia_set_dd(temp.lh, temp.ll, -temp.lh, -temp.ll);
+	dd_I upper_bound = _ia_set_dd(-temp.uh, -temp.ul, temp.uh, temp.ul);
+	dd_I diff = _ia_sub_dd(upper_bound, lower_bound);
+	if(_ia_cmpgt_dd(diff, diff_max)){
+		diff_max = diff;
+		max = -1;
 	}
 	char* answer = "false";
 	double th = 10000000000;

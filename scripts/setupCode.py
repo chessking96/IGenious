@@ -4,7 +4,7 @@ from helper import call, call_background, getEnvVar, nameWithoutExtension, docke
 import sys, re, json, os
 import rsld
 
-def createMain(prec_path, file_name, function_name, args, ret, rep):
+def createMain(prec_path, file_name, function_name, args, ret, rep, input_prec):
 
     # includes
     inc1 = '#include "random_range.c"\n'
@@ -42,10 +42,10 @@ def createMain(prec_path, file_name, function_name, args, ret, rep):
             input1 = '\t' + type + '* x_' + str(i) + ' = malloc(' + str(length) + ' * sizeof(' + type + '));\n'
             input2 = '\tfor(int i = 0; i < ' + str(length) + '; i++){\n'
             if is_input:
-                if type == "long double":
+                if type == "long double" and input_prec == 'dd':
                     input3 = '\t\t' + type + ' h = getRandomDoubleDoubleInterval();\n'
-                elif type == "double":
-                    input3 = '\t\t' + type + ' h = getRandomDoubleInterval();\n'
+                elif type == "double" or (type == "long double" and input_prec == 'd'):
+                    input3 = '\t\t' + 'double' + ' h = getRandomDoubleInterval();\n'
                 elif type == "float":
                     input3 = '\t\t' + type + ' h = getRandomFloatInterval();\n'
             else:
@@ -103,7 +103,8 @@ def createMain(prec_path, file_name, function_name, args, ret, rep):
     with open(os.path.join(prec_path, 'main.c'), 'w') as myfile:
         myfile.write(code)
 
-def precimoniousSetup(main_path, config_folder_path, file_name, function_name, args, ret, rep, tuning):
+
+def precimoniousSetup(main_path, config_folder_path, file_name, function_name, args, ret, rep, tuning, input_prec, input_range):
 
     if tuning == 'precimonious':
         # Get some important locations
@@ -114,7 +115,7 @@ def precimoniousSetup(main_path, config_folder_path, file_name, function_name, a
 
         # Create folder for precimonious and copy files into it
         call('mkdir ' + prec_path)
-        createMain(prec_path, file_name, function_name, args, ret, rep)
+        createMain(prec_path, file_name, function_name, args, ret, rep, input_prec)
         call('cp ' + os.path.join(src_path, 'random_range.c') + ' ' + prec_path)
         call('cp ' + os.path.join(src_path, 'random_range_igen.c') + ' ' + prec_path)
         call('cp ' + os.path.join(main_path, file_name) + ' ' + prec_path)
@@ -149,7 +150,7 @@ def precimoniousSetup(main_path, config_folder_path, file_name, function_name, a
 
         # Create folder for HiFPTuner and copy files into it
         call('mkdir ' + hifp_path)
-        createMain(hifp_path, file_name, function_name, args, ret, rep)
+        createMain(hifp_path, file_name, function_name, args, ret, rep, input_prec)
         call('cp ' + os.path.join(src_path, 'random_range.c') + ' ' + hifp_path)
         call('cp ' + os.path.join(src_path, 'random_range_igen.c') + ' ' + hifp_path)
         call('cp ' + os.path.join(main_path, file_name) + ' ' + hifp_path)
@@ -279,10 +280,7 @@ def addPrecisionSupport(file_name, prec_path, igen_path, err_type, args, ret, pr
     ans12 = '\tprintf("Precision constraint: %s' + r"\\n" + '", answer);\n'
     ans = ans1 + ans2 + ans3 + ans4 + ans5 + ans6 + ans7 + ans8 + ans9 + ans10 + ans11 + ans12
 
-    print1 = '\tprintf("Diff lower bound: %.17g %.17g' + r"\\n" + '", diff_max.lh, diff_max.ll);\n'
-    print2 = '\tprintf("Diff upper bound: %.17g %.17g' + r"\\n" + '", diff_max.uh, diff_max.ul);\n'
-    print =  print1 + print2
-
+    print = '\tprintf("Precision: %.17g' + r"\\n" + '", prec);\n'
     code_replace = err + ans + print
 
     # Substitue error analysis
@@ -311,7 +309,7 @@ def fixHeaderIssue(igen_path):
     with open(igen_path + '/main.c', 'w') as myfile:
         myfile.write(code_new)
 
-def igenSetup(config_folder_path, file_name, err_type, args, ret, precision, is_vec, tuning):
+def igenSetup(config_folder_path, file_name, err_type, args, ret, precision, is_vec, tuning, input_range):
     # Get some important locations
     src_path = getEnvVar('SOURCE_PATH') + '/src'
     igen_src = getEnvVar('IGEN_PATH')
@@ -335,6 +333,17 @@ def igenSetup(config_folder_path, file_name, err_type, args, ret, precision, is_
         cmake = '/igen_CMakeLists_novec.txt'
     call('cp ' + src_path + cmake + ' ' + os.path.join(igen_path, 'CMakeLists.txt'))
 
+    # Add range constraint to random_range_igen.c
+    with open(igen_path + '/random_range_igen.c', 'r') as myfile:
+        code_old = myfile.read()
+
+    substitute = 'double factor = 1;'
+    code_replace = 'double factor = ' + str(input_range) + ';'
+    code_new = re.sub(substitute, code_replace, code_old)
+
+    with open(igen_path + '/random_range_igen.c', 'w') as myfile:
+        myfile.write(code_new)
+
     # Remove same line declarations from source file
     rsld.run(igen_path, file_name)
 
@@ -349,12 +358,12 @@ def igenSetup(config_folder_path, file_name, err_type, args, ret, precision, is_
     # Test build
     # call_background('cd ' + igen_path + ' && mkdir build && cd build && cmake .. && make && ./some_app')
 
-def run(main_path, config_folder_path, file_name, function_name, args, ret, rep, prec, err_type, is_vec, tuning):
+def run(main_path, config_folder_path, file_name, function_name, args, ret, rep, prec, err_type, is_vec, tuning, input_prec, input_range):
 
     # Precimonious setup
-    precimoniousSetup(main_path, config_folder_path, file_name, function_name, args, ret, rep, tuning)
+    precimoniousSetup(main_path, config_folder_path, file_name, function_name, args, ret, rep, tuning, input_prec, input_range)
     print("Precimonious setup finished.")
 
     # IGen setup
-    igenSetup(config_folder_path, file_name, err_type, args, ret, prec, is_vec, tuning)
+    igenSetup(config_folder_path, file_name, err_type, args, ret, prec, is_vec, tuning, input_range)
     print("IGen setup finished.")

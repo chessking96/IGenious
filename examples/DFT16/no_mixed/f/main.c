@@ -8,12 +8,12 @@
 int main() {
   fesetround(2048);
   initRandomSeed();
-  f32_I *x_0 = malloc(32 * sizeof(f32_I));
+  f32_I *x_0 = aligned_alloc(32, 32 * sizeof(f32_I));
   for (int i = 0; i < 32; i++) {
-    f32_I h = getRandomFloatInterval();
+    f32_I h = {-0.0, 0.0};
     x_0[i] = h;
   }
-  f32_I *x_1 = malloc(32 * sizeof(f32_I));
+  f32_I *x_1 = aligned_alloc(32, 32 * sizeof(f32_I));
   for (int i = 0; i < 32; i++) {
     f32_I h = getRandomFloatInterval();
     x_1[i] = h;
@@ -31,8 +31,10 @@ int main() {
 	int imax = 0;
 	dd_I diff_max = _ia_zero_dd();
 	for(int i = 0; i < 32; i++){
-		dd_I lower_bound = _ia_set_dd(x_0[i].lo, 0, -x_0[i].lo, -0);
-		dd_I upper_bound = _ia_set_dd(-x_0[i].up, -0, x_0[i].up, 0);
+	f32_I temp;
+temp = x_0[i];
+		dd_I lower_bound = _ia_set_dd(temp.lo, 0, -temp.lo, -0);
+		dd_I upper_bound = _ia_set_dd(-temp.up, -0, temp.up, 0);
 		dd_I diff = _ia_sub_dd(upper_bound, lower_bound);
 		if(_ia_cmpgt_dd(diff, diff_max)){
 			diff_max = diff;
@@ -40,7 +42,7 @@ int main() {
 		}
 	}
 	char* answer = "false";
-	double th = 0.0001;
+	double th = 10000000000;
 	if((int)_ia_cmpgt_dd(_ia_set_dd(-th, 0, th, 0), diff_max) == 1){
 		answer = "true";
 	}
@@ -48,10 +50,10 @@ int main() {
 	fprintf(file, "%s\n", answer);
 	fclose(file);
 	file = fopen("precision.cov", "w");
-	double prec = _ia_cast_dd_to_f64(diff_max).up;
+	double prec = ((u_f64i)_ia_cast_dd_to_f64(diff_max)).up;
 	fprintf(file, "%.17g\n", prec);
+	printf("Time: %ld\n", diff_time);
 	printf("Precision constraint: %s\n", answer);
-	printf("Diff lower bound: %.17g %.17g\n", diff_max.lh, diff_max.ll);
-	printf("Diff upper bound: %.17g %.17g\n", diff_max.uh, diff_max.ul);
+	printf("Precision: %.17g\n", prec);
 
 }

@@ -77,25 +77,35 @@ def read_results(path):
     return times_sat, precs_sat, names_sat
 
 if __name__ == "__main__":
-    if len(sys.argv) != 3:
+    if len(sys.argv) != 6:
         print("Incorrect number of arguments: " + str(len(sys.argv)))
         sys.exit(-1)
     folder_name = sys.argv[1]
     precision = sys.argv[2]
+    input_type = sys.argv[3]
+    input_range = sys.argv[4]
+    vectorized = sys.argv[5]
 
     # Helpers to read config_file
     f_type = ['float', 'float*']
     d_type = ['double', 'double*']
     dd_type = ['longdouble', 'longdouble*']
 
-    # Precismonious
+
+    config_base_name = 'config_' + str(precision) + '#' + str(input_type) + '#' + str(input_range) + '#'
+    if vectorized == "yes":
+        config_base_name += 'vec#'
+
+
+    # Precimonious
     # Build path
-    config_name = 'config_' + str(precision) + '#' + 'precimonious.json'
+    config_name = config_base_name + 'precimonious.json'
     name_wo_ext = nameWithoutExtension(config_name)
     path = 'examples/' + folder_name + '/analysis_' + name_wo_ext
 
     # Check if path exists
     if not os.path.exists(path):
+        print(path)
         print('This folder/configuration pair does not exist.')
         sys.exit(-1)
 
@@ -103,12 +113,13 @@ if __name__ == "__main__":
 
     # HiFPTuner
     # Build path
-    config_name = 'config_' + str(precision) + '#' + 'hifptuner.json'
+    config_name = config_base_name + 'hifptuner.json'
     name_wo_ext = nameWithoutExtension(config_name)
     path = 'examples/' + folder_name + '/analysis_' + name_wo_ext
 
     # Check if path exists
     if not os.path.exists(path):
+        print(path)
         print('This folder/configuration pair does not exist.')
         sys.exit(-1)
 

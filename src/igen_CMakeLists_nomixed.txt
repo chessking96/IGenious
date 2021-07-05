@@ -5,7 +5,7 @@ set(IGEN_LIB             ../../../../../../IGen/igen_lib)
 set(IGEN_COMMON          ../../../../../../IGen/common)
 set(MPREAL               ../../../../../../IGen/third-party/mpreal)
 if (NOT DEFINED IGEN_VEC)
-    set(IGEN_VEC "NO")   # Use IGen with vectorized output by default
+    set(IGEN_VEC "YES")   # Use IGen with vectorized output by default
 endif()
 
 # ================================================================================

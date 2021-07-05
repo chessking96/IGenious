@@ -20,11 +20,11 @@ if __name__ == "__main__":
 
     # Read information from config file
     config_path = os.path.join(path, config_file)
-    file_name, function_name, args, ret, rep, prec, err_type, is_vect, max_iter, tuning = readConfig(config_path)
+    file_name, function_name, args, ret, rep, prec, err_type, is_vect, max_iter, tuning, input_prec, input_range = readConfig(config_path)
     file_name_wo = nameWithoutExtension(file_name)
 
     # Run setup
-    setupCode.run(path, config_folder_path, file_name, function_name, args, ret, rep, prec, err_type, is_vect, tuning)
+    setupCode.run(path, config_folder_path, file_name, function_name, args, ret, rep, prec, err_type, is_vect, tuning, input_prec, input_range)
 
     # Run precimonious/hifptuner
     if tuning == 'precimonious':

@@ -8,5 +8,7 @@
   "return": ["True", "long double", 1, "scalar"],
   "vectorized": "no",
   "maxpreciterations": 200,
-  "tuning": "precimonious"
+  "tuning": "precimonious",
+  "input_prec": "dd",
+  "input_range": 1
 }

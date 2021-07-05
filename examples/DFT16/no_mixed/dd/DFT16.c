@@ -1,3 +1,7 @@
+#include "igen_dd_math.h"
+#include "igen_math.h"
+#include "igen_lib.h"
+#include "igen_dd_lib.h"
 #include "igen_dd_lib.h"
 
 f64_I cospi(f64_I x);

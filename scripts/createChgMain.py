@@ -3,7 +3,7 @@
 from helper import call, call_background, getEnvVar, nameWithoutExtension, readConfig
 import sys, re, json
 
-def createMain(file_name, function_name, args, ret, rep):
+def createMain(file_name, function_name, args, ret, rep, input_prec):
 
     # includes
     inc1 = '#include "random_range_igen.c"\n'
@@ -33,9 +33,9 @@ def createMain(file_name, function_name, args, ret, rep):
             if var_type[0] == ' ': # The split from above sometimes contains an uneccessary blank space
                 var_type = var_type[1:]
             if var_type[-1] == '*':
-                var_type = var_type[0:-1]
+                var_type = var_type[:-1]
             if var_type[-1] == ' ':
-                var_type = var_type[0:-1]
+                var_type = var_type[:-1]
             types.append(var_type)
     input = ''
     for i in range(len(args)):
@@ -49,13 +49,13 @@ def createMain(file_name, function_name, args, ret, rep):
         inputORoutput = arg[3]
 
         if pointer == 'pointer':
-            input1 = '\t' + type_2 + '* x_' + str(i) + ' = malloc(' + str(length) + ' * sizeof(' + type_2 + '));\n' # sizeof(long double) potentially to big
+            input1 = '\t' + type_2 + '* x_' + str(i) + ' = aligned_alloc(32, ' + str(length) + ' * sizeof(' + type_2 + '));\n' # sizeof(long double) potentially to big
             input2 = '\tfor(int i = 0; i < ' + str(length) + '; i++){\n'
             if inputORoutput == 'input':
-                if type_2 == "long double":
+                if type_2 == "long double" and input_prec == 'dd':
                     input3 = '\t\t' + type_2 + ' h = getRandomDoubleDoubleInterval();\n'
-                elif type_2 == "double":
-                    input3 = '\t\t' + type_2 + ' h = getRandomDoubleInterval();\n'
+                elif type_2 == "double" or (type_2 == "long double" and input_prec == 'd'):
+                    input3 = '\t\t' + 'double' + ' h = getRandomDoubleInterval();\n'
                 elif type_2 == "float":
                     input3 = '\t\t' + type_2 + ' h = getRandomFloatInterval();\n'
             elif inputORoutput == 'output':
@@ -133,7 +133,9 @@ def cleanUp(file_name, function_name, err_type, args, ret, precision):
             if var_type[0] == ' ': # The split from above sometimes contains an uneccessary blank space
                 var_type = var_type[1:]
             if var_type[-1] == '*':
-                var_type = var_type[0:-2]
+                var_type = var_type[0:-1]
+            if var_type[-1] == ' ':
+                var_type = var_type[:-1]
             types.append(var_type)
 
     if err_type == 'highestAbsolute':
@@ -151,40 +153,51 @@ def cleanUp(file_name, function_name, err_type, args, ret, precision):
             inputORoutput = arg[3]
 
             if inputORoutput == 'output':
-                if types[i] == "long double":
+                if types[i] == 'long double':
                     varName = 'x_' + str(i)
                     err1 = '\tfor(int i = 0; i < ' + str(length) + '; i++){\n'
-                    err2 = '\t\tdd_I lower_bound = _ia_set_dd(' + varName + '[i].lh, ' + varName + '[i].ll, -' + varName + '[i].lh, -' + varName + '[i].ll);\n'
-                    err3 = '\t\tdd_I upper_bound = _ia_set_dd(-' + varName + '[i].uh, -' + varName + '[i].ul, ' + varName + '[i].uh, ' + varName + '[i].ul);\n'
-                    err4 = '\t\tdd_I diff = _ia_sub_dd(upper_bound, lower_bound);\n'
-                    err5 = '\t\tif(_ia_cmpgt_dd(diff, diff_max)){\n'
-                    err6 = '\t\t\tdiff_max = diff;\n'
-                    err7 = '\t\t\tmax = i;\n'
-                    err8 = '\t\t}\n'
-                    err9 = '\t}\n'
-                    err += err1 + err2 + err3 + err4 + err5 + err6 + err7 + err8 + err9
+                    err2 = '\tu_ddi temp;\n'
+                    err3 = '\ttemp.v = ' + varName + '[i];\n'
+                    err4 = '\t\tdd_I lower_bound = _ia_set_dd(temp.lh, temp.ll, -temp.lh, -temp.ll);\n'
+                    err5 = '\t\tdd_I upper_bound = _ia_set_dd(-temp.uh, -temp.ul, temp.uh, temp.ul);\n'
+                    err6 = '\t\tdd_I diff = _ia_sub_dd(upper_bound, lower_bound);\n'
+                    err7 = '\t\tif(_ia_cmpgt_dd(diff, diff_max)){\n'
+                    err8 = '\t\t\tdiff_max = diff;\n'
+                    err9 = '\t\t\tmax = i;\n'
+                    err10 = '\t\t}\n'
+                    err11 = '\t}\n'
+                    err += err1 + err2 + err3 + err4 + err5 + err6 + err7 + err8 + err9 + err10 + err11
                 else:
                     varName = 'x_' + str(i)
                     err1 = '\tfor(int i = 0; i < ' + str(length) + '; i++){\n'
-                    err2 = '\t\tdd_I lower_bound = _ia_set_dd(' + varName + '[i].lo, ' + str(0) + ', -' + varName + '[i].lo, -' + str(0) + ');\n'
-                    err3 = '\t\tdd_I upper_bound = _ia_set_dd(-' + varName + '[i].up, -' + str(0) + ', ' + varName + '[i].up, ' + str(0) + ');\n'
-                    err4 = '\t\tdd_I diff = _ia_sub_dd(upper_bound, lower_bound);\n'
-                    err5 = '\t\tif(_ia_cmpgt_dd(diff, diff_max)){\n'
-                    err6 = '\t\t\tdiff_max = diff;\n'
-                    err7 = '\t\t\tmax = i;\n'
-                    err8 = '\t\t}\n'
-                    err9 = '\t}\n'
-                    err += err1 + err2 + err3 + err4 + err5 + err6 + err7 + err8 + err9
+
+                    if types[i] == 'double':
+                        err2 = '\tu_f64i temp;\n'
+                        err3 = 'temp.v = ' + varName + '[i];\n'
+                    else:
+                        err2 = '\tf32_I temp;\n'
+                        err3 = 'temp = ' + varName + '[i];\n'
+                    err4 = '\t\tdd_I lower_bound = _ia_set_dd(temp.lo, ' + str(0) + ', -temp.lo, -' + str(0) + ');\n'
+                    err5 = '\t\tdd_I upper_bound = _ia_set_dd(-temp.up, -' + str(0) + ', temp.up, ' + str(0) + ');\n'
+                    err6 = '\t\tdd_I diff = _ia_sub_dd(upper_bound, lower_bound);\n'
+                    err7 = '\t\tif(_ia_cmpgt_dd(diff, diff_max)){\n'
+                    err8 = '\t\t\tdiff_max = diff;\n'
+                    err9 = '\t\t\tmax = i;\n'
+                    err10 = '\t\t}\n'
+                    err11 = '\t}\n'
+                    err += err1 + err2 + err3 + err4 + err5 + err6 + err7 + err8 + err9 + err10 + err11
 
         if ret[0] == "True":
-            ret1 = '\tdd_I lower_bound = _ia_set_dd(' + 'return_value' + '.lh, ' + 'return_value' + '.ll, -' + 'return_value' + '.lh, -' + 'return_value' + '.ll);\n'
-            ret2 = '\tdd_I upper_bound = _ia_set_dd(-' + 'return_value' + '.uh, -' + 'return_value' + '.ul, ' + 'return_value' + '.uh, ' + 'return_value' + '.ul);\n'
-            ret3 = '\tdd_I diff = _ia_sub_dd(upper_bound, lower_bound);\n'
-            ret4 = '\tif(_ia_cmpgt_dd(diff, diff_max)){\n'
-            ret5 = '\t\tdiff_max = diff;\n'
-            ret6 = '\t\tmax = -1;\n'
-            ret7 = '\t}\n'
-            err += ret1 + ret2 + ret3 + ret4 + ret5 + ret6 + ret7
+            ret1 = '\tu_ddi temp;\n'
+            ret2 = '\ttemp.v = return_value;\n'
+            ret3 = '\tdd_I lower_bound = _ia_set_dd(temp.lh, temp.ll, -temp.lh, -temp.ll);\n'
+            ret4 = '\tdd_I upper_bound = _ia_set_dd(-temp.uh, -temp.ul, temp.uh, temp.ul);\n'
+            ret5 = '\tdd_I diff = _ia_sub_dd(upper_bound, lower_bound);\n'
+            ret6 = '\tif(_ia_cmpgt_dd(diff, diff_max)){\n'
+            ret7 = '\t\tdiff_max = diff;\n'
+            ret8 = '\t\tmax = -1;\n'
+            ret9 = '\t}\n'
+            err += ret1 + ret2 + ret3 + ret4 + ret5 + ret6 + ret7 + ret8 + ret9
     else:
         print("This error type is not supported:", err_type)
         sys.exit(-1)
@@ -198,16 +211,15 @@ def cleanUp(file_name, function_name, err_type, args, ret, precision):
     ans7 = '\tfprintf(file, "%s' + r"\\n" + '", answer);\n'
     ans8 = '\tfclose(file);\n'
     ans9 = '\tfile = fopen("precision.cov", "w");\n'
-    ans10 = '\tdouble prec = _ia_cast_dd_to_f64(diff_max).up;\n'
+    ans10 = '\tdouble prec = ((u_f64i)_ia_cast_dd_to_f64(diff_max)).up;\n'
     ans11 = '\tfprintf(file, "%.17g' + r"\\n" + '", prec);\n'
-    ans12 = '\tprintf("Precision constraint: %s' + r"\\n" + '", answer);\n'
-    ans = ans1 + ans2 + ans3 + ans4 + ans5 + ans6 + ans7 + ans8 + ans9 + ans10 + ans11 + ans12
+    ans12 = '\tprintf("Time: %ld' + r"\\n" + '", diff_time);\n'
+    ans13 = '\tprintf("Precision constraint: %s' + r"\\n" + '", answer);\n'
+    ans = ans1 + ans2 + ans3 + ans4 + ans5 + ans6 + ans7 + ans8 + ans9 + ans10 + ans11 + ans12 + ans13
 
-    p1 = '\tprintf("Diff lower bound: %.17g %.17g' + r"\\n" + '", diff_max.lh, diff_max.ll);\n'
-    p2 = '\tprintf("Diff upper bound: %.17g %.17g' + r"\\n" + '", diff_max.uh, diff_max.ul);\n'
-    p =  p1 + p2
+    prints = '\tprintf("Precision: %.17g' + r"\\n" + '", prec);\n'
 
-    code = err + ans + p
+    code = err + ans + prints
 
     c_new = re.sub(substitute, code, c_old)
 
@@ -223,8 +235,8 @@ def cleanUp(file_name, function_name, err_type, args, ret, precision):
     with open('cleaned_igen_chg_main.c', 'w') as myfile:
         myfile.write(c_new)
 
-def run(main_path, file_name, function_name, args, ret, rep, prec, err_type, search_counter):
-    createMain(file_name, function_name, args, ret, rep)
+def run(main_path, file_name, function_name, args, ret, rep, prec, err_type, search_counter, input_prec, input_range):
+    createMain(file_name, function_name, args, ret, rep, input_prec)
     igen_src = getEnvVar('IGEN_PATH')
     call_background('python3 ' + igen_src + '/bin/igen.py chg_main.c')
     cleanUp(file_name, function_name, err_type, args, ret, prec)

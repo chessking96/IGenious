@@ -1,12 +1,14 @@
 {
   "filename": "dot.c",
   "functionname": "dot",
-  "args": ["long double", 10000000, "pointer", "input", "long double", 10000000, "pointer", "input"],
+  "args": ["long double", 100000, "pointer", "input", "long double", 100000, "pointer", "input"],
   "return": ["True", "long double", 1, "scalar"],
-  "repetitions": 1,
+  "repetitions": 1000,
   "precision": 4,
   "errortype": "highestAbsolute",
   "vectorized": "no",
   "maxpreciterations": 200,
-  "tuning": "precimonious"
+  "tuning": "precimonious",
+  "input_prec": "dd",
+  "input_range": 1
 }

@@ -49,8 +49,10 @@ def readConfig(path):
     use_vectorized = data["vectorized"]
     max_prec_iterations = data["maxpreciterations"]
     tuning = data["tuning"]
+    input_prec = data["input_prec"]
+    input_range = data["input_range"]
 
-    return file_name, function_name, args, ret, rep, prec, err_type, use_vectorized, max_prec_iterations, tuning
+    return file_name, function_name, args, ret, rep, prec, err_type, use_vectorized, max_prec_iterations, tuning, input_prec, input_range
 
 # Standart docker call
 def dockerCall(arg):

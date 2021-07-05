@@ -18,13 +18,13 @@ def main():
 
     # Read information from config file
     config_path = os.path.join(path, config_file)
-    file_name, function_name, args, ret, rep, prec, err_type, is_vect, max_iter, tuning = readConfig('../../' + config_file)
+    file_name, function_name, args, ret, rep, prec, err_type, is_vect, max_iter, tuning, input_prec, input_range = readConfig('../../' + config_file)
 
     # Change variable types in source file
     changeTypes.run(file_name)
 
     # Add casts to main file
-    createChgMain.run(path, file_name, function_name, args, ret, rep, prec, err_type, search_counter)
+    createChgMain.run(path, file_name, function_name, args, ret, rep, prec, err_type, search_counter, input_prec, input_range)
 
     # Create folder of current run and move created files into it
     new_folder = '../' + str(search_counter)

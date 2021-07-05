@@ -7,7 +7,8 @@ void initRandomSeed(){
 }
 
 double getRandomDouble(){
-	return ((double)rand())/(RAND_MAX);
+	double factor = 1;
+	return ((double)rand())/(RAND_MAX) * (factor / 2.0);
 }
 
 // from Joao
@@ -27,13 +28,18 @@ dd_I getRandomDDI() {
     double t_up  = fma(a, b, -s_up) + DBL_MIN;
 
     dd_I c = _ia_set_dd(-s_lo, -t_lo, s_up, t_up);
+    
+    // Do some computation, that immediate casting is not a problem
+    c = _ia_add_dd(c, _ia_one_dd());
+    c = _ia_sub_dd(c, _ia_one_dd());
 
     fesetround(rm);
+
     return c;
 }
 
 dd_I getRandomDoubleDoubleInterval() {
-	return _ia_cast_f64_to_dd(_ia_cast_dd_to_f64(getRandomDDI()));
+	return getRandomDDI();
 }
 f64_I getRandomDoubleInterval() {
 	return _ia_cast_dd_to_f64(getRandomDDI());
