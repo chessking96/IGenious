@@ -96,7 +96,7 @@ def createMain(file_name, function_name, args, ret, rep, input_prec):
             input5 = '\t}\n'
             input_part = input1 + input2 + input3 + input4 + input5
         else:
-            print("No pointer type not implemented yet")
+            print("Non-pointer type not implemented yet")
 
         input += input_part
 

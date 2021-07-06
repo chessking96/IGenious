@@ -3,7 +3,7 @@ import sys, os
 sys.path.insert(1, os.path.join(sys.path[0], '../scripts'))
 from helper import call, readConfig, json
 
-fast = False # change here to make a quick test
+fast = True # change here to make a quick test
 path = 'examples/'
 
 if fast:
@@ -17,7 +17,7 @@ else:
     max_prec_iters = [200]
 
 if fast:
-    vectorized = [True, False]
+    vectorized = [False]
 else:
     vectorized = [True, False]
 
@@ -25,10 +25,10 @@ error_types = ['highestAbsolute']
 
 if fast:
     #folders = ['newton_root', 'funarc', 'bisection_root', 'DFT16', 'DFT16dd', 'dot', 'matmul', 'simpsons']
-    folders = ['matmul']
+    folders = ['simpsons']
 else:
     #folders = ['newton_root', 'funarc', 'bisection_root', 'DFT16', 'DFT16dd', 'dot', 'matmul', 'simpsons']
-    folders = ['simpsons', 'newton_root', 'DFT16', 'dot']
+    folders = ['simpsons']
 if fast:
     tunings = ['precimonious']
 else:
