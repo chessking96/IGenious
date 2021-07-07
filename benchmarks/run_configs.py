@@ -25,7 +25,7 @@ error_types = ['highestAbsolute']
 
 if fast:
     #folders = ['newton_root', 'funarc', 'bisection_root', 'DFT16', 'DFT16dd', 'dot', 'matmul', 'simpsons']
-    folders = ['simpsons']
+    folders = ['simpsons', 'newton_root', 'DFT16', 'dot']
 else:
     #folders = ['newton_root', 'funarc', 'bisection_root', 'DFT16', 'DFT16dd', 'dot', 'matmul', 'simpsons']
     folders = ['simpsons']
