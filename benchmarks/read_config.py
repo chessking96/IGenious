@@ -113,17 +113,17 @@ if __name__ == "__main__":
 
     # HiFPTuner
     # Build path
-    config_name = config_base_name + 'hifptuner.json'
-    name_wo_ext = nameWithoutExtension(config_name)
-    path = 'examples/' + folder_name + '/analysis_' + name_wo_ext
+    #config_name = config_base_name + 'hifptuner.json'
+    #name_wo_ext = nameWithoutExtension(config_name)
+    #path = 'examples/' + folder_name + '/analysis_' + name_wo_ext
 
     # Check if path exists
-    if not os.path.exists(path):
-        print(path)
-        print('This folder/configuration pair does not exist.')
-        sys.exit(-1)
+    #if not os.path.exists(path):
+    #    print(path)
+    #    print('This folder/configuration pair does not exist.')
+    #    sys.exit(-1)
 
-    times_sat_hi, precs_sat_hi, names_sat_hi = read_results(path)
+    #times_sat_hi, precs_sat_hi, names_sat_hi = read_results(path)
 
     # Read nonmixed results
     types_fix = ['dd', 'd', 'f']
@@ -132,12 +132,12 @@ if __name__ == "__main__":
 
     path = 'examples/' + folder_name + '/no_mixed/'
     for type in types_fix:
-        run_path = path + type + '/build'
+        run_path = 'examples/' + folder_name + '/no_mixed/' + input_type + '#' + str(input_range) + '#' + type
         # Get time
-        with open(run_path + '/score.cov', 'r') as myfile:
+        with open(run_path + '/build/score.cov', 'r') as myfile:
             time = int(myfile.read())
         # Get precision
-        with open(run_path + '/precision.cov', 'r') as myfile:
+        with open(run_path + '/build/precision.cov', 'r') as myfile:
             prec = float(myfile.read())
 
             times_fix.append(time)
@@ -151,10 +151,10 @@ if __name__ == "__main__":
         plt.annotate(txt, (precs_sat_prec[i], times_sat_prec[i]))
 
     # Plot points from tuning HiFPTuner
-    colors = len(precs_sat_hi) * ['red']
-    plt.scatter(precs_sat_hi, times_sat_hi, c = colors, label = 'HiFPTuner')
-    for i, txt in enumerate(names_sat_hi):
-        plt.annotate(txt, (precs_sat_hi[i], times_sat_hi[i]))
+    #colors = len(precs_sat_hi) * ['red']
+    #plt.scatter(precs_sat_hi, times_sat_hi, c = colors, label = 'HiFPTuner')
+    #for i, txt in enumerate(names_sat_hi):
+    #    plt.annotate(txt, (precs_sat_hi[i], times_sat_hi[i]))
 
     # Plot fixed points
     colors = len(precs_fix) * ['green']
@@ -164,6 +164,6 @@ if __name__ == "__main__":
     plt.xscale('log')
 
     plt.legend()
-    plt.title(folder_name + ', precision = 10-' + precision)
+    plt.title(folder_name + ', precision = 10' + precision)
 
     plt.show()
