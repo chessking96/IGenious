@@ -43,7 +43,7 @@ else:
 if fast:
     input_ranges = [10]
 else:
-    input_ranges = [1, 10, 100]
+    input_ranges = [1, 10, 30]
 
 # Start docker container
 call('docker start hi')

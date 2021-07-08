@@ -5,6 +5,11 @@ sys.path.insert(1, os.path.join(sys.path[0], '../scripts'))
 from helper import load_json, nameWithoutExtension
 
 def read_results(path):
+    # Helpers to read config_file
+    f_type = ['float', 'float*']
+    d_type = ['double', 'double*']
+    dd_type = ['longdouble', 'longdouble*']
+
     # Variables for results
     times = []
     sats = []
@@ -87,10 +92,7 @@ if __name__ == "__main__":
     vectorized = sys.argv[5]
     tuning = sys.argv[6]
 
-    # Helpers to read config_file
-    f_type = ['float', 'float*']
-    d_type = ['double', 'double*']
-    dd_type = ['longdouble', 'longdouble*']
+
 
 
     config_base_name = 'config_' + str(precision) + '#' + str(input_type) + '#' + str(input_range) + '#'

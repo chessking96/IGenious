@@ -15,7 +15,7 @@ folders = ['simpsons', 'newton_root', 'DFT16', 'dot']
 
 types = ['dd', 'd', 'f']
 vectorized = [True, False]
-input_ranges = [1, 10, 100]
+input_ranges = [1, 10, 30]
 input_precisions = ['dd', 'd']
 error_types = ['highestAbsolute']
 max_iter = 1
@@ -46,6 +46,17 @@ for err in error_types:
                         # Copy CMakeLists.txt, random_number_generator
                         call('cp ' + src_path + '/random_range_igen.c ' + path)
                         call('cp ' + src_path + '/random_range.c ' + path)
+                        # Add range constraint to random_range_igen.c
+                        with open(path + '/random_range_igen.c', 'r') as myfile:
+                            code_old = myfile.read()
+
+                        substitute = 'int factor = 1;'
+                        code_replace = 'int factor = ' + str(input_range) + ';'
+                        code_new = re.sub(substitute, code_replace, code_old)
+
+                        with open(path + '/random_range_igen.c', 'w') as myfile:
+                            myfile.write(code_new)
+
                         if vec:
                             call('cp ' + src_path + '/igen_CMakeLists_vec.txt ' + path + '/CMakeLists.txt')
                         else:
