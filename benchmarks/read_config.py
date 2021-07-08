@@ -137,19 +137,20 @@ if __name__ == "__main__":
 
     # Plot points from tuning Precimonious
     colors = len(precs_sat_prec) * ['blue']
-    plt.scatter(precs_sat_prec, times_sat_prec, c = colors, label = 'Precimonious')
-    for i, txt in enumerate(names_sat_prec):
-        plt.annotate(txt, (precs_sat_prec[i], times_sat_prec[i]))
+    plt.scatter(precs_sat_prec, times_sat_prec, c = colors, s = 60, label = sys.argv[6])
+    #for i, txt in enumerate(names_sat_prec):
+    #    plt.annotate(txt, (precs_sat_prec[i], times_sat_prec[i]))
 
 
     # Plot fixed points
-    colors = len(precs_fix) * ['green']
-    plt.scatter(precs_fix, times_fix, c = colors, label = 'No tuning')
-    for i, txt in enumerate(types_fix):
-        plt.annotate(txt, (precs_fix[i], times_fix[i]))
+    colors = len(precs_fix) * ['red']
+    plt.scatter(precs_fix, times_fix, c = colors, label = 'No mixed tuning')
+    #for i, txt in enumerate(types_fix):
+    #    plt.annotate(txt, (precs_fix[i], times_fix[i]))
     plt.xscale('log')
 
     plt.legend()
-    plt.title(folder_name + ', precision = 10' + precision)
+    plot_title = folder_name + ', precision = 10-' + precision + ', inputPrecision: ' + input_type
+    plt.title(plot_title)
 
     plt.show()
