@@ -77,7 +77,7 @@ def read_results(path):
     return times_sat, precs_sat, names_sat
 
 if __name__ == "__main__":
-    if len(sys.argv) != 6:
+    if len(sys.argv) != 7:
         print("Incorrect number of arguments: " + str(len(sys.argv)))
         sys.exit(-1)
     folder_name = sys.argv[1]
