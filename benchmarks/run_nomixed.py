@@ -11,7 +11,7 @@ scripts_path = getEnvVar('SOURCE_PATH') + '/scripts'
 #folders = ['newton_root', 'funarc', 'DFT16', 'DFT16dd', 'dot', 'matmul', 'simpsons', 'bisection_root']
 #file_names = ['newton_root.c', 'funarc.c', 'DFT16.c', 'DFT16.c', 'dot.c', 'matmul.c', 'simpsons.c', 'bisection_root.c']
 
-folders = ['dot']
+folders = ['simpsons']
 
 types = ['dd', 'd', 'f']
 vectorized = [True, False]
@@ -34,11 +34,11 @@ for err in error_types:
 
                         # Create new folder
                         config_name = input_precision + '#' + str(input_range) + '#' + type
+                        if vec:
+                            config_name += '#vec'
                         path = path_folder + '/no_mixed/' + config_name
                         corvette_path = getEnvVar('CORVETTE_PATH') # precimonious path
                         igen_src = getEnvVar('IGEN_PATH')
-                        if vec:
-                            config_name += '#vec'
 
                         call('rm -rf ' + path)
                         call('mkdir ' + path)
