@@ -100,7 +100,7 @@ if __name__ == "__main__":
 
     # Precimonious
     # Build path
-    if tuning = 'precimonious':
+    if tuning == 'precimonious':
         config_name = config_base_name + 'precimonious.json'
     else:
         config_name = config_base_name + 'hifptuner.json'
