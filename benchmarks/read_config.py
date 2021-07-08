@@ -85,6 +85,7 @@ if __name__ == "__main__":
     input_type = sys.argv[3]
     input_range = sys.argv[4]
     vectorized = sys.argv[5]
+    tuning = sys.argv[6]
 
     # Helpers to read config_file
     f_type = ['float', 'float*']
@@ -99,7 +100,11 @@ if __name__ == "__main__":
 
     # Precimonious
     # Build path
-    config_name = config_base_name + 'precimonious.json'
+    if tuning = 'precimonious':
+        config_name = config_base_name + 'precimonious.json'
+    else:
+        config_name = config_base_name + 'hifptuner.json'
+
     name_wo_ext = nameWithoutExtension(config_name)
     path = 'examples/' + folder_name + '/analysis_' + name_wo_ext
 
@@ -111,19 +116,6 @@ if __name__ == "__main__":
 
     times_sat_prec, precs_sat_prec, names_sat_prec = read_results(path)
 
-    # HiFPTuner
-    # Build path
-    #config_name = config_base_name + 'hifptuner.json'
-    #name_wo_ext = nameWithoutExtension(config_name)
-    #path = 'examples/' + folder_name + '/analysis_' + name_wo_ext
-
-    # Check if path exists
-    #if not os.path.exists(path):
-    #    print(path)
-    #    print('This folder/configuration pair does not exist.')
-    #    sys.exit(-1)
-
-    #times_sat_hi, precs_sat_hi, names_sat_hi = read_results(path)
 
     # Read nonmixed results
     types_fix = ['dd', 'd', 'f']
@@ -143,18 +135,12 @@ if __name__ == "__main__":
             times_fix.append(time)
             precs_fix.append(prec)
 
-
     # Plot points from tuning Precimonious
     colors = len(precs_sat_prec) * ['blue']
     plt.scatter(precs_sat_prec, times_sat_prec, c = colors, label = 'Precimonious')
     for i, txt in enumerate(names_sat_prec):
         plt.annotate(txt, (precs_sat_prec[i], times_sat_prec[i]))
 
-    # Plot points from tuning HiFPTuner
-    #colors = len(precs_sat_hi) * ['red']
-    #plt.scatter(precs_sat_hi, times_sat_hi, c = colors, label = 'HiFPTuner')
-    #for i, txt in enumerate(names_sat_hi):
-    #    plt.annotate(txt, (precs_sat_hi[i], times_sat_hi[i]))
 
     # Plot fixed points
     colors = len(precs_fix) * ['green']

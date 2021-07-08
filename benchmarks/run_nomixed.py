@@ -11,7 +11,7 @@ scripts_path = getEnvVar('SOURCE_PATH') + '/scripts'
 #folders = ['newton_root', 'funarc', 'DFT16', 'DFT16dd', 'dot', 'matmul', 'simpsons', 'bisection_root']
 #file_names = ['newton_root.c', 'funarc.c', 'DFT16.c', 'DFT16.c', 'dot.c', 'matmul.c', 'simpsons.c', 'bisection_root.c']
 
-folders = ['simpsons']
+folders = ['simpsons', 'newton_root', 'DFT16', 'dot']
 
 types = ['dd', 'd', 'f']
 vectorized = [True, False]
