@@ -3,11 +3,11 @@ import sys, os
 sys.path.insert(1, os.path.join(sys.path[0], '../scripts'))
 from helper import call, readConfig, json
 
-fast = True # change here to make a quick test
+fast = False # change here to make a quick test
 path = 'examples/'
 
 if fast:
-    precisions =  [-10]
+    precisions =  [4]
 else:
     precisions = [2, 4, 6, 8, 10, 12, 14, 16]
 
@@ -24,13 +24,13 @@ else:
 error_types = ['highestAbsolute']
 
 if fast:
-    #folders = ['newton_root', 'funarc', 'bisection_root', 'DFT16', 'DFT16dd', 'dot', 'matmul', 'simpsons']
-    folders = ['simpsons', 'newton_root', 'DFT16', 'dot']
+    folders = ['funarc', 'linear', 'newton_root', 'bisection_root', 'DFT16', 'DFT16dd', 'dot', 'matmul', 'simpsons']
+    #folders = ['linear']
 else:
     #folders = ['newton_root', 'funarc', 'bisection_root', 'DFT16', 'DFT16dd', 'dot', 'matmul', 'simpsons']
-    folders = ['simpsons']
+    folders = ['dot']
 if fast:
-    tunings = ['precimonious']
+    tunings = ['precimonious', 'hifptuner']
 else:
     tunings = ['precimonious', 'hifptuner']
 

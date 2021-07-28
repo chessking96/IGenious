@@ -18,6 +18,7 @@ def main():
 
     # Read information from config file
     config_path = os.path.join(path, config_file)
+    print('heere',config_file)
     file_name, function_name, args, ret, rep, prec, err_type, is_vect, max_iter, tuning, input_prec, input_range = readConfig('../../' + config_file)
 
     # Change variable types in source file

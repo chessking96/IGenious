@@ -12,13 +12,17 @@ def createMain(prec_path, file_name, function_name, args, ret, rep, input_prec):
     inc3 = '#include <time.h>\n'
     inc4 = '#include <stdio.h>\n'
     inc5 = '#include <fenv.h>\n'
+    inc5 += '#include <stdlib.h>\n'
     inc6 = '#include <math.h>\n'
+
+    #inc6 += '#include "igen_dd_lib.h"\n'
     includes = inc1 + inc2 + inc3 + inc4 + inc5 + inc6
 
     # Main init
     init1 = 'int main(){\n'
     init2 = '\tfesetround(FE_UPWARD);\n'
     init3 = '\tinitRandomSeed();\n'
+
     init = init1 + init2 + init3
 
     # Process arguments
@@ -39,7 +43,9 @@ def createMain(prec_path, file_name, function_name, args, ret, rep, input_prec):
             is_input = False
 
         if is_pointer:
-            input1 = '\t' + type + '* x_' + str(i) + ' = malloc(' + str(length) + ' * sizeof(' + type + '));\n'
+            input1 = '\t' + type + '* x_' + str(i) + ';\n'
+            #input1 += '\tif(j==0){\n'
+            input1 += '\tx_' + str(i) + ' = aligned_alloc(32, ' + str(length) + ' * sizeof(' + type + '));\n' # sizeof(long double) potentially to big
             input2 = '\tfor(int i = 0; i < ' + str(length) + '; i++){\n'
             if is_input:
                 if type == "long double" and input_prec == 'dd':
@@ -203,11 +209,15 @@ def addPrecisionSupport(file_name, prec_path, igen_path, err_type, args, ret, pr
 
     # Simplest Error type
     if err_type == 'highestAbsolute':
+
+        # Decl
+        decl = '\tu_ddi temp;\n'
+
         # Error Intro
         pre_err1 = '\tint max = 0;\n'
         pre_err2 = '\tint imax = 0;\n'
         pre_err3 = '\tdd_I diff_max = _ia_zero_dd();\n'
-        err = pre_err1 + pre_err2 + pre_err3
+        err = decl + pre_err1 + pre_err2 + pre_err3
 
         # Iterate over all arguments, add error for each output argument
         for i in range(len(args)):
@@ -229,8 +239,9 @@ def addPrecisionSupport(file_name, prec_path, igen_path, err_type, args, ret, pr
                 if type == "long double":
                     varName = 'x_' + str(i)
                     err1 = '\tfor(int i = 0; i < ' + str(length) + '; i++){\n'
-                    err2 = '\t\tdd_I lower_bound = _ia_set_dd(' + varName + '[i].lh, ' + varName + '[i].ll, -' + varName + '[i].lh, -' + varName + '[i].ll);\n'
-                    err3 = '\t\tdd_I upper_bound = _ia_set_dd(-' + varName + '[i].uh, -' + varName + '[i].ul, ' + varName + '[i].uh, ' + varName + '[i].ul);\n'
+                    err1 += '\ttemp.v = ' + varName + '[i];\n'
+                    err2 = '\t\tdd_I lower_bound = _ia_set_dd(' + 'temp' + '.lh, ' + 'temp' + '.ll, -' + 'temp' + '.lh, -' + 'temp' + '.ll);\n'
+                    err3 = '\t\tdd_I upper_bound = _ia_set_dd(-' + 'temp' + '.uh, -' + 'temp' + '.ul, ' + 'temp' + '.uh, ' + 'temp' + '.ul);\n'
                     err4 = '\t\tdd_I diff = _ia_sub_dd(upper_bound, lower_bound);\n'
                     err5 = '\t\tif(_ia_cmpgt_dd(diff, diff_max)){\n'
                     err6 = '\t\t\tdiff_max = diff;\n'
@@ -241,8 +252,15 @@ def addPrecisionSupport(file_name, prec_path, igen_path, err_type, args, ret, pr
                 else:
                     varName = 'x_' + str(i)
                     err1 = '\tfor(int i = 0; i < ' + str(length) + '; i++){\n'
-                    err2 = '\t\tdd_I lower_bound = _ia_set_dd(' + varName + '[i].lo, ' + str(0) + ', -' + varName + '[i].lo, -' + str(0) + ');\n'
-                    err3 = '\t\tdd_I upper_bound = _ia_set_dd(-' + varName + '[i].up, -' + str(0) + ', ' + varName + '[i].up, ' + str(0) + ');\n'
+
+                    if types[i] == 'double':
+                        err1 += '\tu_f64i temp;\n'
+                        err1 += 'temp.v = ' + varName + '[i];\n'
+                    else:
+                        err1 += '\tf32_I temp;\n'
+                        err1 += 'temp = ' + varName + '[i];\n'
+                    err2 = '\t\tdd_I lower_bound = _ia_set_dd(' + 'temp' + '.lo, ' + str(0) + ', -' + 'temp' + '.lo, -' + str(0) + ');\n'
+                    err3 = '\t\tdd_I upper_bound = _ia_set_dd(-' + 'temp' + '.up, -' + str(0) + ', ' + 'temp' + '.up, ' + str(0) + ');\n'
                     err4 = '\t\tdd_I diff = _ia_sub_dd(upper_bound, lower_bound);\n'
                     err5 = '\t\tif(_ia_cmpgt_dd(diff, diff_max)){\n'
                     err6 = '\t\t\tdiff_max = diff;\n'
@@ -253,8 +271,9 @@ def addPrecisionSupport(file_name, prec_path, igen_path, err_type, args, ret, pr
 
         # Add error for return value
         if ret[0] == "True":
-            ret1 = '\tdd_I lower_bound = _ia_set_dd(' + 'return_value' + '.lh, ' + 'return_value' + '.ll, -' + 'return_value' + '.lh, -' + 'return_value' + '.ll);\n'
-            ret2 = '\tdd_I upper_bound = _ia_set_dd(-' + 'return_value' + '.uh, -' + 'return_value' + '.ul, ' + 'return_value' + '.uh, ' + 'return_value' + '.ul);\n'
+            ret1 = '\ttemp.v = ' + 'return_value' + ';\n'
+            ret1 += '\tdd_I lower_bound = _ia_set_dd(' + 'temp' + '.lh, ' + 'temp' + '.ll, -' + 'temp' + '.lh, -' + 'temp' + '.ll);\n'
+            ret2 = '\tdd_I upper_bound = _ia_set_dd(-' + 'temp' + '.uh, -' + 'temp' + '.ul, ' + 'temp' + '.uh, ' + 'temp' + '.ul);\n'
             ret3 = '\tdd_I diff = _ia_sub_dd(upper_bound, lower_bound);\n'
             ret4 = '\tif(_ia_cmpgt_dd(diff, diff_max)){\n'
             ret5 = '\t\tdiff_max = diff;\n'
@@ -275,7 +294,7 @@ def addPrecisionSupport(file_name, prec_path, igen_path, err_type, args, ret, pr
     ans7 = '\tfprintf(file, "%s' + r"\\n" + '", answer);\n'
     ans8 = '\tfclose(file);\n'
     ans9 = '\tfile = fopen("precision.cov", "w");\n'
-    ans10 = '\tdouble prec = _ia_cast_dd_to_f64(diff_max).up;\n'
+    ans10 = '\tdouble prec = ((u_f64i)_ia_cast_dd_to_f64(diff_max)).up;\n'
     ans11 = '\tfprintf(file, "%.17g' + r"\\n" + '", prec);\n'
     ans12 = '\tprintf("Precision constraint: %s' + r"\\n" + '", answer);\n'
     ans = ans1 + ans2 + ans3 + ans4 + ans5 + ans6 + ans7 + ans8 + ans9 + ans10 + ans11 + ans12
@@ -298,7 +317,7 @@ def addPrecisionSupport(file_name, prec_path, igen_path, err_type, args, ret, pr
     with open(igen_path + '/cleaned_igen_main.c', 'w') as myfile:
         myfile.write(code_new)
 
-def fixHeaderIssue(igen_path):
+def fixHeaderIssue(igen_path, file_name):
     with open(igen_path + '/main.c', 'r') as myfile:
         code_old = myfile.read()
 
@@ -307,6 +326,21 @@ def fixHeaderIssue(igen_path):
     code_new = re.sub(substitute, code_replace, code_old)
 
     with open(igen_path + '/main.c', 'w') as myfile:
+        myfile.write(code_new)
+
+    chg_file_name = 'igen_rmd_' + file_name
+
+    with open(igen_path + '/' + chg_file_name, 'r') as myfile:
+        code_old = myfile.read()
+
+    #inc1 = '#include "igen_lib.h"\n'
+    #inc2 = '#include "igen_dd_lib.h"\n'
+    inc1 = '#include "igen_math.h"\n'
+    inc2 = '#include "igen_dd_math.h"\n'
+
+    code_new = inc1 + inc2 + code_old
+
+    with open(igen_path + '/' + chg_file_name, 'w') as myfile:
         myfile.write(code_new)
 
 def igenSetup(config_folder_path, file_name, err_type, args, ret, precision, is_vec, tuning, input_range):
@@ -351,15 +385,22 @@ def igenSetup(config_folder_path, file_name, err_type, args, ret, precision, is_
     call_background('cd ' + igen_path + ' && python3 ' + igen_src + '/bin/igen.py rmd_' + file_name)
 
     # Add precision support
-    fixHeaderIssue(igen_path)
+    fixHeaderIssue(igen_path, file_name)
     call_background('cd ' + igen_path + ' && python3 ' + igen_src + '/bin/igen.py main.c')
     addPrecisionSupport(file_name, tuner_path, igen_path, err_type, args, ret, precision)
 
     # Test build
     # call_background('cd ' + igen_path + ' && mkdir build && cd build && cmake .. && make && ./some_app')
 
-def run(main_path, config_folder_path, file_name, function_name, args, ret, rep, prec, err_type, is_vec, tuning, input_prec, input_range):
+# From precimonious
+def get_dynamic_score(path):
+  scorefile = open(path)
+  score = scorefile.readline()
+  score = score.strip()
+  return int(score)
 
+
+def run(config_name, main_path, config_folder_path, file_name, function_name, args, ret, rep, prec, err_type, is_vec, tuning, input_prec, input_range):
     # Precimonious setup
     precimoniousSetup(main_path, config_folder_path, file_name, function_name, args, ret, rep, tuning, input_prec, input_range)
     print("Precimonious setup finished.")
@@ -367,3 +408,52 @@ def run(main_path, config_folder_path, file_name, function_name, args, ret, rep,
     # IGen setup
     igenSetup(config_folder_path, file_name, err_type, args, ret, prec, is_vec, tuning, input_range)
     print("IGen setup finished.")
+
+    # Test runtime, to find an adequate number of repetitions (later add only do this if rep == 0)
+    igen_path = os.path.join(config_folder_path, 'igen_setup') # Folder for newly creaded IGen files
+    prec_path = os.path.join(config_folder_path, 'precimonious_setup')
+    hifp_path = os.path.join(config_folder_path, 'hifptuner_setup')
+
+    if tuning == 'precimonious':
+        tuner_path = prec_path
+    else:
+        tuner_path = hifp_path
+
+    with open(main_path + '/std_config.json') as myfile:
+        text = myfile.read()
+
+    substitute = '"repetitions": ' + r"[0-9]+" + ','
+    replace = '"repetitions": 1,'
+
+    text_new = re.sub(substitute, replace, text)
+
+    print(text_new)
+    print(config_folder_path)
+    print(file_name)
+
+
+    with open(main_path + '/std_config.json', 'w') as myfile:
+        myfile.write(text_new)
+
+    print('start')
+
+    call('cd ' + igen_path + ' && mkdir build && cd build && cmake .. && make && ./some_app')
+    score = get_dynamic_score(igen_path + '/build/score.cov')
+    print(igen_path + '/build/score.cov')
+    factor = 1
+    print('score', score)
+    if score < 10000:
+        factor = int(10000 / score)
+
+    with open(main_path + '/' + config_name + '.json') as myfile:
+        text = myfile.read()
+
+    substitute = '"repetitions": ' + r"[0-9]+" + ','
+    replace = '"repetitions": ' + str(factor) + ','
+
+    text_new = re.sub(substitute, replace, text)
+
+    with open(main_path + '/' + config_name + '.json', 'w') as myfile:
+        myfile.write(text_new)
+
+    print(text_new)

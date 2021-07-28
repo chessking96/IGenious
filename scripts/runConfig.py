@@ -24,7 +24,7 @@ if __name__ == "__main__":
     file_name_wo = nameWithoutExtension(file_name)
 
     # Run setup
-    setupCode.run(path, config_folder_path, file_name, function_name, args, ret, rep, prec, err_type, is_vect, tuning, input_prec, input_range)
+    setupCode.run(config_name, path, config_folder_path, file_name, function_name, args, ret, rep, prec, err_type, is_vect, tuning, input_prec, input_range)
 
     # Run precimonious/hifptuner
     if tuning == 'precimonious':

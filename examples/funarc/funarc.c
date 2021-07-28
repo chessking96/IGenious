@@ -29,7 +29,7 @@ long double funarc()
     t1 = 0.0;
     h = dppi / n;
 
-    for( i = 1; i <= n; i++ )
+    for(i = 1; i <= n; i++ )
     {
       t2 = fun(i * h);
       s1 = s1 + sqrt(h*h + (t2 - t1)*(t2 - t1));

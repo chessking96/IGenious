@@ -7,6 +7,8 @@ def createMain(file_name, function_name, args, ret, rep, input_prec):
 
     # includes
     inc1 = '#include "random_range_igen.c"\n'
+    #inc1 += '#include "igen_dd_lib.h"\n'
+    #inc1 += '#include "igen_lib.h"\n'
     inc2 = '#include "' + file_name + '"\n'
     inc3 = '#include <time.h>\n'
     inc4 = '#include <stdio.h>\n'
@@ -61,12 +63,20 @@ def createMain(file_name, function_name, args, ret, rep, input_prec):
             typedef_text += ', f32_I*'
     typedef_text += ');\n'
 
-    typedef_text += '\tlong * addresses = malloc(' + str(rep) + ' * sizeof(long));\n'
+    typedef_text += '\tvolatile long * addresses = malloc(' + str(rep) + ' * sizeof(long));\n'
     typedef_text += '\tfor(int i = 0;i < ' + str(rep) + '; i++){\n'
     typedef_text += '\taddresses[i] = (long)' + function_name + ';\n'
     typedef_text += '\t}\n'
-
-    input = typedef_text
+    diff_max_decl = '\tdd_I diff_max = _ia_zero_dd();\n'
+    temp_decl = '\tu_ddi temp;\n'
+    time_decl = '\tclock_t start;\n'
+    time_decl += '\tclock_t end;\n'
+    if len(args) == 0:
+        num_reps = 1
+    else:
+        num_reps = 100
+    loop_start = '\tfor(long j = 0; j < ' + str(num_reps) + '; j++){\n'
+    input = typedef_text + diff_max_decl + temp_decl + time_decl + loop_start
     for i in range(len(args)):
         arg = args[i]
 
@@ -78,8 +88,10 @@ def createMain(file_name, function_name, args, ret, rep, input_prec):
         inputORoutput = arg[3]
 
         if pointer == 'pointer':
-            input1 = '\t' + type_2 + '* x_' + str(i) + ' = aligned_alloc(32, ' + str(length) + ' * sizeof(' + type_2 + '));\n' # sizeof(long double) potentially to big
-            input2 = '\tfor(int i = 0; i < ' + str(length) + '; i++){\n'
+            input1 = '\t' + type_2 + '* x_' + str(i) + ';\n'
+            input1 += '\tif(j==0){\n'
+            input1 += '\tx_' + str(i) + ' = aligned_alloc(32, ' + str(length) + ' * sizeof(' + type_2 + '));\n' # sizeof(long double) potentially to big
+            input2 = '\t}\n\tfor(int i = 0; i < ' + str(length) + '; i++){\n'
             if inputORoutput == 'input':
                 if type_2 == "long double" and input_prec == 'dd':
                     input3 = '\t\t' + type_2 + ' h = getRandomDoubleDoubleInterval();\n'
@@ -106,7 +118,7 @@ def createMain(file_name, function_name, args, ret, rep, input_prec):
     else:
         return1 = ''
     timeS0 = '\tFunctionType func = ' + function_name + ';\n'
-    timeS1 = '\tclock_t start = clock();\n'
+    timeS1 = '\tstart = clock();\n'
     timeS2 = '\tfor(long i = 0; i < ' + str(rep) + '; i++){\n'
     timeS = timeS0 + timeS1 + timeS2
 
@@ -129,12 +141,9 @@ def createMain(file_name, function_name, args, ret, rep, input_prec):
 
 
     timeE1 = '\t}\n'
-    timeE2 = '\tclock_t end = clock();\n'
-    timeE3 = '\tlong diff_time = (long)(end - start);\n'
-    timeE4 = '\tFILE* file = fopen("score.cov", "w");\n'
-    timeE5 = '\tfprintf(file, "%ld\\n", diff_time);\n'
-    timeE6 = '\tfclose(file);\n'
-    timeE = timeE1 + timeE2 + timeE3 + timeE4 + timeE5 + timeE6
+    timeE2 = '\tend = clock();\n'
+
+    timeE = timeE1 + timeE2
 
     rep = '\tprintf("BeforeIGenReplacement\\n");\n'
 
@@ -176,12 +185,7 @@ def cleanUp(file_name, function_name, err_type, args, ret, precision):
 
 
     if err_type == 'highestAbsolute':
-
-        pre_err1 = '\tint max = 0;\n'
-        pre_err2 = '\tint imax = 0;\n'
-        pre_err3 = '\tdd_I diff_max = _ia_zero_dd();\n'
-        err = pre_err1 + pre_err2 + pre_err3
-
+        err = ''
 
         for i in range(len(args)):
             arg = args[i]
@@ -193,17 +197,16 @@ def cleanUp(file_name, function_name, err_type, args, ret, precision):
                 if types[i] == 'long double':
                     varName = 'x_' + str(i)
                     err1 = '\tfor(int i = 0; i < ' + str(length) + '; i++){\n'
-                    err2 = '\tu_ddi temp;\n'
+
                     err3 = '\ttemp.v = ' + varName + '[i];\n'
                     err4 = '\t\tdd_I lower_bound = _ia_set_dd(temp.lh, temp.ll, -temp.lh, -temp.ll);\n'
                     err5 = '\t\tdd_I upper_bound = _ia_set_dd(-temp.uh, -temp.ul, temp.uh, temp.ul);\n'
                     err6 = '\tdd_I diff = _ia_div_dd(_ia_sub_dd(upper_bound, lower_bound), lower_bound);\n'
                     err7 = '\t\tif(_ia_cmpgt_dd(diff, diff_max)){\n'
                     err8 = '\t\t\tdiff_max = diff;\n'
-                    err9 = '\t\t\tmax = i;\n'
                     err10 = '\t\t}\n'
                     err11 = '\t}\n'
-                    err += err1 + err2 + err3 + err4 + err5 + err6 + err7 + err8 + err9 + err10 + err11
+                    err += err1 + err3 + err4 + err5 + err6 + err7 + err8 + err10 + err11
                 else:
                     varName = 'x_' + str(i)
                     err1 = '\tfor(int i = 0; i < ' + str(length) + '; i++){\n'
@@ -219,13 +222,11 @@ def cleanUp(file_name, function_name, err_type, args, ret, precision):
                     err6 = '\tdd_I diff = _ia_div_dd(_ia_sub_dd(upper_bound, lower_bound), lower_bound);\n'
                     err7 = '\t\tif(_ia_cmpgt_dd(diff, diff_max)){\n'
                     err8 = '\t\t\tdiff_max = diff;\n'
-                    err9 = '\t\t\tmax = i;\n'
                     err10 = '\t\t}\n'
                     err11 = '\t}\n'
-                    err += err1 + err2 + err3 + err4 + err5 + err6 + err7 + err8 + err9 + err10 + err11
+                    err += err1 + err2 + err3 + err4 + err5 + err6 + err7 + err8 + err10 + err11
 
         if ret[0] == "True":
-            ret1 = '\tu_ddi temp;\n'
             ret2 = '\ttemp.v = return_value;\n'
             ret3 = '\tdd_I lower_bound = _ia_set_dd(temp.lh, temp.ll, -temp.lh, -temp.ll);\n'
             ret4 = '\tdd_I upper_bound = _ia_set_dd(-temp.uh, -temp.ul, temp.uh, temp.ul);\n'
@@ -240,18 +241,22 @@ def cleanUp(file_name, function_name, err_type, args, ret, precision):
             ret6 += '\t\tdiff = _ia_neg_dd(diff);}\n'
             ret6 += '\tif(_ia_cmpgt_dd(diff, diff_max)){\n'
             ret7 = '\t\tdiff_max = diff;\n'
-            ret8 = '\t\tmax = -1;\n'
             ret9 = '\t}\n'
-            err += ret1 + ret2 + ret3 + ret4 + ret5 + ret6 + ret7 + ret8 + ret9
+            err += ret2 + ret3 + ret4 + ret5 + ret6 + ret7 + ret9
     else:
         print("This error type is not supported:", err_type)
         sys.exit(-1)
-
-    ans1 = '\tchar* answer = "false";\n'
+    #ans1 = '\tprintf("%.17g' + r"\\n" +'", diff_max.uh);\n'
+    ans1 = '\t}\n'
+    ans1 += '\tchar* answer = "false";\n'
     ans2 = '\tdouble th = ' + str(10**(-precision)) + ';\n'
     ans3 = '\tif((int)_ia_cmpgt_dd(_ia_set_dd(-th, 0, th, 0), diff_max) == 1){\n'
     ans4 = '\t\tanswer = "true";\n'
     ans5 = '\t}\n'
+    ans5 += '\tlong diff_time = (long)(end - start);\n'
+    ans5 += '\tFILE* file = fopen("score.cov", "w");\n'
+    ans5 += '\tfprintf(file, "%ld' + r"\\n" + '", diff_time);\n'
+    ans5 += '\tfclose(file);\n'
     ans6 = '\tfile = fopen("sat.cov", "w");\n'
     ans7 = '\tfprintf(file, "%s' + r"\\n" + '", answer);\n'
     ans8 = '\tfclose(file);\n'

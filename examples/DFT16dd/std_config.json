@@ -3,7 +3,7 @@
   "functionname": "DFT16",
   "args": ["long double", 32, "pointer", "output", "long double", 32, "pointer", "input"],
   "return": ["False", "long double", 1, "scalar"],
-  "repetitions": 1000000,
+  "repetitions": 1,
   "precision": 4,
   "errortype": "highestAbsolute",
   "vectorized": "no",

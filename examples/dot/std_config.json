@@ -3,7 +3,7 @@
   "functionname": "dot",
   "args": ["long double", 100000, "pointer", "input", "long double", 100000, "pointer", "input"],
   "return": ["True", "long double", 1, "scalar"],
-  "repetitions": 1000,
+  "repetitions": 1,
   "precision": 4,
   "errortype": "highestAbsolute",
   "vectorized": "no",

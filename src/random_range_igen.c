@@ -24,8 +24,8 @@ double getRandomPositiveDouble(int min_exp, int dyn_range){
 
 double getRandomDouble(){
 	int factor = 1;
-	int min_exp = factor - 5;
-	int dyn_range = factor;
+	int min_exp = 0;
+	int dyn_range = min_exp + factor + 1;
 	double r_num = getRandomPositiveDouble(min_exp, dyn_range);
 	if(rand() % 2 == 0){
 		r_num = -r_num;

@@ -1,14 +1,13 @@
 {
-  "filename": "simpsons.c",
-  "functionname": "simpsons",
-  "args": [],
-  "repetitions": 5,
-  "precision": 4,
-  "errortype": "highestAbsolute",
-  "return": ["True", "long double", 1, "scalar"],
-  "vectorized": "no",
-  "maxpreciterations": 200,
-  "tuning": "precimonious",
-  "input_prec": "dd",
-  "input_range": 1
-}
+	"filename": "simpsons.c",
+	"functionname": "simpsons",
+	"args": [],
+	"return": ["True", "long double", 1, "scalar"],
+	"repetitions": 1,
+	"precision": -10,
+	"errortype": "highestAbsolute",
+	"vectorized": "False",
+	"maxpreciterations": 5,
+	"tuning": "precimonious",
+	"input_prec": "dd",
+	"input_range": 10}
