@@ -27,8 +27,8 @@ if fast:
     folders = ['funarc', 'linear', 'newton_root', 'bisection_root', 'DFT16', 'DFT16dd', 'dot', 'matmul', 'simpsons']
     #folders = ['linear']
 else:
-    #folders = ['newton_root', 'funarc', 'bisection_root', 'DFT16', 'DFT16dd', 'dot', 'matmul', 'simpsons']
-    folders = ['dot']
+    folders = ['funarc', 'linear', 'newton_root', 'bisection_root', 'DFT16', 'DFT16dd', 'dot', 'matmul', 'simpsons']
+    #folders = ['dot']
 if fast:
     tunings = ['precimonious', 'hifptuner']
 else:

@@ -1,3 +1,10 @@
+# From precimonious
+def get_dynamic_score(path):
+    scorefile = open(path)
+    score = scorefile.readline()
+    score = score.strip()
+    return int(score)
+
 #!/usr/bin/python
 import sys, os, re
 sys.path.insert(1, os.path.join(sys.path[0], '../scripts'))
@@ -11,7 +18,7 @@ scripts_path = getEnvVar('SOURCE_PATH') + '/scripts'
 #folders = ['newton_root', 'funarc', 'DFT16', 'DFT16dd', 'dot', 'matmul', 'simpsons', 'bisection_root']
 #file_names = ['newton_root.c', 'funarc.c', 'DFT16.c', 'DFT16.c', 'dot.c', 'matmul.c', 'simpsons.c', 'bisection_root.c']
 
-folders = ['simpsons', 'newton_root', 'DFT16', 'dot']
+folders = ['linear', 'funarc', 'DFT16', 'DFT16dd', 'dot', 'matmul', 'simpsons', 'newton_root', 'bisection_root']
 
 types = ['dd', 'd', 'f']
 vectorized = [True, False]
@@ -132,10 +139,10 @@ for err in error_types:
                         # Make sure, that the clang_ast_vistor latest version is compiled
                         call_background('cd ' + scripts_path + '/changeTypes && cmake . && make')
 
+
                         # Run clang_ast_visitor
                         rsld.run(path, file_name)
                         call('cd ' + path + ' && ' + scripts_path + '/changeTypes/clang_ast_visitor rmd_' + file_name + ' -- ' + ' > chg_rmd_' + file_name)
-
                         # Run IGen
                         call_background('python ' + igen_src + '/bin/igen.py ' + path + '/chg_rmd_' + file_name)
 
@@ -155,8 +162,49 @@ for err in error_types:
 
                         call('mv cleaned_igen_chg_main.c ' + path + '/cleaned_igen_main.c')
 
+                        # add some libaries to func file
+                        code = '#include "igen_lib.h"\n'
+                        code += '#include "igen_math.h"\n'
+                        with open(path + '/cleaned_igen_main.c', 'r') as myfile:
+                            code_new = code + myfile.read()
+                        with open(path + '/cleaned_igen_main.c', 'w') as myfile:
+                            myfile.write(code_new)
+
                         # compile
                         call_background('cd ' + path + ' && mkdir build && cd build && cmake .. && make')
 
                         # execute
+                        call('cd ' + path + '/build && ./some_app')
+
+                        # get time
+                        score = get_dynamic_score(path + '/build/score.cov')
+                        print('score:', score)
+
+                        factor = 1
+                        if score < 10000:
+                            if score == 0:
+                                factor = 10000
+                            else:
+                                factor = int(10000 / score)
+
+                        with open(path + '/cleaned_igen_main.c') as myfile:
+                            text = myfile.read()
+
+                        substitute = 'long i = 0; i < ' + r"[0-9]+" + '; i'
+                        replace = 'long i = 0; i < ' + str(factor) + '; i'
+
+                        text_new = re.sub(substitute, replace, text)
+
+                        substitute = 'for ' + r'\(' + 'int i = 0; i < 1; i' + r'\+\+\) \{\n    addresses'
+                        replace = 'for ' + r'(' + 'int i = 0; i < ' + str(factor) + '; i' + r'++) {\n    addresses'
+                        text_new = re.sub(substitute, replace, text_new)
+
+                        substitute = 'malloc\(1 \* sizeof'
+                        replace = 'malloc(' + str(factor) + ' * sizeof'
+                        text_new = re.sub(substitute, replace, text_new)
+
+
+                        with open(path + '/cleaned_igen_main.c', 'w') as myfile:
+                            myfile.write(text_new)
+                        call('cd ' + path + ' && cd build && cmake .. && make')
                         call('cd ' + path + '/build && ./some_app')

@@ -49,7 +49,7 @@ def createAllSinglePlots():
     input_ranges = [1, 10, 30]
     vectorized = ['yes', 'no']
     tunings = ['precimonious', 'hifptuner']
-    folder_names = ['simpsons', 'newton_root', 'DFT16', 'dot']
+    folder_names = ['funarc', 'linear', 'newton_root', 'bisection_root', 'DFT16', 'DFT16dd', 'dot', 'matmul', 'simpsons']
 
     for precision in precisions:
         for input_type in input_types:

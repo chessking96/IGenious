@@ -283,7 +283,11 @@ def cleanUp(file_name, function_name, err_type, args, ret, precision):
 
     substitute = '#include "' + file_name + '"'
     code = '#include "igen_chg_rmd_' + file_name + '"'
+
+
     c_new = re.sub(substitute, code, c_new)
+
+
 
 
     with open('cleaned_igen_chg_main.c', 'w') as myfile:
