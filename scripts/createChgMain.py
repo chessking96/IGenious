@@ -1,51 +1,59 @@
 #!/usr/bin/python
 
-from helper import call, call_background, getEnvVar, nameWithoutExtension, readConfig
+from helper import call, call_background, getEnvVar, nameWithoutExtension, Config
 import sys, re, json
 
-def createMain(file_name, function_name, args, ret, rep, input_prec):
+def createMain(path, config):
 
     # includes
-    inc1 = '#include "random_range_igen.c"\n'
-    #inc1 += '#include "igen_dd_lib.h"\n'
-    #inc1 += '#include "igen_lib.h"\n'
-    inc2 = '#include "' + file_name + '"\n'
-    inc3 = '#include <time.h>\n'
-    inc4 = '#include <stdio.h>\n'
-    inc5 = '#include <fenv.h>\n'
-    inc6 = '#include <math.h>\n'
-    includes = inc1 + inc2 + inc3 + inc4 + inc5 + inc6
+    inc = ''
+    inc += '#include "random_range_igen.c"\n'
+    #inc += '#include "igen_dd_lib.h"\n'
+    #inc += '#include "igen_lib.h"\n'
+    inc += '#include "' + config.file_name + '"\n'
+    inc += '#include <time.h>\n'
+    inc += '#include <stdio.h>\n'
+    inc += '#include <fenv.h>\n'
+    inc += '#include <math.h>\n'
+    includes = inc
 
     # main
-    init1 = 'int main(){\n'
-    init2 = '\tfesetround(FE_UPWARD);\n'
-    init3 = '\tinitRandomSeed();\n'
-    init = init1 + init2 + init3
+    init = ''
+    init += 'int main(){\n'
+    init += '\tfesetround(FE_UPWARD);\n'
+    init += '\tinitRandomSeed();\n'
 
     # read in types
     types = []
-    with open('funargs.txt', 'r') as myfile:
-        funargs = myfile.read().split('\n')
+    try:
+        with open('funargs.txt', 'r') as myfile:
+            funargs = myfile.read().split('\n')
 
-    for i in range(len(funargs) - 1):
-        line = funargs[i]
-        fun_name = line.split(',')[0]
-        var_type = line.split(',')[2]
-        if function_name == fun_name:
-            if var_type[0] == ' ': # The split from above sometimes contains an uneccessary blank space
-                var_type = var_type[1:]
-            if var_type[-1] == '*':
-                var_type = var_type[:-1]
-            if var_type[-1] == ' ':
-                var_type = var_type[:-1]
-            types.append(var_type)
+        for i in range(len(funargs) - 1):
+            line = funargs[i]
+            fun_name = line.split(',')[0]
+            var_type = line.split(',')[2]
+            if function_name == fun_name:
+                if var_type[0] == ' ': # The split from above sometimes contains an uneccessary blank space
+                    var_type = var_type[1:]
+                if var_type[-1] == '*':
+                    var_type = var_type[:-1]
+                if var_type[-1] == ' ':
+                    var_type = var_type[:-1]
+                types.append(var_type)
+    except:
+        # later find another solution for this, this is during init, no funargs.txt exists
+        print('This should only appear during initialization!')
+        for arg in config.function_args:
+            types.append('long double')
 
     # Get function signature
-
-    if ret[0] == "True":
+    if config.return_info[0] == "True":
         typedef_text = '\ttypedef dd_I (*FunctionType)('
-    else:
+    elif config.return_info[0] == "False":
         typedef_text = '\ttypedef void (*FunctionType)('
+    else:
+        print('error in config file, return_info')
 
     if len(types) >= 1:
         if types[0] == 'long double':
@@ -63,29 +71,30 @@ def createMain(file_name, function_name, args, ret, rep, input_prec):
             typedef_text += ', f32_I*'
     typedef_text += ');\n'
 
-    typedef_text += '\tvolatile long * addresses = malloc(' + str(rep) + ' * sizeof(long));\n'
-    typedef_text += '\tfor(int i = 0;i < ' + str(rep) + '; i++){\n'
-    typedef_text += '\taddresses[i] = (long)' + function_name + ';\n'
+    typedef_text += '\tvolatile long * addresses = malloc(' + str(config.repetitions) + ' * sizeof(long));\n'
+    typedef_text += '\tfor(int i = 0;i < ' + str(config.repetitions) + '; i++){\n'
+    typedef_text += '\taddresses[i] = (long)' + config.function_name + ';\n'
     typedef_text += '\t}\n'
     diff_max_decl = '\tdd_I diff_max = _ia_zero_dd();\n'
     temp_decl = '\tu_ddi temp;\n'
     time_decl = '\tclock_t start;\n'
     time_decl += '\tclock_t end;\n'
-    if len(args) == 0:
+    # only repeat, if there is random input (maybe this will be dropped, as there is also a time measurement)
+    if len(config.function_args) == 0:
         num_reps = 1
     else:
         num_reps = 100
     loop_start = '\tfor(long j = 0; j < ' + str(num_reps) + '; j++){\n'
     input = typedef_text + diff_max_decl + temp_decl + time_decl + loop_start
-    for i in range(len(args)):
-        arg = args[i]
+    for i in range(len(config.function_args)):
+        arg = config.function_args[i]
 
         #type = arg[0]
         type_2 = types[i]
 
-        length = arg[1]
-        pointer = arg[2]
-        inputORoutput = arg[3]
+        length = arg.length
+        pointer = arg.ptr_type
+        inputORoutput = arg.input_or_output
 
         if pointer == 'pointer':
             input1 = '\t' + type_2 + '* x_' + str(i) + ';\n'
@@ -93,7 +102,7 @@ def createMain(file_name, function_name, args, ret, rep, input_prec):
             input1 += '\tx_' + str(i) + ' = aligned_alloc(32, ' + str(length) + ' * sizeof(' + type_2 + '));\n' # sizeof(long double) potentially to big
             input2 = '\t}\n\tfor(int i = 0; i < ' + str(length) + '; i++){\n'
             if inputORoutput == 'input':
-                if type_2 == "long double" and input_prec == 'dd':
+                if type_2 == "long double" and config.input_precision == 'dd':
                     input3 = '\t\t' + type_2 + ' h = getRandomDoubleDoubleInterval();\n'
                 elif type_2 == "double" or (type_2 == "long double" and input_prec == 'd'):
                     input3 = '\t\t' + 'double' + ' h = getRandomDoubleInterval();\n'
@@ -113,27 +122,27 @@ def createMain(file_name, function_name, args, ret, rep, input_prec):
         input += input_part
 
 
-    if ret[0] == "True":
+    if config.return_info[0] == "True":
         return1 = '\t' + ret[1] + ' return_value = 0;\n'
     else:
         return1 = ''
-    timeS0 = '\tFunctionType func = ' + function_name + ';\n'
+    timeS0 = '\tFunctionType func = ' + config.function_name + ';\n'
     timeS1 = '\tstart = clock();\n'
-    timeS2 = '\tfor(long i = 0; i < ' + str(rep) + '; i++){\n'
+    timeS2 = '\tfor(long i = 0; i < ' + str(config.repetitions) + '; i++){\n'
     timeS = timeS0 + timeS1 + timeS2
 
     arguments = ''
 
-    if len(args) >= 1:
+    if len(config.function_args) >= 1:
         arguments += 'x_0'
-    for i in range(1, len(args)):
+    for i in range(1, len(config.function_args)):
         arguments += ', x_' + str(i)
 
     # Result of function call must be used, otherwise gcc can optimize the loop away
 
     call_function = '\t\tfunc = (FunctionType)addresses[i];\n'
 
-    if ret[0] == "True":
+    if config.return_info[0] == "True":
         call_function += '\t\treturn_value = ' + 'func' + '(' + arguments + ');\n'
 
     else:
@@ -153,45 +162,50 @@ def createMain(file_name, function_name, args, ret, rep, input_prec):
     code = includes + main
 
 
-    with open ('chg_main.c', 'w') as myfile:
+    with open (path + '/chg_main.c', 'w') as myfile:
         myfile.write(code)
 
 
-def cleanUp(file_name, function_name, err_type, args, ret, precision):
+def cleanUp(path, config):
 
-    with open('igen_chg_main.c', 'r') as myfile:
+    with open(path + '/igen_chg_main.c', 'r') as myfile:
         c_old = myfile.read()
 
     substitute = '  printf\("BeforeIGenReplacement' + r'\\' + 'n"\);'
 
     # read in types
     types = []
-    with open('funargs.txt', 'r') as myfile:
-        funargs = myfile.read().split('\n')
+    try:
+        with open('funargs.txt', 'r') as myfile:
+            funargs = myfile.read().split('\n')
 
-    for i in range(len(funargs) - 1):
-        line = funargs[i]
-        fun_name = line.split(',')[0]
-        var_type = line.split(',')[2]
-        if function_name == fun_name:
-            if var_type[0] == ' ': # The split from above sometimes contains an uneccessary blank space
-                var_type = var_type[1:]
-            if var_type[-1] == '*':
-                var_type = var_type[0:-1]
-            if var_type[-1] == ' ':
-                var_type = var_type[:-1]
-            types.append(var_type)
+        for i in range(len(funargs) - 1):
+            line = funargs[i]
+            fun_name = line.split(',')[0]
+            var_type = line.split(',')[2]
+            if function_name == fun_name:
+                if var_type[0] == ' ': # The split from above sometimes contains an uneccessary blank space
+                    var_type = var_type[1:]
+                if var_type[-1] == '*':
+                    var_type = var_type[0:-1]
+                if var_type[-1] == ' ':
+                    var_type = var_type[:-1]
+                types.append(var_type)
+    except:
+        # later find another solution for this, this is during init, no funargs.txt exists
+        print('This should only appear during initialization!')
+        for arg in config.function_args:
+            types.append('long double')
 
 
-
-    if err_type == 'highestAbsolute':
+    if config.error_type == 'highestAbsolute':
         err = ''
 
-        for i in range(len(args)):
-            arg = args[i]
-            length = arg[1]
-            pointer = arg[2]
-            inputORoutput = arg[3]
+        for i in range(len(config.function_args)):
+            arg = config.function_args[i]
+            length = arg.length
+            pointer = arg.ptr_type
+            inputORoutput = arg.input_or_output
 
             if inputORoutput == 'output':
                 if types[i] == 'long double':
@@ -226,7 +240,7 @@ def cleanUp(file_name, function_name, err_type, args, ret, precision):
                     err11 = '\t}\n'
                     err += err1 + err2 + err3 + err4 + err5 + err6 + err7 + err8 + err10 + err11
 
-        if ret[0] == "True":
+        if config.return_info[0] == "True":
             ret2 = '\ttemp.v = return_value;\n'
             ret3 = '\tdd_I lower_bound = _ia_set_dd(temp.lh, temp.ll, -temp.lh, -temp.ll);\n'
             ret4 = '\tdd_I upper_bound = _ia_set_dd(-temp.uh, -temp.ul, temp.uh, temp.ul);\n'
@@ -249,7 +263,7 @@ def cleanUp(file_name, function_name, err_type, args, ret, precision):
     #ans1 = '\tprintf("%.17g' + r"\\n" +'", diff_max.uh);\n'
     ans1 = '\t}\n'
     ans1 += '\tchar* answer = "false";\n'
-    ans2 = '\tdouble th = ' + str(10**(-precision)) + ';\n'
+    ans2 = '\tdouble th = ' + str(10**(-config.precision)) + ';\n'
     ans3 = '\tif((int)_ia_cmpgt_dd(_ia_set_dd(-th, 0, th, 0), diff_max) == 1){\n'
     ans4 = '\t\tanswer = "true";\n'
     ans5 = '\t}\n'
@@ -267,7 +281,7 @@ def cleanUp(file_name, function_name, err_type, args, ret, precision):
     ans11 = '\tfprintf(file, "%.17g' + r"\\n" + '", prec);\n'
     ans12 = '\tprintf("Time: %ld' + r"\\n" + '", diff_time);\n'
     ans13 = '\tprintf("Precision constraint: %s' + r"\\n" + '", answer);\n'
-    if ret[0] == "True":
+    if config.return_info[0] == "True":
         ans13 += '\tprintf("result: %.17g' + r"\\n" + '", temp.uh);\n'
     ans = ans1 + ans2 + ans3 + ans4 + ans5 + ans6 + ans7 + ans8 + ans9 + ans10 + ans11 + ans12 + ans13
 
@@ -281,20 +295,19 @@ def cleanUp(file_name, function_name, err_type, args, ret, precision):
     code = '#include "cleaned_igen_random_range.c"'
     c_new = re.sub(substitute, code, c_new)
 
-    substitute = '#include "' + file_name + '"'
-    code = '#include "igen_chg_rmd_' + file_name + '"'
+    substitute = '#include "' + config.file_name + '"'
+    code = '#include "igen_chg_rmd_' + config.file_name + '"'
 
 
     c_new = re.sub(substitute, code, c_new)
 
 
-
-
-    with open('cleaned_igen_chg_main.c', 'w') as myfile:
+    with open(path + '/cleaned_igen_chg_main.c', 'w') as myfile:
         myfile.write(c_new)
 
-def run(main_path, file_name, function_name, args, ret, rep, prec, err_type, search_counter, input_prec, input_range):
-    createMain(file_name, function_name, args, ret, rep, input_prec)
+def run(main_path, config_name, config):
+    path = main_path + '/analysis_' + config_name + '/igen_setup'
+    createMain(path, config)
     igen_src = getEnvVar('IGEN_PATH')
-    call_background('python3 ' + igen_src + '/bin/igen.py chg_main.c')
-    cleanUp(file_name, function_name, err_type, args, ret, prec)
+    call_background('cd ' + path + ' && python3 ' + igen_src + '/bin/igen.py chg_main.c')
+    cleanUp(path, config)
