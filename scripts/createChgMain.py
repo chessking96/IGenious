@@ -105,7 +105,7 @@ def createMain(path, config):
             if inputORoutput == 'input':
                 if type == "long double" and config.input_precision == 'dd':
                     input1 += '\t\t' + type + ' h = getRandomDoubleDoubleInterval();\n'
-                elif type == "double" or (type == "long double" and input_prec == 'd'):
+                elif type == "double" or (type == "long double" and config.input_precision == 'd'):
                     input1 += '\t\t' + 'double' + ' h = getRandomDoubleInterval();\n'
                 elif type == "float":
                     input1 += '\t\t' + type + ' h = getRandomFloatInterval();\n'
@@ -158,7 +158,6 @@ def createMain(path, config):
 
     main = init + input + return1 + timeS + call_function + timeE + rep + main_end
     code = includes + main
-
 
     with open (path + '/chg_main.c', 'w') as myfile:
         myfile.write(code)
@@ -305,6 +304,14 @@ def cleanUp(path, config):
 
 def run(main_path, config_name, config):
     path = main_path + '/analysis_' + config_name + '/igen_setup'
+    createMain(path, config)
+    igen_src = getEnvVar('IGEN_PATH')
+    call_background('cd ' + path + ' && python3 ' + igen_src + '/bin/igen.py chg_main.c')
+    cleanUp(path, config)
+
+# to run the nonmixed versions (for benchmarking)
+def run_non_mixed(main_path, config_name, config):
+    path = main_path + '/no_mixed/' + config_name
     createMain(path, config)
     igen_src = getEnvVar('IGEN_PATH')
     call_background('cd ' + path + ' && python3 ' + igen_src + '/bin/igen.py chg_main.c')

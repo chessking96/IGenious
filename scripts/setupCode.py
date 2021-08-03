@@ -51,7 +51,7 @@ def createMain(prec_path, config):
             if is_input:
                 if type == "long double" and config.input_precision == 'dd':
                     args += '\t\t' + type + ' h = getRandomDoubleDoubleInterval();\n'
-                elif type == "double" or (type == "long double" and input_prec == 'd'):
+                elif type == "double" or (type == "long double" and config.input_precision == 'd'):
                     args += '\t\t' + 'double' + ' h = getRandomDoubleInterval();\n'
                 elif type == "float":
                     args += '\t\t' + type + ' h = getRandomFloatInterval();\n'
@@ -122,6 +122,7 @@ def tunerSetup(main_path, config_name, config):
         shared_lib = os.path.join(getEnvVar('CORVETTE_PATH'), 'src/Passes.so')
 
         # Create folder for precimonious and copy files into it
+        call('pwd')
         call('mkdir ' + prec_path)
         call('cp ' + os.path.join(src_path, 'random_range.c') + ' ' + prec_path)
         call('cp ' + os.path.join(src_path, 'random_range_igen.c') + ' ' + prec_path)
@@ -250,9 +251,9 @@ def igenSetup(main_folder, config_name, config):
     # For some reason, the main file and function need to be renamed here (will be changed later)
     call('cp ' + config_folder_path + '/igen_setup/cleaned_igen_chg_main.c ' + config_folder_path + '/igen_setup/cleaned_igen_main.c')
     call('cp ' + config_folder_path + '/igen_setup/igen_rmd_' + config.function_name + '.c ' + config_folder_path + '/igen_setup/igen_chg_rmd_' + config.function_name + '.c')
-
+    
     # Test build and execution - measure runtime when there is one repetition
-    call_background('cd ' + igen_path + ' && mkdir build && cd build && cmake .. && make && ./some_app')
+    call('cd ' + igen_path + ' && mkdir build && cd build && cmake .. && make && ./some_app')
 
     score = get_dynamic_score(igen_path + '/build/score.cov')
     factor = 1;
@@ -262,16 +263,14 @@ def igenSetup(main_folder, config_name, config):
         else:
             factor = int(1000 / score)
 
-    # Save new config to files
+    # Save new config to file
     config.repetitions = factor
-
     with open(main_folder + '/' + config_name + '.json', 'w') as myfile:
         myfile.write(config.get_config_as_string())
 
 
 
 def run(main_folder, config_name, config):
-
     # Precimonious/HiFPTuner setup
     tunerSetup(main_folder, config_name, config)
     print_debug("Tuner setup finished.")

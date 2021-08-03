@@ -2,7 +2,7 @@
 import sys, os
 sys.path.insert(1, os.path.join(sys.path[0], '../scripts'))
 from helper import call, Config, json, Config, nameWithoutExtension
-from runConfig import run
+import runConfig
 
 fast = True # change here to make a quick test
 path = 'examples/'
@@ -85,4 +85,4 @@ for prec in precisions:
 
                                 # Run config
                                 print('Run:', folder_name, config_name)
-                                run(main_folder, config_name, config)
+                                runConfig.run(main_folder, config_name, config)
