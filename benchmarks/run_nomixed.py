@@ -69,7 +69,7 @@ for err in error_types:
                         config_file = config_name + '.json'
                         corvette_path = getEnvVar('CORVETTE_PATH') # precimonious path
 
-                        call('cd ' + tuner_path + ' && python2 -O ' + corvette_path
+                        call_background('cd ' + tuner_path + ' && python2 -O ' + corvette_path
                         + '/scripts/dd2.py ' + file_name_wo + '.bc search_' + file_name_wo
                         + '.json config_' + file_name_wo + '.json ' + path + ' ' + config_file + ' ' + str(config.max_iterations))
 
@@ -92,14 +92,14 @@ for err in error_types:
                         # changeTypes must be called via special file
                         changeTypes_nonmixed.run(config.file_name, folder, config_name)
                         # Create suitable main file
-                        call('cp examples/' + folder + '/analysis_' + config_name + '/precimonious_setup/funargs.txt .')
+                        call_background('cp examples/' + folder + '/analysis_' + config_name + '/precimonious_setup/funargs.txt .')
                         createChgMain.run('examples/' + folder, config_name, config)
-                        call('rm -rf funargs.txt')
+                        call_background('rm -rf funargs.txt')
 
                         # Some renaming necessary (Will be removed)
-                        call('cp  examples/' + folder + '/analysis_' + config_name + '/igen_setup/cleaned_igen_chg_main.c examples/' + folder + '/analysis_' + config_name + '/igen_setup/cleaned_igen_main.c ')
+                        call_background('cp  examples/' + folder + '/analysis_' + config_name + '/igen_setup/cleaned_igen_chg_main.c examples/' + folder + '/analysis_' + config_name + '/igen_setup/cleaned_igen_main.c ')
 
                         # Make and run configuration
-                        call('cd examples/' + folder + '/analysis_' + config_name + '/igen_setup && cmake . && make && ./some_app')
+                        call_background('cd examples/' + folder + '/analysis_' + config_name + '/igen_setup && cmake . && make && ./some_app')
                         print()
                         print()

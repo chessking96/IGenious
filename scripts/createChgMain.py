@@ -8,8 +8,6 @@ def createMain(path, config):
     # includes
     inc = ''
     inc += '#include "random_range_igen.c"\n'
-    #inc += '#include "igen_dd_lib.h"\n'
-    #inc += '#include "igen_lib.h"\n'
     inc += '#include "' + config.file_name + '"\n'
     inc += '#include <time.h>\n'
     inc += '#include <stdio.h>\n'
@@ -71,7 +69,7 @@ def createMain(path, config):
             typedef_text += ', f32_I*'
     typedef_text += ');\n'
 
-    typedef_text += '\tvolatile FunctionType * addresses = aligned_alloc(32, ' + str(config.repetitions) + ' * sizeof(FunctionType));\n'
+    typedef_text += '\tFunctionType * addresses = aligned_alloc(32, ' + str(config.repetitions) + ' * sizeof(FunctionType));\n'
     typedef_text += '\tfor(int i = 0;i < ' + str(config.repetitions) + '; i++){\n'
     typedef_text += '\taddresses[i] = (FunctionType)' + config.function_name + ';\n'
     typedef_text += '\t}\n'
@@ -241,14 +239,7 @@ def cleanUp(path, config):
             ret += '\tdd_I lower_bound = _ia_set_dd(temp.lh, temp.ll, -temp.lh, -temp.ll);\n'
             ret += '\tdd_I upper_bound = _ia_set_dd(-temp.uh, -temp.ul, temp.uh, temp.ul);\n'
             ret += '\tdd_I diff = _ia_div_dd(_ia_sub_dd(upper_bound, lower_bound), lower_bound);\n'
-            #ret += '\tprintf("lower: %.17g %.19g' + r"\\n" + '", lower_bound.uh, lower_bound.ul);\n'
-            #ret += '\tprintf("lower: %.17g %.19g' + r"\\n" + '", lower_bound.lh, lower_bound.ll);\n'
-            #ret += '\tprintf("upper: %.17g %.19g' + r"\\n" + '", upper_bound.uh, upper_bound.ul);\n'
-            #ret += '\tprintf("upper: %.17g %.19g' + r"\\n" + '", upper_bound.lh, upper_bound.ll);\n'
-            #ret += '\tprintf("diff: %.17g %.19g' + r"\\n" + '", diff.uh, diff.ul);\n'
-            #ret += '\tprintf("diff: %.17g %.19g' + r"\\n" + '", diff.lh, diff.ll);\n'
-            ret += '\tif(_ia_cmpgt_dd(_ia_zero_dd(), diff)){\n'
-            ret += '\t\tdiff = _ia_neg_dd(diff);}\n'
+            ret += '\t\tdiff = _ia_neg_dd(diff);\n'
             ret += '\tif(_ia_cmpgt_dd(diff, diff_max)){\n'
             ret += '\t\tdiff_max = diff;\n'
             ret += '\t}\n'
@@ -257,7 +248,6 @@ def cleanUp(path, config):
         print("This error type is not supported:", err_type)
         sys.exit(-1)
     ans = ''
-    #ans += '\tprintf("%.17g' + r"\\n" +'", diff_max.uh);\n'
     ans += '\t}\n'
     ans += '\tchar* answer = "false";\n'
     ans += '\tdouble th = ' + str(10**(-config.precision)) + ';\n'
@@ -272,8 +262,6 @@ def cleanUp(path, config):
     ans += '\tfprintf(file, "%s' + r"\\n" + '", answer);\n'
     ans += '\tfclose(file);\n'
     ans += '\tfile = fopen("precision.cov", "w");\n'
-    #ans += '\tprintf("Max: %.17g %.19g' + r"\\n" + '", diff_max.uh, diff_max.ul);\n'
-    #ans += '\tprintf("Max: %.17g %.19g' + r"\\n" + '", diff_max.lh, diff_max.ll);\n'
     ans += '\tdouble prec = ((u_f64i)_ia_cast_dd_to_f64(diff_max)).up;\n'
     ans += '\tfprintf(file, "%.17g' + r"\\n" + '", prec);\n'
     ans += '\tprintf("Time: %ld' + r"\\n" + '", diff_time);\n'
@@ -304,14 +292,6 @@ def cleanUp(path, config):
 
 def run(main_path, config_name, config):
     path = main_path + '/analysis_' + config_name + '/igen_setup'
-    createMain(path, config)
-    igen_src = getEnvVar('IGEN_PATH')
-    call_background('cd ' + path + ' && python3 ' + igen_src + '/bin/igen.py chg_main.c')
-    cleanUp(path, config)
-
-# to run the nonmixed versions (for benchmarking)
-def run_non_mixed(main_path, config_name, config):
-    path = main_path + '/no_mixed/' + config_name
     createMain(path, config)
     igen_src = getEnvVar('IGEN_PATH')
     call_background('cd ' + path + ' && python3 ' + igen_src + '/bin/igen.py chg_main.c')

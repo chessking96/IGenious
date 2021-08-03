@@ -122,7 +122,6 @@ def tunerSetup(main_path, config_name, config):
         shared_lib = os.path.join(getEnvVar('CORVETTE_PATH'), 'src/Passes.so')
 
         # Create folder for precimonious and copy files into it
-        call('pwd')
         call('mkdir ' + prec_path)
         call('cp ' + os.path.join(src_path, 'random_range.c') + ' ' + prec_path)
         call('cp ' + os.path.join(src_path, 'random_range_igen.c') + ' ' + prec_path)
@@ -227,7 +226,7 @@ def igenSetup(main_folder, config_name, config):
         cmake = '/igen_CMakeLists_vec.txt'
     else:
         cmake = '/igen_CMakeLists_novec.txt'
-    call('cp ' + src_path + cmake + ' ' + os.path.join(igen_path, 'CMakeLists.txt'))
+    call_background('cp ' + src_path + cmake + ' ' + os.path.join(igen_path, 'CMakeLists.txt'))
 
     # Add rng range constraint to random_range_igen.c
     with open(igen_path + '/random_range_igen.c', 'r') as myfile:
@@ -249,9 +248,9 @@ def igenSetup(main_folder, config_name, config):
     createChgMain.run(main_folder, config_name, config)
 
     # For some reason, the main file and function need to be renamed here (will be changed later)
-    call('cp ' + config_folder_path + '/igen_setup/cleaned_igen_chg_main.c ' + config_folder_path + '/igen_setup/cleaned_igen_main.c')
-    call('cp ' + config_folder_path + '/igen_setup/igen_rmd_' + config.function_name + '.c ' + config_folder_path + '/igen_setup/igen_chg_rmd_' + config.function_name + '.c')
-    
+    call_background('cp ' + config_folder_path + '/igen_setup/cleaned_igen_chg_main.c ' + config_folder_path + '/igen_setup/cleaned_igen_main.c')
+    call_background('cp ' + config_folder_path + '/igen_setup/igen_rmd_' + config.function_name + '.c ' + config_folder_path + '/igen_setup/igen_chg_rmd_' + config.function_name + '.c')
+
     # Test build and execution - measure runtime when there is one repetition
     call('cd ' + igen_path + ' && mkdir build && cd build && cmake .. && make && ./some_app')
 

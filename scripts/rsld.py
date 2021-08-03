@@ -3,14 +3,17 @@ import sys, os
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from helper import call, getEnvVar, call_background
 
+# This function replaces the same-line declarations of a C-file with single line declarations
 def run(file_path, file_name):
-    scripts_path = getEnvVar('SOURCE_PATH') + '/scripts'
 
-    # for now, to make sure, that c++ is compiled
+    # Make sure, that AST visitor is compiled
+    scripts_path = getEnvVar('SOURCE_PATH') + '/scripts'
     call_background('cd ' + scripts_path + '/removeSameLineDecl && cmake . && make')
 
+    # Call AST visitor
     call(scripts_path + '/removeSameLineDecl/clang_ast_visitor ' + os.path.join(file_path, file_name) + ' -- ' + file_path + '/ ' + file_name)
 
+    # Read produced code from AST and create dictionary
     with open(file_path + '/vars.txt', 'r') as myfile:
         data = myfile.read()
 
@@ -22,7 +25,7 @@ def run(file_path, file_name):
 
     vars = {}
 
-    # read code
+
     with open(os.path.join(file_path, file_name), 'r') as myfile:
         code = myfile.read().split('\n')
 
@@ -54,7 +57,7 @@ def run(file_path, file_name):
         vars[(typeBegLine, typeBegCol, typeEndLine, typeEndCol)] = currentVal + [(varName, beginLine, beginCol, endLine, endCol)]
 
 
-    # build new code blocks
+    # Build new code blocks
     blocks = {}
     for var in vars:
         block = ''
@@ -99,10 +102,11 @@ def run(file_path, file_name):
         del(code[minLine-1:maxLine])
         code.insert(minLine-1, block)
 
-    # save replaced code
+    # Build code blocks together
     replaced_code = ''
     for line in code:
         replaced_code += line + '\n'
 
+    # Save new code
     with open(file_path + '/rmd_' + file_name, 'w') as myfile:
         myfile.write(replaced_code)
