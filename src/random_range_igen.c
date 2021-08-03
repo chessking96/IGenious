@@ -3,7 +3,7 @@
 #include "igen_dd_lib.h"
 
 void initRandomSeed(){
-	srand(42);
+	srand(0);
 }
 
 //from Joao

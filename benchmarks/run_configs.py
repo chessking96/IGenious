@@ -8,7 +8,7 @@ fast = True # change here to make a quick test
 path = 'examples/'
 
 if fast:
-    precisions =  [-10]
+    precisions =  [10]
 else:
     precisions = [2, 4, 6, 8, 10, 12, 14, 16]
 
@@ -31,9 +31,9 @@ else:
     folders = ['funarc', 'linear', 'newton_root', 'bisection_root', 'DFT16', 'DFT16dd', 'dot', 'matmul', 'simpsons']
     #folders = ['dot']
 if fast:
-    tunings = ['precimonious']
+    tunings = [ 'hifptuner', 'precimonious', 'bla']
 else:
-    tunings = ['precimonious', 'hifptuner']
+    tunings = ['hifptuner', 'precimonious']
 
 if fast:
     input_precisions = ['dd']
@@ -45,9 +45,6 @@ if fast:
     input_ranges = [10]
 else:
     input_ranges = [1, 10, 30]
-
-# Start docker container
-call('docker start hi')
 
 for prec in precisions:
     for max_iter in max_prec_iters:

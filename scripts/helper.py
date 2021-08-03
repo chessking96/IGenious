@@ -125,6 +125,13 @@ def call_background(arg):
             print("Call Error", arg)
             sys.exit(-1)
 
+# Function from precimonious
+def get_dynamic_score(path):
+    with open(path, 'r') as myfile:
+        score = myfile.readline()
+    score = score.strip()
+    return int(score)
+
 
 def getEnvVar(arg):
     return os.getenv(arg)
@@ -148,3 +155,24 @@ def dockerCall30(arg):
 # Docker call with llvm 3.8 activated
 def dockerCall38(arg):
     dockerCall('bash -c "export LLVM_VERSION=llvm-3.8 && export LD_LIBRARY_PATH=/root/llvm-3.8/lib && export CPATH=/root/llvm-3.8/include:. && export PATH=/root/llvm-3.8/bin:/root/llvm-3.8/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin && ' + arg + '"')
+
+
+def print_debug(arg):
+    print(arg)
+
+#https://stackoverflow.com/questions/287871/how-to-print-colored-text-to-the-terminal
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
+
+def print_err(arg):
+    print(bcolors.Fail + arg)
+    sys.exit(-1)

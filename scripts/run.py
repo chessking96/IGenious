@@ -4,7 +4,7 @@ import sys, os
 import json
 import re
 import subprocess
-from helper import call, call_background, getEnvVar, load_json, readConfig
+from helper import call, call_background, getEnvVar, load_json, Config, nameWithoutExtension
 import changeTypes, createChgMain
 
 def main():
@@ -18,32 +18,31 @@ def main():
 
     # Read information from config file
     config_path = os.path.join(path, config_file)
-    print('heere',config_file)
-    file_name, function_name, args, ret, rep, prec, err_type, is_vect, max_iter, tuning, input_prec, input_range = readConfig('../../' + config_file)
+    config = Config.read_config_from_file('../../' + config_file)
 
     # Change variable types in source file
-    changeTypes.run(file_name)
+    changeTypes.run(config.file_name)
 
-    # Add casts to main file
-    createChgMain.run(path, file_name, function_name, args, ret, rep, prec, err_type, search_counter, input_prec, input_range)
+    # Create suitable main file
+    createChgMain.run('../..', nameWithoutExtension(config_file), config)
 
     # Create folder of current run and move created files into it
     new_folder = '../' + str(search_counter)
     call('mkdir ' + new_folder)
-    call('cp cleaned_igen_chg_main.c ' + new_folder + '/cleaned_igen_main.c')
+    call('cp ../igen_setup/cleaned_igen_chg_main.c ' + new_folder + '/cleaned_igen_main.c')
     call('cp ../igen_setup/random_range_igen.c ' + new_folder)
-    call('cp igen_chg_rmd_' + file_name + ' ' + new_folder)
+    call('cp ../igen_setup/igen_chg_rmd_' + config.file_name + ' ' + new_folder)
     call('cp ../igen_setup/CMakeLists.txt ' + new_folder)
 
     #Add IGen dd lib and math lib, as IGen sometimes doesn't add it
-    with open(new_folder + '/igen_chg_rmd_' + file_name, 'r') as myfile:
+    with open(new_folder + '/igen_chg_rmd_' + config.file_name, 'r') as myfile:
         code = myfile.read()
         code = '#include "igen_dd_lib.h"\n' + code
         code = '#include "igen_lib.h"\n' + code
         code = '#include "igen_math.h"\n' + code
         code = '#include "igen_dd_math.h"\n' + code
 
-    with open(new_folder + '/igen_chg_rmd_' + file_name, 'w') as myfile:
+    with open(new_folder + '/igen_chg_rmd_' + config.file_name, 'w') as myfile:
         myfile.write(code)
 
     # Compile and execute
