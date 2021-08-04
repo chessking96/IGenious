@@ -239,7 +239,7 @@ def cleanUp(path, config):
             ret += '\tdd_I lower_bound = _ia_set_dd(temp.lh, temp.ll, -temp.lh, -temp.ll);\n'
             ret += '\tdd_I upper_bound = _ia_set_dd(-temp.uh, -temp.ul, temp.uh, temp.ul);\n'
             ret += '\tdd_I diff = _ia_div_dd(_ia_sub_dd(upper_bound, lower_bound), lower_bound);\n'
-            ret += '\t\tdiff = _ia_neg_dd(diff);\n'
+            #ret += '\t\tdiff = _ia_neg_dd(diff);\n'
             ret += '\tif(_ia_cmpgt_dd(diff, diff_max)){\n'
             ret += '\t\tdiff_max = diff;\n'
             ret += '\t}\n'
