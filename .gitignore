@@ -2,4 +2,5 @@ examples/*/analysis_config_*
 examples/*/config_*.json
 scripts/__pycache__/*
 examples/*/analysis_non_mixed_*
+examples/*/non_mixed*
 benchmarks/__pycache__/

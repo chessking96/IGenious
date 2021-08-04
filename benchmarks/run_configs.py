@@ -8,7 +8,7 @@ fast = True # change here to make a quick test
 path = 'examples/'
 
 if fast:
-    precisions =  [10]
+    precisions =  [8]
 else:
     precisions = [2, 4, 6, 8, 10, 12, 14, 16]
 
@@ -31,7 +31,7 @@ else:
     folders = ['funarc', 'linear', 'newton_root', 'bisection_root', 'DFT16', 'DFT16dd', 'dot', 'matmul', 'simpsons']
     #folders = ['dot']
 if fast:
-    tunings = [ 'hifptuner', 'precimonious', 'bla']
+    tunings = [ 'hifptuner']
 else:
     tunings = ['hifptuner', 'precimonious']
 

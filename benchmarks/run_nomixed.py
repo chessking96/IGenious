@@ -13,11 +13,11 @@ scripts_path = getEnvVar('SOURCE_PATH') + '/scripts'
 #file_names = ['newton_root.c', 'funarc.c', 'DFT16.c', 'DFT16.c', 'dot.c', 'matmul.c', 'simpsons.c', 'bisection_root.c']
 
 #folders = ['linear', 'funarc', 'DFT16', 'DFT16dd', 'dot', 'matmul', 'simpsons', 'newton_root', 'bisection_root']
-folders = ['DFT16']
+folders = ['dot', 'DFT16']
 
 types = ['dd', 'd', 'f']
-vectorized = [True]
-input_ranges = [1]
+vectorized = [False]
+input_ranges = [10]
 input_precisions = ['dd']
 error_types = ['highestAbsolute']
 max_iter = 1

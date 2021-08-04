@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 sys.path.insert(1, os.path.join(sys.path[0], '../scripts'))
 from helper import load_json, nameWithoutExtension
 
-def read_results(path):
+def read_results(path, reps):
     # Helpers to read config_file
     f_type = ['float', 'float*']
     d_type = ['double', 'double*']
@@ -61,7 +61,7 @@ def read_results(path):
         name = str(run) + ' dd:' + str(c_dd) + ' d:' + str(c_d) + ' f:' + str(c_f)
 
 
-        times.append(time)
+        times.append(time / reps)
         sats.append(sat)
         precs.append(prec)
         names.append(name)
