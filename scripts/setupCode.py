@@ -248,8 +248,8 @@ def igenSetup(main_folder, config_name, config):
     createChgMain.run(main_folder, config_name, config)
 
     # For some reason, the main file and function need to be renamed here (will be changed later)
-    call_background('cp ' + config_folder_path + '/igen_setup/cleaned_igen_chg_main.c ' + config_folder_path + '/igen_setup/cleaned_igen_main.c')
-    call_background('cp ' + config_folder_path + '/igen_setup/igen_rmd_' + config.function_name + '.c ' + config_folder_path + '/igen_setup/igen_chg_rmd_' + config.function_name + '.c')
+    call('cp ' + config_folder_path + '/igen_setup/cleaned_igen_chg_main.c ' + config_folder_path + '/igen_setup/cleaned_igen_main.c')
+    call('cp ' + config_folder_path + '/igen_setup/igen_rmd_' + config.file_name + ' ' + config_folder_path + '/igen_setup/igen_chg_rmd_' + config.file_name)
 
     # Test build and execution - measure runtime when there is one repetition
     call('cd ' + igen_path + ' && mkdir build && cd build && cmake .. && make && ./some_app')
