@@ -37,7 +37,7 @@ for err in error_types:
                         config.input_precision = input_precision
                         config.vectorized = vec
                         config.max_iterations = max_iter
-                        config.input_range = input_range
+                        config.rng_range = input_range
                         config.tuning_algo = 'precimonious'
                         config.repetitions = 1
 
