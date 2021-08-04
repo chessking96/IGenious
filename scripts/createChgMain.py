@@ -286,6 +286,9 @@ def cleanUp(path, config):
 
     c_new = re.sub(substitute, code, c_new)
 
+    # Add IGen libraries, as sometimes IGen doesn't add them
+    c_new = '#include "igen_math.h"\n' + c_new
+    c_new = '#include "igen_dd_math.h"\n' + c_new
 
     with open(path + '/cleaned_igen_chg_main.c', 'w') as myfile:
         myfile.write(c_new)
