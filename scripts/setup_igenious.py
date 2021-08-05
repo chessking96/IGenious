@@ -109,8 +109,8 @@ def createMain(prec_path, config):
     with open(os.path.join(prec_path, 'main.c'), 'w') as myfile:
         myfile.write(code)
 
-
-def tunerSetup(main_path, config_name, config):
+# This function sets up Precimonious/HiFPTuner
+def tuner_setup(main_path, config_name, config):
 
     config_folder_path = main_path + '/analysis_' + config_name
 
@@ -271,7 +271,7 @@ def igenSetup(main_folder, config_name, config):
 
 def run(main_folder, config_name, config):
     # Precimonious/HiFPTuner setup
-    tunerSetup(main_folder, config_name, config)
+    tuner_setup(main_folder, config_name, config)
     print_debug("Tuner setup finished.")
 
     # IGen setup

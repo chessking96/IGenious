@@ -3,7 +3,7 @@ import sys, os, re
 sys.path.insert(1, os.path.join(sys.path[0], '../scripts'))
 import changeTypes_nonmixed, rsld, createChgMain
 from helper import print_debug, call, Config, json, getEnvVar, nameWithoutExtension, call_background, get_dynamic_score
-import setupCode
+import setup_igenious
 
 src_path = getEnvVar('SOURCE_PATH') + '/src'
 scripts_path = getEnvVar('SOURCE_PATH') + '/scripts'
@@ -13,11 +13,11 @@ scripts_path = getEnvVar('SOURCE_PATH') + '/scripts'
 #file_names = ['newton_root.c', 'funarc.c', 'DFT16.c', 'DFT16.c', 'dot.c', 'matmul.c', 'simpsons.c', 'bisection_root.c']
 
 #folders = ['linear', 'funarc', 'DFT16', 'DFT16dd', 'dot', 'matmul', 'simpsons', 'newton_root', 'bisection_root']
-folders = ['dot', 'DFT16']
+folders = ['linear', 'dot', 'DFT16dd', 'simpsons', 'funarc']
 
 types = ['dd', 'd', 'f']
 vectorized = [False]
-input_ranges = [10]
+input_ranges =  [1, 10]
 input_precisions = ['dd']
 error_types = ['highestAbsolute']
 max_iter = 1
@@ -59,7 +59,7 @@ for err in error_types:
                         call('mkdir ' + config_folder)
                         # Run setup
                         print_debug('Run setup')
-                        setupCode.run(main_folder, config_name, config)
+                        setup_igenious.run(main_folder, config_name, config)
 
                         # Run precimonious once to get some files
                         tuner_folder_name = '/precimonious_setup'

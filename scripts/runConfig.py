@@ -1,10 +1,12 @@
 #!/usr/bin/python
 import sys, os, time
 from helper import call, call_background, getEnvVar, nameWithoutExtension, Config, dockerCall30, print_debug
-import setupCode
+import setup_igenious
 
 def run(main_folder, config_name, config):
-    t0 = time.time()
+
+    # Start time measurent to measure tuning time
+    t_start = time.time()
 
     # Start docker container (for HiFPTuner)
     print_debug('Starting docker container')
@@ -17,8 +19,8 @@ def run(main_folder, config_name, config):
     call('mkdir ' + config_folder_path)
 
     # Run setup
-    print_debug('Run setup')
-    setupCode.run(main_folder, config_name, config)
+    print_debug('Run setup_igenious')
+    setup_igenious.run(main_folder, config_name, config)
 
     # Run precimonious/hifptuner
     print_debug('Run')
@@ -44,9 +46,9 @@ def run(main_folder, config_name, config):
         call('cd ' + tuner_path + ' && python2 -O ' + hifptuner_path + '/precimonious/scripts/dd2_prof.py ' + file_name_wo + '.bc search_' + file_name_wo
         + '.json config_' + file_name_wo + '.json sorted_partition.json ' + path + ' ' + config_file + ' ' + str(config.max_iterations))
 
-    t1 = time.time()
+    # Stop time measurement and write to file
+    t_end = time.time()
     print('Run succeeded')
-    print('Elapsed time:', str(t1 - t0))
-    # Write tuning time to file
+    print('Elapsed time:', str(t_end - t_start))
     with open(config_folder_path + '/runtime.txt', 'w') as myfile:
-        myfile.write(str(t1 - t0))
+        myfile.write(str(t_end - t_start))

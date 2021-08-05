@@ -65,12 +65,12 @@ def getData(precision, input_type, input_range, vectorized, tuning, folder_name)
 
 def createAllSinglePlots():
 
-    precisions = [8]
+    precisions = [6, 8, 10, 12, 14]
     input_types = ['dd']
-    input_ranges = [10]
+    input_ranges = [1, 10]
     vectorized = ['no']
-    tunings = ['hifptuner']
-    folder_names = ['DFT16', 'dot']
+    tunings = ['precimonious']
+    folder_names = ['linear', 'dot', 'DFT16dd', 'simpsons', 'funarc']
 
     for precision in precisions:
         for input_type in input_types:

@@ -8,12 +8,12 @@ fast = True # change here to make a quick test
 path = 'examples/'
 
 if fast:
-    precisions =  [8]
+    precisions =  [6, 8, 10, 12, 14]
 else:
     precisions = [2, 4, 6, 8, 10, 12, 14, 16]
 
 if fast:
-    max_prec_iters = [5]
+    max_prec_iters = [200]
 else:
     max_prec_iters = [200]
 
@@ -26,12 +26,12 @@ error_types = ['highestAbsolute']
 
 if fast:
     #folders = ['funarc', 'linear', 'newton_root', 'bisection_root', 'DFT16', 'DFT16dd', 'dot', 'matmul', 'simpsons']
-    folders = ['dot', 'DFT16']
+    folders = ['linear', 'dot', 'DFT16dd', 'simpsons', 'funarc']
 else:
     folders = ['funarc', 'linear', 'newton_root', 'bisection_root', 'DFT16', 'DFT16dd', 'dot', 'matmul', 'simpsons']
     #folders = ['dot']
 if fast:
-    tunings = [ 'hifptuner']
+    tunings = [ 'precimonious']
 else:
     tunings = ['hifptuner', 'precimonious']
 
@@ -42,7 +42,7 @@ else:
 
 
 if fast:
-    input_ranges = [10]
+    input_ranges = [1, 10]
 else:
     input_ranges = [1, 10, 30]
 
