@@ -77,6 +77,7 @@ def createMain(path, config):
     temp_decl = '\tu_ddi temp;\n'
     time_decl = '\tclock_t start;\n'
     time_decl += '\tclock_t end;\n'
+    time_decl += '\tlong diff_time = 0;\n'
     # only repeat, if there is random input (maybe this will be dropped, as there is also a time measurement)
     if len(config.function_args) == 0:
         num_reps = 1
@@ -148,6 +149,8 @@ def createMain(path, config):
     timeE = ''
     timeE += '\t}\n'
     timeE += '\tend = clock();\n'
+    #timeE += '\tprintf("Time: %ld' + r"\n" + '", end - start);\n'
+    timeE += '\tdiff_time += end - start;'
 
 
     rep = '\tprintf("BeforeIGenReplacement\\n");\n'
@@ -206,14 +209,14 @@ def cleanUp(path, config):
                 if types[i] == 'long double':
                     varName = 'x_' + str(i)
                     err += '\tfor(int i = 0; i < ' + str(length) + '; i++){\n'
-                    err += '\ttemp.v = ' + varName + '[i];\n'
-                    err += '\t\tdd_I lower_bound = _ia_set_dd(temp.lh, temp.ll, -temp.lh, -temp.ll);\n'
-                    err += '\t\tdd_I upper_bound = _ia_set_dd(-temp.uh, -temp.ul, temp.uh, temp.ul);\n'
-                    err += '\t\tdd_I diff = _ia_div_dd(_ia_sub_dd(upper_bound, lower_bound), lower_bound);\n'
-                    err += '\t\tif(_ia_cmpgt_dd(diff, diff_max)){\n'
-                    err += '\t\t\tdiff_max = diff;\n'
+                    err += '\t\t\ttemp.v = ' + varName + '[i];\n'
+                    err += '\t\t\tdd_I lower_bound = _ia_set_dd(temp.lh, temp.ll, -temp.lh, -temp.ll);\n'
+                    err += '\t\t\tdd_I upper_bound = _ia_set_dd(-temp.uh, -temp.ul, temp.uh, temp.ul);\n'
+                    err += '\t\t\tdd_I diff = _ia_div_dd(_ia_sub_dd(upper_bound, lower_bound), lower_bound);\n'
+                    err += '\t\t\tif(_ia_cmpgt_dd(diff, diff_max)){\n'
+                    err += '\t\t\t\tdiff_max = diff;\n'
+                    err += '\t\t\t}\n'
                     err += '\t\t}\n'
-                    err += '\t}\n'
 
                 else:
                     varName = 'x_' + str(i)
@@ -254,7 +257,6 @@ def cleanUp(path, config):
     ans += '\tif((int)_ia_cmpgt_dd(_ia_set_dd(-th, 0, th, 0), diff_max) == 1){\n'
     ans += '\t\tanswer = "true";\n'
     ans += '\t}\n'
-    ans += '\tlong diff_time = (long)(end - start);\n'
     ans += '\tFILE* file = fopen("score.cov", "w");\n'
     ans += '\tfprintf(file, "%ld' + r"\\n" + '", diff_time);\n'
     ans += '\tfclose(file);\n'

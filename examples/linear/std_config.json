@@ -1,7 +1,7 @@
 {
   "filename": "linear.c",
   "functionname": "gsl_fit_linear",
-  "args": ["long double", 1000, "pointer", "input", "long double", 1000, "pointer", "input", "long double", 1, "pointer", "output", "long double", 1, "pointer", "output", "long double", 1, "pointer", "output", "long double", 1, "pointer", "output", "long double", 1, "pointer", "output", "long double", 1, "pointer", "output"],
+  "args": ["long double", 100, "pointer", "input", "long double", 100, "pointer", "input", "long double", 1, "pointer", "output", "long double", 1, "pointer", "output", "long double", 1, "pointer", "output", "long double", 1, "pointer", "output", "long double", 1, "pointer", "output", "long double", 1, "pointer", "output"],
   "return": ["False", "long double", 1, "scalar"],
   "repetitions": 1,
   "precision": 4,

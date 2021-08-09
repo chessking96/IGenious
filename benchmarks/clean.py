@@ -7,3 +7,4 @@ folders = ['bisection_root', 'DFT16', 'DFT16dd', 'dot', 'funarc', 'linear', 'mat
 for folder in folders:
     call('cd examples/' + folder + ' && find . -name "analysis*" -exec rm -rf {} \;')
     call('cd examples/' + folder + ' && find . -name "config*" -exec rm -rf {} \;')
+    call('cd examples/' + folder + ' && find . -name "non_mixed*" -exec rm -rf {} \;')

@@ -59,6 +59,14 @@ def main():
     call('cp config_temp.json ' + new_folder)
 
 
+    # Delte some files, to save storage
+    call('pwd')
+    run_path = new_folder
+    call('cd ' + run_path + ' && rm -rf CMakeFiles')
+    call('cd ' + run_path + ' && rm -rf CMakeCache.txt')
+    call('cd ' + run_path + ' && rm -rf cmake_install.cmake')
+    call('cd ' + run_path + ' && rm -rf Makefile')
+    call('cd ' + run_path + ' && rm -rf some_app')
 
 if __name__ == "__main__":
     main()

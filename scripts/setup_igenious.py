@@ -17,6 +17,9 @@ def createMain(prec_path, config):
     inc += '#include <stdlib.h>\n'
     inc += '#include <math.h>\n'
 
+    # clang is not happy about aligned_alloc not declared
+    inc += 'void * aligned_alloc(size_t a, size_t b);\n'
+
     # Main init
     init = ''
     init += 'int main(){\n'
@@ -46,7 +49,7 @@ def createMain(prec_path, config):
         # Write code for argument
         if is_pointer:
             args += '\t' + type + '* x_' + str(i) + ';\n'
-            args += '\tx_' + str(i) + ' = aligned_alloc(32, ' + str(length) + ' * sizeof(' + type + '));\n' # sizeof(long double) potentially to big
+            args += '\tx_' + str(i) + ' = (' + type + ' *)aligned_alloc(32, ' + str(length) + ' * sizeof(' + type + '));\n' # sizeof(long double) potentially to big
             args += '\tfor(int i = 0; i < ' + str(length) + '; i++){\n'
             if is_input:
                 if type == "long double" and config.input_precision == 'dd':

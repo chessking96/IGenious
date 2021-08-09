@@ -8,7 +8,7 @@ fast = True # change here to make a quick test
 path = 'examples/'
 
 if fast:
-    precisions =  [6, 8, 10, 12, 14]
+    precisions =  [-10]
 else:
     precisions = [2, 4, 6, 8, 10, 12, 14, 16]
 
@@ -26,10 +26,9 @@ error_types = ['highestAbsolute']
 
 if fast:
     #folders = ['funarc', 'linear', 'newton_root', 'bisection_root', 'DFT16', 'DFT16dd', 'dot', 'matmul', 'simpsons']
-    folders = ['linear', 'dot', 'DFT16dd', 'simpsons', 'funarc']
+    folders = ['simpsons', 'matmul', 'dot', 'DFT16dd', 'DFT16', 'newton_root', 'linear', 'funarc']
 else:
-    folders = ['funarc', 'linear', 'newton_root', 'bisection_root', 'DFT16', 'DFT16dd', 'dot', 'matmul', 'simpsons']
-    #folders = ['dot']
+    folders = ['funarc', 'linear', 'newton_root', 'DFT16', 'DFT16dd', 'dot', 'matmul', 'simpsons']
 if fast:
     tunings = [ 'precimonious']
 else:

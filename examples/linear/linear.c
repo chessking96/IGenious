@@ -41,7 +41,7 @@ void gsl_fit_linear (long double *x, long double *y,
 {
   int xstride = 1;
   int ystride = 1;
-  int n = 1000;
+  int n = 100;
 
 
   long double m_x = 0;
