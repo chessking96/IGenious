@@ -3,7 +3,10 @@
 from helper import call, call_background, getEnvVar, nameWithoutExtension, Config
 import sys, re, json
 
+input_dependent = False
+
 def createMain(path, config):
+    global input_dependent
 
     # includes
     inc = ''
@@ -78,11 +81,15 @@ def createMain(path, config):
     time_decl = '\tclock_t start;\n'
     time_decl += '\tclock_t end;\n'
     time_decl += '\tlong diff_time = 0;\n'
-    # only repeat, if there is random input (maybe this will be dropped, as there is also a time measurement)
-    if len(config.function_args) == 0:
-        num_reps = 1
-    else:
-        num_reps = 100
+
+    for i in range(len(config.function_args)):
+        arg = config.function_args[i]
+        if arg.input_or_output == 'input':
+            input_dependent = True
+
+    num_reps = 1000
+    if input_dependent == False:
+        num_reps = 10
     loop_start = '\tfor(long j = 0; j < ' + str(num_reps) + '; j++){\n'
     input = typedef_text + diff_max_decl + temp_decl + time_decl + loop_start
     for i in range(len(config.function_args)):
@@ -231,9 +238,14 @@ def cleanUp(path, config):
                     err += '\t\t\tdd_I lower_bound = _ia_set_dd(temp.lo, ' + str(0) + ', -temp.lo, -' + str(0) + ');\n'
                     err += '\t\t\tdd_I upper_bound = _ia_set_dd(-temp.up, -' + str(0) + ', temp.up, ' + str(0) + ');\n'
                     err += '\tdd_I diff = _ia_div_dd(_ia_sub_dd(upper_bound, lower_bound), lower_bound);\n'
-                    err += '\t\t\tif(_ia_cmpgt_dd(diff, diff_max)){\n'
-                    err += '\t\t\t\tdiff_max = diff;\n'
-                    err += '\t\t\t}\n'
+                    if input_dependent == True:
+                        err += '\t\t\tif(_ia_cmpgt_dd(diff, diff_max)){\n'
+                        err += '\t\t\t\tdiff_max = diff;\n'
+                        err += '\t\t\t}\n'
+                    else:
+                        err += '\t\t\tif(j == 0)){\n'
+                        err += '\t\t\t\tdiff_max = diff;\n'
+                        err += '\t\t\t}\n'
                     err += '\t\t}\n'
 
         if config.return_info[0] == "True":
@@ -242,10 +254,14 @@ def cleanUp(path, config):
             ret += '\tdd_I lower_bound = _ia_set_dd(temp.lh, temp.ll, -temp.lh, -temp.ll);\n'
             ret += '\tdd_I upper_bound = _ia_set_dd(-temp.uh, -temp.ul, temp.uh, temp.ul);\n'
             ret += '\tdd_I diff = _ia_div_dd(_ia_sub_dd(upper_bound, lower_bound), lower_bound);\n'
-            #ret += '\t\tdiff = _ia_neg_dd(diff);\n'
-            ret += '\tif(_ia_cmpgt_dd(diff, diff_max)){\n'
-            ret += '\t\tdiff_max = diff;\n'
-            ret += '\t}\n'
+            if input_dependent == True:
+                ret += '\tif(_ia_cmpgt_dd(diff, diff_max)){\n'
+                ret += '\t\tdiff_max = diff;\n'
+                ret += '\t}\n'
+            else:
+                ret += '\tif(j==0){\n'
+                ret += '\t\tdiff_max = diff;\n'
+                ret += '\t}\n'
             err += ret
     else:
         print("This error type is not supported:", err_type)

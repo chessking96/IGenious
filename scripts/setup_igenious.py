@@ -259,11 +259,27 @@ def igenSetup(main_folder, config_name, config):
 
     score = get_dynamic_score(igen_path + '/build/score.cov')
     factor = 1;
-    if score < 1000:
-        if score == 0:
-            factor = 1000
+    MIN_RUNTIME = 100000
+    if score < MIN_RUNTIME:
+        if score == 0: # Rerun measurement with higher factor
+            factor = MIN_RUNTIME
+            config.repetitions = factor
+            createChgMain.run(main_folder, config_name, config)
+            call('cp ' + config_folder_path + '/igen_setup/cleaned_igen_chg_main.c ' + config_folder_path + '/igen_setup/cleaned_igen_main.c')
+            call('cp ' + config_folder_path + '/igen_setup/igen_rmd_' + config.file_name + ' ' + config_folder_path + '/igen_setup/igen_chg_rmd_' + config.file_name)
+            call('cd ' + igen_path + ' && mkdir build && cd build && cmake .. && make && ./some_app')
+
+            score = get_dynamic_score(igen_path + '/build/score.cov')
+            if score < MIN_RUNTIME:
+                if score == 0:
+                    factor = MIN_RUNTIME * MIN_RUNTIME
+                else:
+                    factor = int(MIN_RUNTIME / score) * MIN_RUNTIME
+
+
         else:
-            factor = int(1000 / score)
+            factor = int(MIN_RUNTIME / score)
+    print('factor:',factor, score)
 
     # Save new config to file
     config.repetitions = factor

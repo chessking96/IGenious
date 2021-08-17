@@ -4,18 +4,18 @@ sys.path.insert(1, os.path.join(sys.path[0], '../scripts'))
 from helper import call, Config, json, Config, nameWithoutExtension
 import runConfig
 
-fast = True # change here to make a quick test
+fast = False # change here to make a quick test
 path = 'examples/'
 
 if fast:
-    precisions =  [2, 4, 6, 8, 10, 12, 14, 16, 18]
+    precisions =  [10]
 else:
-    precisions = [2, 4, 6, 8, 10, 12, 14, 16]
+    precisions = [6, 8, 10, 12, 11, 13, 14, 15, 16, 2, 3, 4, 5, 7, 9]
 
 if fast:
     max_prec_iters = [100]
 else:
-    max_prec_iters = [200]
+    max_prec_iters = [500]
 
 if fast:
     vectorized = [True, False]
@@ -26,22 +26,23 @@ error_types = ['highestAbsolute']
 
 if fast:
     #folders = ['funarc', 'linear', 'newton_root', 'bisection_root', 'DFT16', 'DFT16dd', 'dot', 'matmul', 'simpsons']
-    folders = ['funarc', 'linear', 'newton_root']
+    folders = ['funarc']
 else:
-    folders = ['funarc', 'linear', 'newton_root', 'DFT16', 'DFT16dd', 'dot', 'matmul', 'simpsons']
+    folders = ['funarc', 'linear', 'newton_root', 'DFT16', 'dot', 'matmul', 'simpsons']
+
 if fast:
-    tunings = ['precimonious', 'hifptuner']
+    tunings = ['precimonious']
 else:
     tunings = ['hifptuner', 'precimonious']
 
 if fast:
-    input_precisions = ['dd', 'd']
+    input_precisions = ['dd']
 else:
     input_precisions = ['dd', 'd']
 
 
 if fast:
-    input_ranges = [1, 10]
+    input_ranges = [1]
 else:
     input_ranges = [1, 10, 30]
 
