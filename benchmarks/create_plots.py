@@ -1,23 +1,11 @@
 #!/usr/bin/env python
-
-import read_config as rc
-import sys, math
+import sys, os, math
+sys.path.insert(1, os.path.join(sys.path[0], '../scripts'))
 from helper import nameWithoutExtension, Config
 import matplotlib.pyplot as plt
 import matplotlib.ticker
 from matplotlib.ticker import MaxNLocator
 
-class OOMFormatter(matplotlib.ticker.ScalarFormatter):
-    def _init_(self, order=0, fformat="%1.1f", offset=True, mathText=True):
-        self.oom = order
-        self.fformat = fformat
-        matplotlib.ticker.ScalarFormatter._init_(self,useOffset=offset,useMathText=mathText)
-    def _set_order_of_magnitude(self):
-        self.orderOfMagnitude = self.oom
-    def _set_format(self, vmin=None, vmax=None):
-        self.format = self.fformat
-        if self._useMathText:
-             self.format = r'$\mathdefault{%s}$' % self.format
 
 def getFixedData(input_precision, rng_range, vectorized, folder_name):
     types_fix = ['dd', 'd', 'f']
@@ -57,39 +45,20 @@ def getFixedData(input_precision, rng_range, vectorized, folder_name):
 
     return precs_fix, times_fix
 
-def getData(precision, input_type, input_range, vectorized, tuning, folder_name):
-    # Build path
-    config_base_name = 'config_' + str(precision) + '#' + str(input_type) + '#' + str(input_range) + '#'
-    if vectorized:
-        config_base_name += 'vec#'
-    if tuning == 'precimonious':
-        config_name = config_base_name + 'precimonious'
+
+def create_single():
+    if fast:
+        precisions = [10]
+        input_types = ['dd']
+        input_ranges = [10]
+        vectorized = [True]
+        folder_names = [['simpsons', 'matmul'], ['dot', 'DFT16'], ['funarc', 'linear'], ['newton_root']]
     else:
-        config_name = config_base_name + 'hifptuner'
-    name_wo_ext = config_name
-
-    path = 'examples/' + folder_name + '/analysis_' + name_wo_ext
-
-    # Get number of repetions from configuration file
-    config_file_path = 'examples/' + folder_name + '/' + config_name
-
-    config_file_path += '.json'
-
-    reps = Config.read_config_from_file(config_file_path).repetitions
-
-    # Get data
-    return rc.read_results(path, reps)
-
-
-
-def createAllSinglePlots():
-    precisions = [6, 8, 10, 12]
-
-    input_types = ['d', 'dd']
-    #tunings = ['precimonious', 'hifptuner']
-    input_ranges = [10]
-    vectorized = [True, False]
-    folder_names = [['simpsons', 'matmul'], ['dot', 'DFT16'], ['funarc', 'linear'], ['newton_root']]
+        precisions = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+        input_types = ['d', 'dd']
+        input_ranges = [10]
+        vectorized = [True, False]
+        folder_names = [['simpsons', 'matmul'], ['dot', 'DFT16'], ['funarc', 'linear'], ['newton_root']]
 
     #for input_type in input_types:
     for input_range in input_ranges:
@@ -109,7 +78,6 @@ def createAllSinglePlots():
                         folder = folder_one[folder_j]
                         ax[folder_i, folder_j].xaxis.set_major_locator(MaxNLocator(integer=True))
                         ax[folder_i, folder_j].yaxis.set_major_locator(MaxNLocator(integer=True))
-                        #ax[folder_i, folder_j].set_ylim(0, 12)
 
 
                         times_p = []
@@ -144,11 +112,6 @@ def createAllSinglePlots():
                                 times_h.append(float(result[1]))
                                 precs_h.append(float(result[2]))
 
-
-
-                        #times_d, precs_d, names_d = getData(precision, 'd', input_range, vec, tuning, folder)
-                        #times_dd, precs_dd, names_dd = getData(precision, 'dd', input_range, vec, tuning, folder)
-
                         precs_fix_p, times_fix_p = getFixedData(in_type, input_range, vec, folder)
 
 
@@ -167,7 +130,6 @@ def createAllSinglePlots():
 
 
                         ax[folder_i, folder_j].set_title(folder, size=18)
-                        #ax[folder_i, folder_j].yaxis.major.formatter.set_powerlimits((0,0))
                         ax[folder_i, folder_j].set_ylabel('speedup', fontsize=14)
                         ax[folder_i, folder_j].set_xlabel('#correct bits', fontsize=14)
 
@@ -182,15 +144,14 @@ def createAllSinglePlots():
 
 
                 plt.legend([l1, l3], ['IGenious', 'Fixed precision'], bbox_to_anchor=(2.1, 0.8), fontsize=16)
-                plt.savefig('plots_new/singles/single_' + in_type + str(vec) + str(input_range) + '.png')
+                plt.savefig('plots/singles/single_' + in_type + str(vec) + str(input_range) + '.png')
                 plt.close('all')
 
 
-def createPrecVsHifptuner():
-    precisions = [6, 8, 10, 12]
+def create_tuner():
+    precisions = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
 
     input_types = ['d', 'dd']
-    #tunings = ['precimonious', 'hifptuner']
     input_ranges = [10]
     vectorized = [True, False]
     folder_names = [['simpsons', 'matmul'], ['dot', 'DFT16'], ['funarc', 'linear'], ['newton_root']]
@@ -249,10 +210,6 @@ def createPrecVsHifptuner():
                                 precs_h.append(float(result[2]))
 
 
-
-                        #times_d, precs_d, names_d = getData(precision, 'd', input_range, vec, tuning, folder)
-                        #times_dd, precs_dd, names_dd = getData(precision, 'dd', input_range, vec, tuning, folder)
-
                         precs_fix_p, times_fix_p = getFixedData(in_type, input_range, vec, folder)
 
 
@@ -271,7 +228,6 @@ def createPrecVsHifptuner():
 
 
                         ax[folder_i, folder_j].set_title(folder, size=18)
-                        #ax[folder_i, folder_j].yaxis.major.formatter.set_powerlimits((0,0))
                         ax[folder_i, folder_j].set_ylabel('speedup', fontsize=14)
                         ax[folder_i, folder_j].set_xlabel('#correct bits', fontsize=14)
 
@@ -288,12 +244,12 @@ def createPrecVsHifptuner():
 
 
                 plt.legend([l1, l2, l3], ['Precimonious', 'HiFPTuner', 'Fixed precision'], bbox_to_anchor=(2.1, 0.9), fontsize=16)
-                plt.savefig('plots_new/pVSh/tuner_' + in_type + str(vec) + str(input_range) + '.png')
+                plt.savefig('plots/pVSh/tuner_' + in_type + str(vec) + str(input_range) + '.png')
                 plt.close('all')
 
 
-def createddVSd():
-    precisions = [6, 8, 10, 12]
+def create_input():
+    precisions = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
 
     #input_types = ['dd']
     tunings = ['precimonious', 'hifptuner']
@@ -308,7 +264,6 @@ def createddVSd():
 
                 fig, ax = plt.subplots(2,2, figsize=(10,7.5))
                 fig.tight_layout()
-                #fig.delaxes(ax[3, 1])
 
                 plt.subplots_adjust(hspace=0.7, wspace=0.3, top=0.94, left=0.08, bottom=0.3)
 
@@ -320,7 +275,6 @@ def createddVSd():
                         folder = folder_one[folder_j]
                         ax[folder_i, folder_j].xaxis.set_major_locator(MaxNLocator(integer=True))
                         ax[folder_i, folder_j].yaxis.set_major_locator(MaxNLocator(integer=True))
-                        #ax[folder_i, folder_j].set_ylim(0, 12)
 
 
                         times_d = []
@@ -356,10 +310,6 @@ def createddVSd():
                                 precs_dd.append(float(result[2]))
 
 
-
-                        #times_d, precs_d, names_d = getData(precision, 'd', input_range, vec, tuning, folder)
-                        #times_dd, precs_dd, names_dd = getData(precision, 'dd', input_range, vec, tuning, folder)
-
                         precs_fix_dd, times_fix_dd = getFixedData('dd', input_range, vec, folder)
                         precs_fix_d, times_fix_d = getFixedData('d', input_range, vec, folder)
 
@@ -381,7 +331,6 @@ def createddVSd():
                             times_fix_dd[i] = time_ref / times_fix_dd[i]
 
                         ax[folder_i, folder_j].set_title(folder, size=18)
-                        #ax[folder_i, folder_j].yaxis.major.formatter.set_powerlimits((0,0))
                         ax[folder_i, folder_j].set_ylabel('speedup', fontsize=14)
                         ax[folder_i, folder_j].set_xlabel('#correct bits', fontsize=14)
 
@@ -400,12 +349,12 @@ def createddVSd():
 
 
                 plt.legend([l1, l2, l3, l4], ['Double input', 'Double-double input', 'Fixed precision double input', 'Fixed precision double-double input'], bbox_to_anchor=(0.5, -0.4), fontsize=16)
-                plt.savefig('plots_new/ddVSd/input_' + str(vec) + tuner + str(input_range) + '.png')
+                plt.savefig('plots/ddVSd/input_' + str(vec) + tuner + str(input_range) + '.png')
                 plt.close('all')
 
 
-def createvecVSnovec():
-    precisions = [6, 8, 10, 12]
+def create_vec():
+    precisions = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
     input_types = ['dd', 'd']
     tunings = ['precimonious', 'hifptuner']
     input_ranges = [10]
@@ -431,8 +380,6 @@ def createvecVSnovec():
                         folder = folder_one[folder_j]
                         ax[folder_i, folder_j].xaxis.set_major_locator(MaxNLocator(integer=True))
                         ax[folder_i, folder_j].yaxis.set_major_locator(MaxNLocator(integer=True))
-                        #ax[folder_i, folder_j].set_ylim(0, 12)
-
 
                         times_v = []
                         precs_v = []
@@ -454,8 +401,6 @@ def createvecVSnovec():
 
                         for prec in precisions:
                             config_name = 'config_' + str(prec) + '#' + input_type + '#' + str(input_range)
-                            #if vec:
-                            #    config_name += '#vec'
                             config_name += '#' + tuner
                             config_folder = 'analysis_' + config_name
                             path = 'examples/' + folder + '/' + config_folder
@@ -504,12 +449,17 @@ def createvecVSnovec():
 
 
                 plt.legend([l1, l2, l3, l4], ['Vectorized', 'Non-vectorized', 'Fixed precision vectorized', 'Fixed precision non-vectorized'], bbox_to_anchor=(1.2, 1.0), fontsize=16)
-                plt.savefig('plots_new/vVSn/vec_' + tuner + input_type + str(input_range) + '.png')
+                plt.savefig('plots/vVSn/vec_' + tuner + input_type + str(input_range) + '.png')
                 plt.close('all')
 
 
 if __name__ == "__main__":
-    #createAllSinglePlots()
-    #createPrecVsHifptuner()
-    #createddVSd()
-    createvecVSnovec()
+    fast = True
+
+    if fast:
+        create_single()
+    else:
+        create_single()
+        create_tuner()
+        create_input()
+        create_vec()

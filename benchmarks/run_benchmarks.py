@@ -2,49 +2,32 @@
 import sys, os
 sys.path.insert(1, os.path.join(sys.path[0], '../scripts'))
 from helper import call, Config, json, Config, nameWithoutExtension
-import runConfig
+import run_igenious
 
-fast = False # change here to make a quick test
-path = 'examples/'
+fast = True # change here to make a quick test
 
 if fast:
     precisions =  [10]
+    max_prec_iters = [1]
+    vectorized = [True]
+    error_types = ['highestAbsolute']
+    folders = ['funarc', 'DFT16', 'dot']
+    #folders = ['funarc', 'linear', 'newton_root', 'DFT16', 'dot', 'matmul', 'simpsons']
+    tunings = ['precimonious']
+    #tunings = ['hifptuner', 'precimonious']
+    input_precisions = ['dd']
+    input_ranges = [10]
 else:
     precisions = [6, 8, 10, 12, 11, 13, 14, 15, 16, 2, 3, 4, 5, 7, 9]
-
-if fast:
-    max_prec_iters = [100]
-else:
     max_prec_iters = [500]
-
-if fast:
     vectorized = [True, False]
-else:
-    vectorized = [True, False]
-
-error_types = ['highestAbsolute']
-
-if fast:
-    #folders = ['funarc', 'linear', 'newton_root', 'bisection_root', 'DFT16', 'DFT16dd', 'dot', 'matmul', 'simpsons']
-    folders = ['funarc']
-else:
+    error_types = ['highestAbsolute']
     folders = ['funarc', 'linear', 'newton_root', 'DFT16', 'dot', 'matmul', 'simpsons']
-
-if fast:
-    tunings = ['precimonious']
-else:
     tunings = ['hifptuner', 'precimonious']
-
-if fast:
-    input_precisions = ['dd']
-else:
     input_precisions = ['dd', 'd']
+    input_ranges = [10]
 
-
-if fast:
-    input_ranges = [1]
-else:
-    input_ranges = [1, 10, 30]
+path = 'examples/'
 
 for prec in precisions:
     for max_iter in max_prec_iters:
@@ -85,4 +68,4 @@ for prec in precisions:
 
                                 # Run config
                                 print('Run:', folder_name, config_name)
-                                runConfig.run(main_folder, config_name, config)
+                                run_igenious.run(main_folder, config_name, config)

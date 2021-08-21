@@ -4,13 +4,22 @@ import sys, os
 sys.path.insert(1, os.path.join(sys.path[0], '../scripts'))
 from helper import call, Config
 
-folders = ['funarc', 'linear', 'newton_root', 'DFT16', 'dot', 'matmul', 'simpsons']
-precisions = [6, 8, 10, 12]
-input_types = ['d', 'dd']
-input_precisions = [1, 10, 30]
-#input_precisions = [10]
-vectorized = [True, False]
-tuning_algos = ['precimonious', 'hifptuner']
+fast = True
+
+if fast:
+    folders = ['funarc', 'linear', 'newton_root', 'DFT16', 'dot', 'matmul', 'simpsons']
+    precisions = [10]
+    input_types = ['dd']
+    input_precisions = [10]
+    vectorized = [True]
+    tuning_algos = ['precimonious', 'hifptuner']
+else:
+    folders = ['funarc', 'linear', 'newton_root', 'DFT16', 'dot', 'matmul', 'simpsons']
+    precisions = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+    input_types = ['d', 'dd']
+    input_precisions = [10]
+    vectorized = [True, False]
+    tuning_algos = ['precimonious', 'hifptuner']
 
 precimonious_time = dict()
 hifptuner_time = dict()

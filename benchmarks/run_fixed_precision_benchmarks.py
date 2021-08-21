@@ -1,25 +1,30 @@
 #!/usr/bin/python
 import sys, os, re
 sys.path.insert(1, os.path.join(sys.path[0], '../scripts'))
-import changeTypes_nonmixed, rsld, createChgMain
+import rsld, create_main
 from helper import print_debug, call, Config, json, getEnvVar, nameWithoutExtension, call_background, get_dynamic_score
 import setup_igenious
 
 src_path = getEnvVar('SOURCE_PATH') + '/src'
 scripts_path = getEnvVar('SOURCE_PATH') + '/scripts'
 
-#folders = ['DFT16', 'DFT16dd', 'dot', 'matmul', 'simpsons']
-#folders = ['newton_root', 'funarc', 'DFT16', 'DFT16dd', 'dot', 'matmul', 'simpsons', 'bisection_root']
-#file_names = ['newton_root.c', 'funarc.c', 'DFT16.c', 'DFT16.c', 'dot.c', 'matmul.c', 'simpsons.c', 'bisection_root.c']
+fast = True
 
-#folders = ['linear', 'funarc', 'DFT16', 'DFT16dd', 'dot', 'matmul', 'simpsons', 'newton_root', 'bisection_root']
-folders = ['funarc', 'linear', 'newton_root', 'DFT16', 'dot', 'matmul', 'simpsons']
+if fast:
+    folders = ['funarc', 'linear', 'newton_root', 'DFT16', 'dot', 'matmul', 'simpsons']
+    types = ['dd', 'd', 'f']
+    vectorized = [True]
+    input_ranges =  [10]
+    input_precisions = ['dd']
+    error_types = ['highestAbsolute']
+else:
+    folders = ['funarc', 'linear', 'newton_root', 'DFT16', 'dot', 'matmul', 'simpsons']
+    types = ['dd', 'd', 'f']
+    vectorized = [True, False]
+    input_ranges =  [10]
+    input_precisions = ['dd', 'd']
+    error_types = ['highestAbsolute']
 
-types = ['dd', 'd', 'f']
-vectorized = [True, False]
-input_ranges =  [1, 10, 30]
-input_precisions = ['dd', 'd']
-error_types = ['highestAbsolute']
 max_iter = 1
 
 for err in error_types:
@@ -89,11 +94,24 @@ for err in error_types:
 
                         with open(config_folder + '/precimonious_setup/config_temp.json', 'w') as myfile:
                             myfile.write(text_new)
-                        # changeTypes must be called via special file
-                        changeTypes_nonmixed.run(config.file_name, folder, config_name)
+
+                        # changeTypes
+                        file_name = config.file_name
+                        scripts_path = getEnvVar('SOURCE_PATH') + '/scripts'
+                        igen_src = getEnvVar('IGEN_PATH')
+
+                        # Make sure, that the clang_ast_vistor latest version is compiled
+                        call_background('cd ' + scripts_path + '/changeTypes && cmake . && make')
+
+                        # Run clang_ast_visitor
+                        call_background('cd examples/' + folder + '/analysis_' + config_name + '/precimonious_setup && ' + scripts_path + '/changeTypes/clang_ast_visitor ../igen_setup/rmd_' + file_name + ' -- ' + ' >  ../igen_setup/chg_rmd_' + file_name)
+
+                        # Call IGen
+                        call_background('python3 ' + igen_src + '/bin/igen.py examples/' + folder + '/analysis_' + config_name + '/igen_setup/chg_rmd_' + file_name)
+
                         # Create suitable main file
                         call_background('cp examples/' + folder + '/analysis_' + config_name + '/precimonious_setup/funargs.txt .')
-                        createChgMain.run('examples/' + folder, config_name, config)
+                        create_main.run('examples/' + folder, config_name, config)
                         call_background('rm -rf funargs.txt')
 
                         # Some renaming necessary (Will be removed)
