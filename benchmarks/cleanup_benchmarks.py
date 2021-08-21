@@ -15,3 +15,9 @@ for folder in folders:
     call('cd examples/' + folder + ' && find . -name "analysis*" -prune -exec rm -rf {} \;')
     call('cd examples/' + folder + ' && find . -name "config*" -prune -exec rm -rf {} \;')
     call('cd examples/' + folder + ' && find . -name "non_mixed*" -prune -exec rm -rf {} \;')
+
+call('cd plots && rm -rf ddVSd/*')
+call('cd plots && rm -rf pVSh/*')
+call('cd plots && rm -rf singles/*')
+call('cd plots && rm -rf vVSn/*')
+call('cd plots && rm -rf runtimes.txt')
