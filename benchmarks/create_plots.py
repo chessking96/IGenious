@@ -24,7 +24,7 @@ def getFixedData(input_precision, rng_range, vectorized, folder_name):
             config_file_path += '#vec'
         config_file_path += '.json'
 
-        reps = Config.read_config_from_file(config_file_path).repetitions
+        reps = Config.read_config_from_file_old(config_file_path).repetitions
 
 
         if vectorized:
