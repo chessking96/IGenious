@@ -7,7 +7,7 @@ input_dependent = False
 
 def createMain(path, config):
     global input_dependent
-
+    input_dependent = False
     # includes
     inc = ''
     inc += '#include "random_range_igen.c"\n'
@@ -87,7 +87,7 @@ def createMain(path, config):
         if arg.input_or_output == 'input':
             input_dependent = True
 
-    num_reps = 1000
+    num_reps = 100
     if input_dependent == False:
         num_reps = 10
     loop_start = '\tfor(long j = 0; j < ' + str(num_reps) + '; j++){\n'

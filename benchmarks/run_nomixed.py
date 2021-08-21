@@ -97,7 +97,7 @@ for err in error_types:
                         call_background('rm -rf funargs.txt')
 
                         # Some renaming necessary (Will be removed)
-                        call_background('cp  examples/' + folder + '/analysis_' + config_name + '/igen_setup/cleaned_igen_chg_main.c examples/' + folder + '/analysis_' + config_name + '/igen_setup/cleaned_igen_main.c ')
+                        call_background('cp examples/' + folder + '/analysis_' + config_name + '/igen_setup/cleaned_igen_chg_main.c examples/' + folder + '/analysis_' + config_name + '/igen_setup/cleaned_igen_main.c ')
 
                         # Make and run configuration
                         call_background('cd examples/' + folder + '/analysis_' + config_name + '/igen_setup && cmake . && make && ./some_app')
