@@ -116,6 +116,8 @@ class ASTMainVisitor : public RecursiveASTVisitor<ASTMainVisitor> {
 
         auto tup = make_tuple(typeBeg, typeEnd, varName, initBeg, initEnd, begin, end);
         varList->push_back(tup);
+
+
         //has definition? has init?
         //processedLocation = varLocRange.getEnd();
         return true;

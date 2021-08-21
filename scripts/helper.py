@@ -78,6 +78,7 @@ class Config:
 
         return config
 
+
     @staticmethod
     def read_config_from_file(file_path):
         with open(file_path, 'r') as myfile:
@@ -122,6 +123,64 @@ class Config:
             tuning = 'hifptuner'
         try:
             input_prec = data["input_precision"]
+        except:
+            input_prec = 'dd'
+        try:
+            input_range = data["input_range"]
+        except:
+            input_range = 10
+        try:
+            rep_input = data["repetitions_input"]
+        except:
+            rep_input = 100
+
+        return Config(file_name, function_name, args, ret, rep, prec, err_type
+        , use_vectorized, max_iterations, tuning, input_prec, input_range, rep_input)
+
+    @staticmethod
+    def read_config_from_file_old(file_path):
+        with open(file_path, 'r') as myfile:
+            data = json.load(myfile)
+        file_name = data['filename']
+        function_name = data['functionname']
+        args_list = data['args']
+
+        # Read arguments
+        if len(args_list) % 4 != 0:
+            printf('Arguments in config file are not valid.')
+            sys.exit(-1)
+        args = []
+        for i in range(int(len(args_list) / 4)):
+            args.append(Argument(args_list[4 * i + 0], args_list[4 * i + 1]
+            , args_list[4 * i + 2], args_list[4 * i + 3]))
+
+        ret = data["return"]
+        try:
+            rep = data["repetitions"]
+        except:
+            rep = 1
+        try:
+            prec = data["precision"]
+        except:
+            prec = 10
+        try:
+            err_type = data["errortype"]
+        except:
+            err_type = 'highest_relative'
+        try:
+            use_vectorized = data["vectorized"]
+        except:
+            use_vectorized = True
+        try:
+            max_iterations = data["max_iterations"]
+        except:
+            max_iterations = 1000
+        try:
+            tuning = data["tuning"]
+        except:
+            tuning = 'hifptuner'
+        try:
+            input_prec = data["input_prec"]
         except:
             input_prec = 'dd'
         try:

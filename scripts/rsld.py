@@ -24,8 +24,6 @@ def run(file_path, file_name):
         sys.exit(-1)
 
     vars = {}
-
-
     with open(os.path.join(file_path, file_name), 'r') as myfile:
         code = myfile.read().split('\n')
 
@@ -48,14 +46,22 @@ def run(file_path, file_name):
         endLine = int(end.split(':')[-2])
         endCol =  int(end.split(':')[-1])
 
-        # todo: get info from initBeg and initEnd
+        try:
+            initbeginLine = int(initBeg.split(':')[-2])
+            initbeginCol =  int(initBeg.split(':')[-1])
+            initendLine = int(initEnd.split(':')[-2])
+            initendCol =  int(initEnd.split(':')[-1])
+        except:
+            initbeginLine = -1
+            initbeginCol = -1
+            initendLine = -1
+            initendCol = -1
 
         # insert into dict
         currentVal = vars.get((typeBegLine, typeBegCol, typeEndLine, typeEndCol))
         if currentVal == None:
             currentVal = []
-        vars[(typeBegLine, typeBegCol, typeEndLine, typeEndCol)] = currentVal + [(varName, beginLine, beginCol, endLine, endCol)]
-
+        vars[(typeBegLine, typeBegCol, typeEndLine, typeEndCol)] = currentVal + [(varName, beginLine, beginCol, endLine, endCol, initbeginLine, initbeginCol, initendLine, initendCol)]
 
     # Build new code blocks
     blocks = {}
@@ -64,7 +70,6 @@ def run(file_path, file_name):
         (tbl, tbc, tel, tec) = var
         varNames = vars[var]
 
-
         # do nothing, if it is not a same line decl
         if len(vars[var]) == 1:
             continue
@@ -72,7 +77,7 @@ def run(file_path, file_name):
         # same line decl
         minLine = 1000000 # some large integer
         maxLine = -1
-        for (name, beginLine, beginCol, endLine, endCol) in varNames:
+        for (name, beginLine, beginCol, endLine, endCol, initBeginLine, initBeginCol, initEndLine, initEndCol) in varNames:
             # get type
             start = tbc
             end  = tec
@@ -91,7 +96,22 @@ def run(file_path, file_name):
                     break
                 i += 1
 
-            decl = type + name + ";"
+            decl = type + name
+
+            #get init (if exist)
+            if initBeginLine != -1:
+                init = ''
+                i = initBeginCol - 1
+                while True:
+                    letter = code[initBeginLine-1][i]
+                    if (i >= initEndCol) and (letter.isspace() or (letter == ',') or (letter == ';')):
+                        break
+                    init += code[initBeginLine-1][i]
+                    i += 1
+                decl += ' = ' + init
+
+            decl += ";"
+
             block += decl + '\n';
 
         blocks[minLine] = (block, minLine, maxLine)
