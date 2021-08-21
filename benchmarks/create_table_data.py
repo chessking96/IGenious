@@ -4,17 +4,17 @@ import sys, os
 sys.path.insert(1, os.path.join(sys.path[0], '../scripts'))
 from helper import call, Config
 
-fast = True
+fast = False
 
 if fast:
-    folders = ['funarc', 'linear', 'newton_root', 'DFT16', 'dot', 'matmul', 'simpsons']
+    folders = ['arclength', 'linear', 'newton_root', 'DFT16', 'dot', 'matmul', 'simpsons']
     precisions = [10]
     input_types = ['dd']
     input_precisions = [10]
     vectorized = [True]
     tuning_algos = ['precimonious', 'hifptuner']
 else:
-    folders = ['funarc', 'linear', 'newton_root', 'DFT16', 'dot', 'matmul', 'simpsons']
+    folders = ['arclength', 'linear', 'newton_root', 'DFT16', 'dot', 'matmul', 'simpsons']
     precisions = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
     input_types = ['d', 'dd']
     input_precisions = [10]
@@ -72,7 +72,7 @@ for folder in folders:
                     with open(path + '/number_tunings.txt', 'r') as myfile:
                         number = int(myfile.read())
 
-                    print(time, number, folder, tuner)
+                    #print(time, number, folder, tuner)
                     hifptuner_time[folder] += time
                     hifptuner_number[folder] += number
 
@@ -85,3 +85,5 @@ for folder in folders:
     print_string += 'hi' + ' ' + folder + ' ' + str(hifptuner_time[folder]) + ' ' + str(hifptuner_number[folder]) + '\n'
 
 print(print_string)
+with open('plots/runtimes.txt', 'w') as myfile:
+    myfile.write(print_string)

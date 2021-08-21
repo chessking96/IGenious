@@ -37,7 +37,7 @@ def getFixedData(input_precision, rng_range, vectorized, folder_name):
             prec = float(myfile.read())
 
         # temporary issue
-        if folder_name == 'funarc' or folder_name == 'simpsons' or folder_name == 'newton_root':
+        if folder_name == 'arclength' or folder_name == 'simpsons' or folder_name == 'newton_root':
             time /= 10
 
         times_fix.append(time / reps)
@@ -52,13 +52,13 @@ def create_single():
         input_types = ['dd']
         input_ranges = [10]
         vectorized = [True]
-        folder_names = [['simpsons', 'matmul'], ['dot', 'DFT16'], ['funarc', 'linear'], ['newton_root']]
+        folder_names = [['simpsons', 'matmul'], ['dot', 'DFT16'], ['arclength', 'linear'], ['newton_root']]
     else:
         precisions = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
         input_types = ['d', 'dd']
         input_ranges = [10]
         vectorized = [True, False]
-        folder_names = [['simpsons', 'matmul'], ['dot', 'DFT16'], ['funarc', 'linear'], ['newton_root']]
+        folder_names = [['simpsons', 'matmul'], ['dot', 'DFT16'], ['arclength', 'linear'], ['newton_root']]
 
     #for input_type in input_types:
     for input_range in input_ranges:
@@ -154,7 +154,7 @@ def create_tuner():
     input_types = ['d', 'dd']
     input_ranges = [10]
     vectorized = [True, False]
-    folder_names = [['simpsons', 'matmul'], ['dot', 'DFT16'], ['funarc', 'linear'], ['newton_root']]
+    folder_names = [['simpsons', 'matmul'], ['dot', 'DFT16'], ['arclength', 'linear'], ['newton_root']]
 
     #for input_type in input_types:
     for input_range in input_ranges:
@@ -359,7 +359,7 @@ def create_vec():
     tunings = ['precimonious', 'hifptuner']
     input_ranges = [10]
     #vectorized = [True, False]
-    folder_names = [['simpsons', 'matmul'], ['dot', 'DFT16'], ['funarc', 'linear'], ['newton_root']]
+    folder_names = [['simpsons', 'matmul'], ['dot', 'DFT16'], ['arclength', 'linear'], ['newton_root']]
 
     for input_type in input_types:
         for input_range in input_ranges:
@@ -454,7 +454,7 @@ def create_vec():
 
 
 if __name__ == "__main__":
-    fast = True
+    fast = False
 
     if fast:
         create_single()

@@ -11,14 +11,14 @@ scripts_path = getEnvVar('SOURCE_PATH') + '/scripts'
 fast = True
 
 if fast:
-    folders = ['funarc', 'linear', 'newton_root', 'DFT16', 'dot', 'matmul', 'simpsons']
+    folders = ['arclength', 'linear', 'newton_root', 'DFT16', 'dot', 'matmul', 'simpsons']
     types = ['dd', 'd', 'f']
     vectorized = [True]
     input_ranges =  [10]
     input_precisions = ['dd']
     error_types = ['highestAbsolute']
 else:
-    folders = ['funarc', 'linear', 'newton_root', 'DFT16', 'dot', 'matmul', 'simpsons']
+    folders = ['arclength', 'linear', 'newton_root', 'DFT16', 'dot', 'matmul', 'simpsons']
     types = ['dd', 'd', 'f']
     vectorized = [True, False]
     input_ranges =  [10]

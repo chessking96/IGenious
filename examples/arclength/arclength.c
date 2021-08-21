@@ -1,7 +1,7 @@
 #include "math.h"
 
 
-long double funarc()
+long double arclength()
 {
   int i;
   long double h, t1, t2, dppi;

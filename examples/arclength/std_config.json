@@ -1,6 +1,6 @@
 {
-  "filename": "funarc.c",
-  "functionname": "funarc",
+  "filename": "arclength.c",
+  "functionname": "arclength",
   "args": [],
   "repetitions": 1,
   "precision": 7,

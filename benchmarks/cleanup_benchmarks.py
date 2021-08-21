@@ -4,7 +4,7 @@ import sys, os
 sys.path.insert(1, os.path.join(sys.path[0], '../scripts'))
 from helper import call
 
-folders = ['bisection_root', 'DFT16', 'DFT16dd', 'dot', 'funarc', 'linear', 'matmul', 'newton_root', 'simpsons']
+folders = ['bisection_root', 'DFT16', 'DFT16dd', 'dot', 'arclength', 'linear', 'matmul', 'newton_root', 'simpsons']
 
 print("WARNING: This deletes all benchmark results! Type 'yes' to continue.")
 input = input()
