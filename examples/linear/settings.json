@@ -1,0 +1,6 @@
+{
+  "file_name": "linear.c",
+  "entry_function": "gsl_fit_linear",
+  "arguments": ["long double", 100, "pointer", "input", "long double", 100, "pointer", "input", "long double", 1, "pointer", "output", "long double", 1, "pointer", "output", "long double", 1, "pointer", "output", "long double", 1, "pointer", "output", "long double", 1, "pointer", "output", "long double", 1, "pointer", "output"],
+  "return": ["False", "long double", 1, "scalar"]
+}

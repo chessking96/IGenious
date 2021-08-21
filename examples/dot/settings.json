@@ -1,0 +1,6 @@
+{
+  "file_name": "dot.c",
+  "entry_function": "dot",
+  "arguments": ["long double", 100000, "pointer", "input", "long double", 100000, "pointer", "input"],
+  "return": ["True", "long double", 1, "scalar"]
+}

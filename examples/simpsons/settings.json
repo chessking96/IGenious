@@ -1,0 +1,6 @@
+{
+	"file_name": "simpsons.c",
+	"entry_function": "simpsons",
+	"arguments": [],
+	"return": ["True", "long double", 1, "scalar"]
+}

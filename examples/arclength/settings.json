@@ -1,0 +1,6 @@
+{
+  "file_name": "arclength.c",
+  "entry_function": "arclength",
+  "arguments": [],
+  "return": ["True", "long double", 1, "scalar"]
+}

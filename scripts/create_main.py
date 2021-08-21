@@ -87,9 +87,12 @@ def createMain(path, config):
         if arg.input_or_output == 'input':
             input_dependent = True
 
-    num_reps = 100
+    num_reps = config.repetitions_input
+
+    # Temporary solution for benchmark
     if input_dependent == False:
         num_reps = 10
+
     loop_start = '\tfor(long j = 0; j < ' + str(num_reps) + '; j++){\n'
     input = typedef_text + diff_max_decl + temp_decl + time_decl + loop_start
     for i in range(len(config.function_args)):
@@ -203,7 +206,7 @@ def cleanUp(path, config):
             types.append('long double')
 
 
-    if config.error_type == 'highestAbsolute':
+    if config.error_type == 'highest_absolute' or config.error_type == 'highest_relative':
         err = ''
 
         for i in range(len(config.function_args)):
@@ -219,7 +222,8 @@ def cleanUp(path, config):
                     err += '\t\t\ttemp.v = ' + varName + '[i];\n'
                     err += '\t\t\tdd_I lower_bound = _ia_set_dd(temp.lh, temp.ll, -temp.lh, -temp.ll);\n'
                     err += '\t\t\tdd_I upper_bound = _ia_set_dd(-temp.uh, -temp.ul, temp.uh, temp.ul);\n'
-                    err += '\t\t\tdd_I diff = _ia_div_dd(_ia_sub_dd(upper_bound, lower_bound), lower_bound);\n'
+                    if config.error_type == 'highest_relative':
+                        err += '\t\t\tdd_I diff = _ia_div_dd(_ia_sub_dd(upper_bound, lower_bound), lower_bound);\n'
                     err += '\t\t\tif(_ia_cmpgt_dd(diff, diff_max)){\n'
                     err += '\t\t\t\tdiff_max = diff;\n'
                     err += '\t\t\t}\n'
@@ -237,7 +241,8 @@ def cleanUp(path, config):
                         err += '\t\t\ttemp = ' + varName + '[i];\n'
                     err += '\t\t\tdd_I lower_bound = _ia_set_dd(temp.lo, ' + str(0) + ', -temp.lo, -' + str(0) + ');\n'
                     err += '\t\t\tdd_I upper_bound = _ia_set_dd(-temp.up, -' + str(0) + ', temp.up, ' + str(0) + ');\n'
-                    err += '\tdd_I diff = _ia_div_dd(_ia_sub_dd(upper_bound, lower_bound), lower_bound);\n'
+                    if config.error_type == 'highest_relative':
+                        err += '\tdd_I diff = _ia_div_dd(_ia_sub_dd(upper_bound, lower_bound), lower_bound);\n'
                     if input_dependent == True:
                         err += '\t\t\tif(_ia_cmpgt_dd(diff, diff_max)){\n'
                         err += '\t\t\t\tdiff_max = diff;\n'
@@ -253,7 +258,8 @@ def cleanUp(path, config):
             ret += '\ttemp.v = return_value;\n'
             ret += '\tdd_I lower_bound = _ia_set_dd(temp.lh, temp.ll, -temp.lh, -temp.ll);\n'
             ret += '\tdd_I upper_bound = _ia_set_dd(-temp.uh, -temp.ul, temp.uh, temp.ul);\n'
-            ret += '\tdd_I diff = _ia_div_dd(_ia_sub_dd(upper_bound, lower_bound), lower_bound);\n'
+            if config.error_type == 'highest_relative':
+                ret += '\tdd_I diff = _ia_div_dd(_ia_sub_dd(upper_bound, lower_bound), lower_bound);\n'
             if input_dependent == True:
                 ret += '\tif(_ia_cmpgt_dd(diff, diff_max)){\n'
                 ret += '\t\tdiff_max = diff;\n'

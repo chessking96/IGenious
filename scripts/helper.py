@@ -30,8 +30,9 @@ class Config:
     tuning_algo = 'precimonious'
     input_precision = 'dd'
     rng_range = 1
+    repetitions_input = 100
 
-    def __init__(self, file, fun, args, ret, rep, prec, err_t, vec, max_iter, algo, input_prec, rng_range):
+    def __init__(self, file, fun, args, ret, rep, prec, err_t, vec, max_iter, algo, input_prec, rng_range, rep_input):
         self.file_name = file
         self.function_name = fun
         self.function_args = args
@@ -44,6 +45,7 @@ class Config:
         self.tuning_algo = algo
         self.input_precision = input_prec
         self.rng_range = rng_range
+        self.repetitions_input = rep_input
 
     def get_config_as_string(self):
 
@@ -59,17 +61,18 @@ class Config:
 
         # Build string for configuration file
         config = '{\n'
-        config += '\t"filename": "' + self.file_name + '",\n'
-        config += '\t"functionname": "' + self.function_name + '",\n'
-        config += '\t"args": ' + args_string + ',\n'
-        config += '\t"return": ' + json.dumps(self.return_info) + ',\n' # Maybe change this
-        config += '\t"repetitions": ' + str(self.repetitions) + ',\n'
-        config += '\t"precision": ' + str(self.precision) + ',\n'
-        config += '\t"errortype": "' + self.error_type + '",\n'
+        config += '\t"file_name": "' + self.file_name + '",\n'
+        config += '\t"entry_function": "' + self.function_name + '",\n'
+        config += '\t"arguments": ' + args_string + ',\n'
+        config += '\t"return": ' + json.dumps(self.return_info) + ',\n'
+        config += '\t"repetitions_time": ' + str(self.repetitions) + ',\n'
+        config += '\t"repetitions_input": ' + str(self.repetitions_input) + ',\n'
+        config += '\t"target_accuracy": ' + str(self.precision) + ',\n'
+        config += '\t"error_type": "' + self.error_type + '",\n'
         config += '\t"vectorized": "' + str(self.vectorized) + '",\n'
-        config += '\t"maxpreciterations": ' + str(self.max_iterations) + ',\n'
-        config += '\t"tuning": "' + self.tuning_algo + '",\n'
-        config += '\t"input_prec": "' + self.input_precision + '",\n'
+        config += '\t"max_iterations": ' + str(self.max_iterations) + ',\n'
+        config += '\t"tuning_algorithm": "' + self.tuning_algo + '",\n'
+        config += '\t"input_precision": "' + self.input_precision + '",\n'
         config += '\t"input_range": ' + str(self.rng_range)
         config += '}'
 
@@ -79,13 +82,13 @@ class Config:
     def read_config_from_file(file_path):
         with open(file_path, 'r') as myfile:
             data = json.load(myfile)
-        file_name = data['filename']
-        function_name = data['functionname']
-        args_list = data['args']
+        file_name = data['file_name']
+        function_name = data['entry_function']
+        args_list = data['arguments']
 
         # Read arguments
         if len(args_list) % 4 != 0:
-            printf('Args in config file are not valid.')
+            printf('Arguments in config file are not valid.')
             sys.exit(-1)
         args = []
         for i in range(int(len(args_list) / 4)):
@@ -93,17 +96,45 @@ class Config:
             , args_list[4 * i + 2], args_list[4 * i + 3]))
 
         ret = data["return"]
-        rep = data["repetitions"]
-        prec = data["precision"]
-        err_type = data["errortype"]
-        use_vectorized = data["vectorized"]
-        max_prec_iterations = data["maxpreciterations"]
-        tuning = data["tuning"]
-        input_prec = data["input_prec"]
-        input_range = data["input_range"]
+        try:
+            rep = data["repetitions_time"]
+        except:
+            rep = 1
+        try:
+            prec = data["target_accuracy"]
+        except:
+            prec = 10
+        try:
+            err_type = data["error_type"]
+        except:
+            err_type = 'highest_relative'
+        try:
+            use_vectorized = data["vectorized"]
+        except:
+            use_vectorized = True
+        try:
+            max_iterations = data["max_iterations"]
+        except:
+            max_iterations = 1000
+        try:
+            tuning = data["tuning_algorithm"]
+        except:
+            tuning = 'hifptuner'
+        try:
+            input_prec = data["input_precision"]
+        except:
+            input_prec = 'dd'
+        try:
+            input_range = data["input_range"]
+        except:
+            input_range = 10
+        try:
+            rep_input = data["repetitions_input"]
+        except:
+            rep_input = 100
 
         return Config(file_name, function_name, args, ret, rep, prec, err_type
-        , use_vectorized, max_prec_iterations, tuning, input_prec, input_range)
+        , use_vectorized, max_iterations, tuning, input_prec, input_range, rep_input)
 
 
 

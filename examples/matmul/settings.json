@@ -1,0 +1,6 @@
+{
+  "file_name": "matmul.c",
+  "entry_function": "matmul",
+  "arguments": ["long double", 10000, "pointer", "input", "long double", 10000, "pointer", "input", "long double", 10000, "pointer", "output"],
+  "return": ["False", "", 0, ""]
+}

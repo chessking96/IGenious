@@ -1,0 +1,6 @@
+{
+  "file_name": "newton_root.c",
+  "entry_function": "newton_root",
+  "arguments": [],
+  "return": ["True", "long double", 1, "scalar"]
+}

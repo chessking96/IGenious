@@ -1,0 +1,6 @@
+{
+  "file_name": "DFT16.c",
+  "entry_function": "DFT16",
+  "arguments": ["long double", 32, "pointer", "output", "long double", 32, "pointer", "input"],
+  "return": ["False", "long double", 1, "scalar"]
+}

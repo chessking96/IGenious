@@ -10,22 +10,26 @@ if fast:
     precisions =  [10]
     max_prec_iters = [1]
     vectorized = [True]
-    error_types = ['highestAbsolute']
-    folders = ['arclength', 'DFT16', 'dot']
-    #folders = ['arclength', 'linear', 'newton_root', 'DFT16', 'dot', 'matmul', 'simpsons']
+    error_types = ['highest_relative']
+    #folders = ['arclength', 'DFT16', 'dot']
+    folders = ['arclength', 'linear', 'newton_root', 'DFT16', 'dot', 'matmul', 'simpsons']
     tunings = ['precimonious']
     #tunings = ['hifptuner', 'precimonious']
     input_precisions = ['dd']
     input_ranges = [10]
+    repetitions_input = [100]
+    rep_input = 100
 else:
     precisions = [6, 8, 10, 12, 11, 13, 14, 15, 16, 2, 3, 4, 5, 7, 9]
     max_prec_iters = [500]
     vectorized = [True, False]
-    error_types = ['highestAbsolute']
+    error_types = ['highest_relative']
     folders = ['arclength', 'linear', 'newton_root', 'DFT16', 'dot', 'matmul', 'simpsons']
     tunings = ['hifptuner', 'precimonious']
     input_precisions = ['dd', 'd']
     input_ranges = [10]
+    repetitions_input = [100]
+    rep_input = 100
 
 path = 'examples/'
 
@@ -39,7 +43,7 @@ for prec in precisions:
                             for folder_name in folders:
 
                                 # Read standard config
-                                std_config_name = 'std_config.json'
+                                std_config_name = 'settings.json'
                                 config = Config.read_config_from_file(path + folder_name + '/' + std_config_name)
 
                                 # Apply changes accoring to current config
@@ -50,6 +54,7 @@ for prec in precisions:
                                 config.tuning_algo = tuning
                                 config.input_precision = input_precision
                                 config.rng_range = input_range
+                                config.repetitions_input = rep_input
 
                                 # Get new config name
                                 config_name = 'config_' + str(prec)
