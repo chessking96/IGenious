@@ -5,7 +5,7 @@ import json
 import re
 import subprocess
 from helper import call, call_background, getEnvVar, load_json, Config, nameWithoutExtension
-import changeTypes, createChgMain
+import change_types, create_main
 
 def main():
     if len(sys.argv) != 4:
@@ -21,10 +21,10 @@ def main():
     config = Config.read_config_from_file('../../' + config_file)
 
     # Change variable types in source file
-    changeTypes.run(config.file_name)
+    change_types.run(config.file_name)
 
     # Create suitable main file
-    createChgMain.run('../..', nameWithoutExtension(config_file), config)
+    create_main.run('../..', nameWithoutExtension(config_file), config)
 
     # Create folder of current run and move created files into it
     new_folder = '../' + str(search_counter)

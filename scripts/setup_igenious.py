@@ -3,7 +3,7 @@
 from helper import print_err, print_debug, call, call_background, getEnvVar, nameWithoutExtension, dockerCall, dockerCall30, dockerCall38, get_dynamic_score
 import sys, re, json, os
 import rsld
-import createChgMain
+import create_main
 
 def createMain(prec_path, config):
 
@@ -248,7 +248,7 @@ def igenSetup(main_folder, config_name, config):
 
     # Create main file
     config.repetitions = 1 # to measure time
-    createChgMain.run(main_folder, config_name, config)
+    create_main.run(main_folder, config_name, config)
 
     # For some reason, the main file and function need to be renamed here (will be changed later)
     call('cp ' + config_folder_path + '/igen_setup/cleaned_igen_chg_main.c ' + config_folder_path + '/igen_setup/cleaned_igen_main.c')
