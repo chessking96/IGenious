@@ -14,7 +14,7 @@ We tested this installation guide on Ubuntu 20.04:
 - Clone Precimonious
 - Clone HiFPTuner repository
 
-### Install LLVM-3.0
+#### Install LLVM-3.0
 (Instruction from HiFPTuner repository)
 
 cd $HOME && \
