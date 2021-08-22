@@ -1,4 +1,7 @@
 #!/usr/bin/python
+
+# This file removes the same line declarations
+
 import sys, os
 sys.path.insert(1, os.path.join(sys.path[0], '..'))
 from helper import call, getEnvVar, call_background
@@ -16,17 +19,15 @@ def run(file_path, file_name):
     # Read produced code from AST and create dictionary
     with open(file_path + '/vars.txt', 'r') as myfile:
         data = myfile.read()
-
     lines = data.split('\n')
-
     if (len(lines) - 1) % 7 != 0:
         print("Error: vars.txt corrupted.")
         sys.exit(-1)
-
     vars = {}
     with open(os.path.join(file_path, file_name), 'r') as myfile:
         code = myfile.read().split('\n')
 
+    # Extract important information (positions in the code)
     for i in range(0, len(lines) - 1, 7):
         typeBeg = lines[i + 0]
         typeEnd = lines[i + 1]
@@ -36,7 +37,7 @@ def run(file_path, file_name):
         begin = lines[i + 5]
         end = lines[i + 6]
 
-        # get type info from string
+        # Get type info from string
         typeBegLine = int(typeBeg.split(':')[-2])
         typeBegCol = int(typeBeg.split(':')[-1])
         typeEndLine = int(typeEnd.split(':')[-2])
@@ -46,6 +47,7 @@ def run(file_path, file_name):
         endLine = int(end.split(':')[-2])
         endCol =  int(end.split(':')[-1])
 
+        # Get positions of initialization
         try:
             initbeginLine = int(initBeg.split(':')[-2])
             initbeginCol =  int(initBeg.split(':')[-1])
@@ -57,7 +59,7 @@ def run(file_path, file_name):
             initendLine = -1
             initendCol = -1
 
-        # insert into dict
+        # Insert into dict
         currentVal = vars.get((typeBegLine, typeBegCol, typeEndLine, typeEndCol))
         if currentVal == None:
             currentVal = []
@@ -70,15 +72,16 @@ def run(file_path, file_name):
         (tbl, tbc, tel, tec) = var
         varNames = vars[var]
 
-        # do nothing, if it is not a same line decl
+        # Do nothing, if it is not a same line declaration
         if len(vars[var]) == 1:
             continue
 
-        # same line decl
+        # Same line declaration
         minLine = 1000000 # some large integer
         maxLine = -1
         for (name, beginLine, beginCol, endLine, endCol, initBeginLine, initBeginCol, initEndLine, initEndCol) in varNames:
-            # get type
+
+            # Get varname and type and exact positions
             start = tbc
             end  = tec
             type = ''
@@ -88,17 +91,15 @@ def run(file_path, file_name):
                 minLine = beginLine
             if endLine > maxLine:
                 maxLine = endLine
-
             i = start - 1
             while True:
                 type += code[begin_line][i]
                 if i > end and code[begin_line][i].isspace():
                     break
                 i += 1
-
             decl = type + name
 
-            #get init (if exist)
+            # Get initialization value (if exist)
             if initBeginLine != -1:
                 init = ''
                 i = initBeginCol - 1
@@ -111,16 +112,16 @@ def run(file_path, file_name):
                 decl += ' = ' + init
 
             decl += ";"
-
             block += decl + '\n';
 
+        # build new code blocks
         blocks[minLine] = (block, minLine, maxLine)
 
 
     for minLine in sorted(blocks.keys(), reverse = True):
         (block, minLine, maxLine) = blocks.get(minLine)
-        del(code[minLine-1:maxLine])
-        code.insert(minLine-1, block)
+        del(code[minLine-1:maxLine]) # Delete old declaration
+        code.insert(minLine-1, block) # Insert new declaration
 
     # Build code blocks together
     replaced_code = ''

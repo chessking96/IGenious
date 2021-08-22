@@ -1,10 +1,13 @@
 #!/usr/bin/python
 
+# This file prepares the tuning process
+
 from helper import print_err, print_debug, call, call_background, getEnvVar, nameWithoutExtension, dockerCall, dockerCall30, dockerCall38, get_dynamic_score
 import sys, re, json, os
 import rsld
 import create_main
 
+# Create a dummy main for Precimonious setup
 def createMain(prec_path, config):
 
     # Includes
@@ -254,9 +257,9 @@ def igenSetup(main_folder, config_name, config):
     call('cp ' + config_folder_path + '/igen_setup/cleaned_igen_chg_main.c ' + config_folder_path + '/igen_setup/cleaned_igen_main.c')
     call('cp ' + config_folder_path + '/igen_setup/igen_rmd_' + config.file_name + ' ' + config_folder_path + '/igen_setup/igen_chg_rmd_' + config.file_name)
 
+    # Calculate an appropriate number of repetitions to get a reasonably execution time
     # Test build and execution - measure runtime when there is one repetition
     call_background('cd ' + igen_path + ' && mkdir build && cd build && cmake .. && make && ./some_app')
-
     score = get_dynamic_score(igen_path + '/build/score.cov')
     factor = 1;
     MIN_RUNTIME = 100000

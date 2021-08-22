@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+# This file gets called by Precimonious/HIFPTuner when a new configuration is proposed
+
 import sys, os
 import json
 import re
@@ -59,7 +61,6 @@ def main():
     call('cp score.cov ' + new_folder)
     call('cp precision.cov ' + new_folder)
     call('cp config_temp.json ' + new_folder)
-
 
     # Delte some files, to save storage
     run_path = new_folder

@@ -1,13 +1,19 @@
 #!/usr/bin/python
 
+# This code creates a suitable main file for a given configuration
+
 from helper import call, call_background, getEnvVar, nameWithoutExtension, Config
 import sys, re, json
 
+# If the program produces the same result, independent of the input,
+# the accuracy measurment is done only once
 input_dependent = False
 
+# Builds a suitable main function for the program
 def createMain(path, config):
     global input_dependent
     input_dependent = False
+
     # includes
     inc = ''
     inc += '#include "random_range_igen.c"\n'
@@ -42,7 +48,7 @@ def createMain(path, config):
                 if var_type[-1] == ' ':
                     var_type = var_type[:-1]
                 types.append(var_type)
-    except: # During initialization, no funargs.txt exists
+    except: # During initialization, no funargs.txt exists, just use long double
         for arg in config.function_args:
             types.append('long double')
 
@@ -53,7 +59,6 @@ def createMain(path, config):
         typedef_text = '\ttypedef void (*FunctionType)('
     else:
         print('error in config file, return_info')
-
     if len(types) >= 1:
         if types[0] == 'long double':
             typedef_text += 'dd_I*'
@@ -70,39 +75,35 @@ def createMain(path, config):
             typedef_text += ', f32_I*'
     typedef_text += ');\n'
 
+    # This is to confuse GCC, that repetitions don't get optimized away
     typedef_text += '\tFunctionType * addresses = aligned_alloc(32, ' + str(config.repetitions) + ' * sizeof(FunctionType));\n'
     typedef_text += '\tfor(int i = 0;i < ' + str(config.repetitions) + '; i++){\n'
     typedef_text += '\taddresses[i] = (FunctionType)' + config.function_name + ';\n'
     typedef_text += '\t}\n'
+
+    # Code for time and accuracy measurement
     diff_max_decl = '\tdd_I diff_max = _ia_zero_dd();\n'
     temp_decl = '\tu_ddi temp;\n'
     time_decl = '\tclock_t start;\n'
     time_decl += '\tclock_t end;\n'
     time_decl += '\tlong diff_time = 0;\n'
 
+    # Check if code is input dependent
     for i in range(len(config.function_args)):
         arg = config.function_args[i]
         if arg.input_or_output == 'input':
             input_dependent = True
 
+    # Create code to produce random input
     num_reps = config.repetitions_input
-
-    # Temporary solution for benchmark
-    if input_dependent == False:
-        num_reps = 10
-
     loop_start = '\tfor(long j = 0; j < ' + str(num_reps) + '; j++){\n'
     input = typedef_text + diff_max_decl + temp_decl + time_decl + loop_start
     for i in range(len(config.function_args)):
         arg = config.function_args[i]
-
-        #type = arg[0]
         type = types[i]
-
         length = arg.length
         pointer = arg.ptr_type
         inputORoutput = arg.input_or_output
-
         if pointer == 'pointer':
             input1 = ''
             input1 += '\t' + type + '* x_' + str(i) + ';\n'
@@ -126,48 +127,47 @@ def createMain(path, config):
             input_part = input1
         else:
             print("Non-pointer type not implemented yet")
-
         input += input_part
 
-
+    # Init return value, if function returns a value
     if config.return_info[0] == "True":
         return1 = '\t' + config.return_info[1] + ' return_value = 0;\n'
     else:
         return1 = ''
+
+    # Time measurement
     timeS = ''
     timeS += '\tFunctionType func;\n'
     timeS += '\tstart = clock();\n'
     timeS += '\tfor(long i = 0; i < ' + str(config.repetitions) + '; i++){\n'
 
+    # Actual function call
     arguments = ''
-
     if len(config.function_args) >= 1:
         arguments += 'x_0'
     for i in range(1, len(config.function_args)):
         arguments += ', x_' + str(i)
-
     call_function = '\t\tfunc = (FunctionType)addresses[i];\n'
-
     if config.return_info[0] == "True":
         call_function += '\t\treturn_value = ' + 'func' + '(' + arguments + ');\n'
-
     else:
         call_function += '\t\t' + 'func' + '(' + arguments + ');\n'
 
+    # Time measurment
     timeE = ''
     timeE += '\t}\n'
     timeE += '\tend = clock();\n'
-    #timeE += '\tprintf("Time: %ld' + r"\n" + '", end - start);\n'
     timeE += '\tdiff_time += end - start;'
 
-
+    # Placeholder to replace after IGen call
     rep = '\tprintf("BeforeIGenReplacement\\n");\n'
 
+    # Build everything togheter
     main_end = '}\n'
-
     main = init + input + return1 + timeS + call_function + timeE + rep + main_end
     code = includes + main
 
+    # Save main file
     with open (path + '/chg_main.c', 'w') as myfile:
         myfile.write(code)
 
@@ -285,10 +285,13 @@ def cleanUp(path, config):
     ans += '\tfile = fopen("precision.cov", "w");\n'
     ans += '\tdouble prec = ((u_f64i)_ia_cast_dd_to_f64(diff_max)).up;\n'
     ans += '\tfprintf(file, "%.17g' + r"\\n" + '", prec);\n'
+    ans += '\tfclose(file);\n'
     ans += '\tprintf("Time: %ld' + r"\\n" + '", diff_time);\n'
     #ans += '\tprintf("Accuracy constraint: %s' + r"\\n" + '", answer);\n'
-    #if config.return_info[0] == "True":
-    #    ans += '\tprintf("result: %.17g' + r"\\n" + '", temp.uh);\n'
+    if config.return_info[0] == "True":
+        ans += '\tfile = fopen("result.cov", "w");\n'
+        ans += '\tfprintf(file, "result: %.17g' + r"\\n" + '", temp.uh);\n'
+        ans += '\tfclose(file);\n'
     ans += '\tprintf("Accuracy: %.17g' + r"\\n" + '", prec);\n'
 
     code = err + ans
@@ -313,8 +316,12 @@ def cleanUp(path, config):
         myfile.write(c_new)
 
 def run(main_path, config_name, config):
+    
+    # Create main
     path = main_path + '/analysis_' + config_name + '/igen_setup'
     createMain(path, config)
     igen_src = getEnvVar('IGEN_PATH')
     call_background('cd ' + path + ' && python3 ' + igen_src + '/bin/igen.py chg_main.c')
+
+    # add accuracy measurement
     cleanUp(path, config)

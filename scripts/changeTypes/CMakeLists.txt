@@ -34,9 +34,9 @@ include_directories(
 )
 
 set(SOURCE_FILES
-        ASTVisitor.cpp
-	ASTTraverser.cpp
-        )
+  ASTVisitor.cpp
+  ASTTraverser.cpp
+)
 
 # ================================================================================
 # C++ Global Flags

@@ -1,3 +1,5 @@
+# This file runs IGenious on a given setting and program
+
 #!/usr/bin/python
 import sys, os, time
 from helper import call, call_background, getEnvVar, nameWithoutExtension, Config, dockerCall30, print_debug
@@ -98,8 +100,8 @@ def run(main_folder, config_name, config):
         myfile.write(str(t_end - t_start))
 
     print('Run finished')
-    print('Original time/accuracy:', orig_time, orig_acc)
-    print('Modified time/accuracy:', best_time, best_acc)
+    print('Original time/accuracy:', int(orig_time), orig_acc)
+    print('Modified time/accuracy:', int(best_time), best_acc)
     print('Elapsed time:', str(t_end - t_start), 'seconds')
 
 

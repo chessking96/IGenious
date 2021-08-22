@@ -1,5 +1,7 @@
 // This file is adapted from Joao Rivera
 
+//This code replaces the types in a C file according to a list given by Precimonious
+
 /* Clang front end header files */
 #include "clang/Driver/Options.h"
 #include "clang/AST/ASTContext.h"
@@ -32,11 +34,11 @@ Rewriter rewriter;
 CompilerInstance* mainCI;
 int numFunctions = 0;
 
+// Map of variables to types which must be replaced
 map<string, string> vars;
 
+// Store types of function arguments
 string argTypes = "";
-
-
 
 /* Apply a custom category to all command-line options so that they are the only ones displayed. */
 llvm::cl::OptionCategory MyToolCategory("my-tool options");
@@ -70,16 +72,10 @@ class ASTMainVisitor : public RecursiveASTVisitor<ASTMainVisitor> {
     ASTContext* astMainContext;
     SourceLocation processedLocation;
 
+    // Store argument types
     bool ActionFunctionDecl(FunctionDecl *fund) {
         numFunctions++;
         string funcName = fund->getNameAsString();
-
-        if (fund->doesThisDeclarationHaveABody()) {
-//            /* Traverse AST below this node */
-//            Stmt* body = fund->getBody();
-//            NodeTraverser n(body);
-        }
-
 
         int numArgs = fund->getNumParams();
 
@@ -92,42 +88,23 @@ class ASTMainVisitor : public RecursiveASTVisitor<ASTMainVisitor> {
               string type = it->second;
               argTypes += funName + ", " + argName + ", " + type + "\n";
           }
-
         }
-
         return true;
     }
 
+    // Replace types in code
     bool ActionVarDecl(VarDecl *var) {
         SourceRange varLocRange = var->getSourceRange();
-
-        //if(!var->getType()->isRealFloatingType()) {
-            /* Return if it is not floating point. This does not support pointers, e.g. double*. */
-        //    return true;
-        //}
 
         string orig_type = var->getType().getAsString();
         string varName = var->getNameAsString();
         string funName = ((FunctionDecl*)var->getParentFunctionOrMethod())->getNameAsString();
-
-
-
         auto it = vars.find(funName + "#" + varName);
         if(it != vars.end()){
             string type = it->second;
-            //if(orig_type == "long double *"){ // just for now
-            //  goto end;
-            //}
-            //cout << type << " \n";
             SourceRange typeRange = var->getTypeSourceInfo()->getTypeLoc().getSourceRange();
             rewriter.ReplaceText(typeRange, type);
         }
-        //end:
-        /* To handle same-line-declarations, test that begin location is not already processed */
-        //if (processedLocation < varLocRange.getBegin()) {
-
-        //}
-
         processedLocation = varLocRange.getEnd();
         return true;
     }
@@ -244,7 +221,7 @@ public:
 };
 
 int main(int argc, const char **argv) {
-    // read config from config files
+    // read config from settings file
     std::ifstream t("config_temp.json");
     std::stringstream buffer;
     buffer << t.rdbuf();
@@ -254,6 +231,7 @@ int main(int argc, const char **argv) {
     string type = "";
     string varname = "";
 
+    // Read data from file and store it in the 'vars' map
     while(getline(buffer, line)){
       if (line.find("function") != string::npos) {
         auto pos = line.find(": \"") + 3;
@@ -317,11 +295,10 @@ int main(int argc, const char **argv) {
     int result = Tool.run(newFrontendActionFactory<ExampleFrontendAction>().get());
 
     /* print out the rewritten source code */
-    //errs() << "\nFound " << numFunctions << " functions.\n\n";
     FileID fid = rewriter.getSourceMgr().getMainFileID();
     rewriter.getEditBuffer(fid).write(outs());
 
-    // write arg types to file
+    // Write argument types to file
     ofstream myfile ("funargs.txt");
     myfile << argTypes;
     myfile.close();

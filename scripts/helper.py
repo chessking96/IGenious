@@ -1,8 +1,12 @@
+# This file contains many helper functions
+
 import subprocess, signal, json
 import os, sys, re, time
 
+# Can be activated to get debug information during tuning
 debug = False
 
+# Internal representation of an argument
 class Argument:
     type = 'long double'
     length = 100
@@ -19,6 +23,7 @@ class Argument:
         return '"' + self.type + '", ' + str(self.length) + ', "'\
         + self.ptr_type + '", "' + self.input_or_output + '"'
 
+# Internal representation of a setting
 class Config:
     file_name = ''
     function_name = ''
@@ -28,7 +33,7 @@ class Config:
     precision = -10
     error_type = 'highest_absolute'
     vectorized = False
-    max_iterations = 200
+    max_iterations = 500
     tuning_algo = 'precimonious'
     input_precision = 'dd'
     rng_range = 1
@@ -49,6 +54,7 @@ class Config:
         self.rng_range = rng_range
         self.repetitions_input = rep_input
 
+    # Returns the setting as a string
     def get_config_as_string(self):
 
         # Build string for arguments
@@ -82,7 +88,7 @@ class Config:
         config += '}'
         return config
 
-
+    # Reads from a setting file
     @staticmethod
     def read_config_from_file(file_path):
         with open(file_path, 'r') as myfile:
@@ -100,8 +106,9 @@ class Config:
         for i in range(int(len(args_list) / 4)):
             args.append(Argument(args_list[4 * i + 0], args_list[4 * i + 1]
             , args_list[4 * i + 2], args_list[4 * i + 3]))
-
         ret = data["return"]
+
+        # These are optional reads
         try:
             rep = data["repetitions_time"]
         except:
@@ -142,6 +149,7 @@ class Config:
         return Config(file_name, function_name, args, ret, rep, prec, err_type
         , use_vectorized, max_iterations, tuning, input_prec, input_range, rep_input)
 
+    # Not used anymore
     @staticmethod
     def read_config_from_file_old(file_path):
         with open(file_path, 'r') as myfile:
@@ -201,39 +209,39 @@ class Config:
         , use_vectorized, max_iterations, tuning, input_prec, input_range, rep_input)
 
 
-
+# Call shell from python
 def call(arg):
-    res = subprocess.call([arg], shell=True) #remove shell...
+    res = subprocess.call([arg], shell=True)
     if res != 0:
         if res == 10:
-            print('Timeout1')
+            print('Maximal number explorations reached.')
         else:
             print("Call Error", arg)
             sys.exit(-1)
 
+# Call shell in the background (to hide output)
 def call_background(arg):
     if debug:
         call(arg)
     else:
         res = subprocess.call([arg], shell=True, stdout=open(os.devnull, 'w'), stderr=open(os.devnull, 'w')) #remove shell...
         if res != 0:
-            if res == 10:
-                print('Timeout2')
-            else:
+            if res != 10:
                 print("Call Error", arg)
                 sys.exit(-1)
 
-# Function from precimonious
+# Function importet from precimonious, reads the score from a file
 def get_dynamic_score(path):
     with open(path, 'r') as myfile:
         score = myfile.readline()
     score = score.strip()
     return int(score)
 
-
+# Read an os environment variable
 def getEnvVar(arg):
     return os.getenv(arg)
 
+# remove filename extension
 def nameWithoutExtension(arg):
     return os.path.splitext(arg)[0]
 
@@ -241,8 +249,7 @@ def nameWithoutExtension(arg):
 def load_json(string):
     return re.findall("localVar\": {\n\t\t\"function\": \"(.+(?=\"))\",\n\t\t\"type\": \"(.+(?=\"))\",\n\t\t\"name\": \"(.+(?=\"))", string, re.MULTILINE)
 
-
-# Standart docker call
+# Standard docker call
 def dockerCall(arg):
     call_background('docker exec hi ' + arg)
 
@@ -254,12 +261,7 @@ def dockerCall30(arg):
 def dockerCall38(arg):
     dockerCall('bash -c "export LLVM_VERSION=llvm-3.8 && export LD_LIBRARY_PATH=/root/llvm-3.8/lib && export CPATH=/root/llvm-3.8/include:. && export PATH=/root/llvm-3.8/bin:/root/llvm-3.8/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin && ' + arg + '"')
 
-
-def print_debug(arg):
-    if debug:
-        print(bcolors.WARNING + arg)
-        print(bcolors.ENDC, end='') # To change cholor back
-
+# Color scheme for debug printing
 #https://stackoverflow.com/questions/287871/how-to-print-colored-text-to-the-terminal
 class bcolors:
     HEADER = '\033[95m'
@@ -272,7 +274,13 @@ class bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
 
+# Prints only visible in debug mode
+def print_debug(arg):
+    if debug:
+        print(bcolors.WARNING + arg)
+        print(bcolors.ENDC, end='') # To change cholor back
 
+# Error prints (not constitently used)
 def print_err(arg):
     print(bcolors.FAIL + arg)
     print(bcolors.ENDC, end='') # To change cholor back

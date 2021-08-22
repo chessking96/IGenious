@@ -1,5 +1,7 @@
 // This file is adapted from Joao Rivera
 
+// This file produces a list of floating-point variables, with a position refernce to the source code
+
 /* Clang front end header files */
 #include "clang/Driver/Options.h"
 #include "clang/AST/ASTContext.h"
@@ -259,10 +261,7 @@ int main(int argc, const char **argv) {
     int result = Tool.run(newFrontendActionFactory<ExampleFrontendAction>().get());
 
 
-    /* print out the rewritten source code */
-    //errs() << "\nFound " << numFunctions << " functions.\n\n";
-    //FileID fid = rewriter.getSourceMgr().getMainFileID();
-    //rewriter.getEditBuffer(fid).write(outs());
+    // Store the list of variables to a file
     ofstream myfile;
     myfile.open (file_path + "vars.txt");
     for(size_t i = 0; i < varList->size(); i++){
