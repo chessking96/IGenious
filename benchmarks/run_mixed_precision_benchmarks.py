@@ -1,4 +1,7 @@
 #!/usr/bin/python
+
+# This file rans the mixed-precision tuning benchmarks
+
 import sys, os
 sys.path.insert(1, os.path.join(sys.path[0], '../scripts'))
 from helper import call, Config, json, Config, nameWithoutExtension
@@ -12,13 +15,12 @@ def run():
         max_prec_iters = [1]
         vectorized = [True]
         error_types = ['highest_relative']
-        folders = ['dot']
+        folders = ['simpsons']
         #folders = ['arclength', 'linear', 'newton_root', 'DFT16', 'dot', 'matmul', 'simpsons']
         tunings = ['precimonious']
         #tunings = ['hifptuner', 'precimonious']
         input_precisions = ['dd']
         input_ranges = [10]
-        repetitions_input = [100]
         rep_input = 100
     else:
         precisions = [6, 8, 10, 12, 11, 13, 14, 15, 16, 2, 3, 4, 5, 7, 9]
@@ -29,7 +31,6 @@ def run():
         tunings = ['hifptuner', 'precimonious']
         input_precisions = ['dd', 'd']
         input_ranges = [10]
-        repetitions_input = [100]
         rep_input = 100
 
     path = 'examples/'
@@ -55,7 +56,6 @@ def run():
                                     config.tuning_algo = tuning
                                     config.input_precision = input_precision
                                     config.rng_range = input_range
-                                    config.repetitions_input = rep_input
 
                                     # Get new config name
                                     config_name = 'config_' + str(prec)

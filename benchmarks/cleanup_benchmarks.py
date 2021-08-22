@@ -11,11 +11,13 @@ input = input()
 if input != 'yes':
     sys.exit(-1)
 
+# Delete tuning files
 for folder in folders:
     call('cd examples/' + folder + ' && find . -name "analysis*" -prune -exec rm -rf {} \;')
     call('cd examples/' + folder + ' && find . -name "config*" -prune -exec rm -rf {} \;')
     call('cd examples/' + folder + ' && find . -name "non_mixed*" -prune -exec rm -rf {} \;')
 
+# Delte plots and table
 call('cd plots && rm -rf ddVSd/*')
 call('cd plots && rm -rf pVSh/*')
 call('cd plots && rm -rf singles/*')
