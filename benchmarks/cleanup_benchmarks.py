@@ -1,4 +1,4 @@
-# This script deletes the benchmark data
+# This script deletes all benchmark data
 
 import sys, os
 sys.path.insert(1, os.path.join(sys.path[0], '../scripts'))

@@ -47,6 +47,7 @@ def getFixedData(input_precision, rng_range, vectorized, folder_name):
 
 
 def create_single():
+    fast = True
     if fast:
         precisions = [10]
         input_types = ['dd']
@@ -452,9 +453,8 @@ def create_vec():
                 plt.savefig('plots/vVSn/vec_' + tuner + input_type + str(input_range) + '.png')
                 plt.close('all')
 
-
-if __name__ == "__main__":
-    fast = False
+def run():
+    fast = True
 
     if fast:
         create_single()
@@ -463,3 +463,5 @@ if __name__ == "__main__":
         create_tuner()
         create_input()
         create_vec()
+
+run()
