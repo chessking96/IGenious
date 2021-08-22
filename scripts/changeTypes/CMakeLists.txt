@@ -1,3 +1,5 @@
+# This file is adapted from Joao Rivera
+
 cmake_minimum_required(VERSION 3.13)
 project(clang_ast_visitor)
 set(CMAKE_CXX_STANDARD 14)

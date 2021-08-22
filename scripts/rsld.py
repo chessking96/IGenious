@@ -8,10 +8,10 @@ def run(file_path, file_name):
 
     # Make sure, that AST visitor is compiled
     scripts_path = getEnvVar('SOURCE_PATH') + '/scripts'
-    call_background('cd ' + scripts_path + '/removeSameLineDecl && cmake . && make')
+    call_background('cd ' + scripts_path + '/removeSameLineDecl/build && cmake .. && make')
 
     # Call AST visitor
-    call(scripts_path + '/removeSameLineDecl/clang_ast_visitor ' + os.path.join(file_path, file_name) + ' -- ' + file_path + '/ ' + file_name)
+    call(scripts_path + '/removeSameLineDecl/build/clang_ast_visitor ' + os.path.join(file_path, file_name) + ' -- ' + file_path + '/ ' + file_name)
 
     # Read produced code from AST and create dictionary
     with open(file_path + '/vars.txt', 'r') as myfile:

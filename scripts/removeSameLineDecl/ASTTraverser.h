@@ -1,3 +1,5 @@
+// This file is adapted from Joao Rivera
+
 #ifndef INTERVAL_ARITHMETIC_ASTTRAVERSER_H
 #define INTERVAL_ARITHMETIC_ASTTRAVERSER_H
 
