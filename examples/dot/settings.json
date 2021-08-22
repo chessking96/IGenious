@@ -2,14 +2,5 @@
 	"file_name": "dot.c",
 	"entry_function": "dot",
 	"arguments": ["long double", 100000, "pointer", "input", "long double", 100000, "pointer", "input"],
-	"return": ["True", "long double", 1, "scalar"],
-	"repetitions_time": 1,
-	"repetitions_input": 100,
-	"target_accuracy": 10,
-	"error_type": "highest_relative",
-	"vectorized": false,
-	"max_iterations": 1000,
-	"tuning_algorithm": "hifptuner",
-	"input_precision": "dd",
-	"input_range": 10
+	"return": ["True", "long double", 1, "scalar"]
 }

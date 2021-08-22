@@ -148,7 +148,7 @@ def tuner_setup(main_path, config_name, config):
         + file_name_wo_ext +  '.tmp')
         call('rm ' + prec_path + '/' + file_name_wo_ext +  '.tmp')
         call('touch ' + os.path.join(prec_path, 'exclude.txt')) # would allow to exclude variables from analysis
-        call('cd ' + prec_path + ' && opt -load ' + shared_lib + ' -config-file --only-arrays --only-scalars --funs --pformat '
+        call_background('cd ' + prec_path + ' && opt -load ' + shared_lib + ' -config-file --only-arrays --only-scalars --funs --pformat '
         + file_name_wo_ext + '.bc --filename config_' + file_name_wo_ext + '.json > '
         + file_name_wo_ext + '.tmp')
         call('rm ' + prec_path + '/' + file_name_wo_ext +  '.tmp')
