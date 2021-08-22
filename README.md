@@ -1,14 +1,30 @@
-# Master thesis - Sound Mixed Precision tuning
+# Sound Mixed-Precision tuning
 ## Installation
+### Prerequsites
+- IGen: https://github.com/joaoriverd/IGen
+- Precimonious: https://github.com/corvette-berkeley/precimonious
+- HiFPTuner:  https://github.com/ucd-plse/HiFPTuner
+- Docker
 
-#### Prerequsites
-- IGen
-- Precimonious
-- HiFPTuner
+We tested this installation guide on Ubuntu 20.04.
+- Clone this repository
+- Clone IGen and follow the install instructions:
+- Clone Precimonious
 
-#### Setup
-From Ubuntu 20.04:
-- Install IGen
+### Install HiFPTuner
+- Clone HiFPTuner
+```bash
+docker pull hguo15/hifptuner:v0
+docker run -ti --name=hi hguo15/hifptuner:v0
+```
+
+### Install IGenious
+- Replace ~/precimonious/scripts/dd2.py with ~/IGenious/src/dd2.py
+- Replace ~/HiFPTuner/precimonious/scripts/dd2_prof.py with ~/IGenious/src/dd2_prof.py
+
+
+
+
 - Install gcc/g++ 4.8
 - Install precimonious
 - Modify Precimonious:
