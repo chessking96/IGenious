@@ -18,6 +18,7 @@ We tested this installation guide on Ubuntu 20.04:
 (Instruction from HiFPTuner repository)
 
 Make sure that gcc/g++-4.8 is installed and active, otherwise the following script will not work. Also make sure that python 2.7 is installed.
+Run the following statement:
 
 ```bash
 cd $HOME && \
@@ -62,7 +63,7 @@ docker run -ti --name=hi hguo15/hifptuner:v0
 #### Install IGenious
 - Replace ~/precimonious/scripts/dd2.py with ~/IGenious/src/dd2.py
 - Replace ~/HiFPTuner/precimonious/scripts/dd2_prof.py with ~/IGenious/src/dd2_prof.py
-- Set environment variables: $SOURCE_PATH: /path/to/IGenious, $HIFP_PATH: /path/to/HiFPTuner, $CORVETTE_PATH: /path/to/precimonious
+- Set environment variables: $IGEN_PATH: /path/IGen, $SOURCE_PATH: /path/to/IGenious, $HIFP_PATH: /path/to/HiFPTuner, $CORVETTE_PATH: /path/to/precimonious
 - Substitute in the <mark>docker container<mark/> each occurence of '$auto_tuning' in /root/HiFPTuner/scripts/analyze.sh and in root/HiFPTuner/scripts/compile.sh with '/root/HiFPTuner/'
 
 ## Usage
