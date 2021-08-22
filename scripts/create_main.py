@@ -42,9 +42,7 @@ def createMain(path, config):
                 if var_type[-1] == ' ':
                     var_type = var_type[:-1]
                 types.append(var_type)
-    except:
-        # later find another solution for this, this is during init, no funargs.txt exists
-        print('This should only appear during initialization!')
+    except: # During initialization, no funargs.txt exists
         for arg in config.function_args:
             types.append('long double')
 
@@ -199,9 +197,8 @@ def cleanUp(path, config):
                 if var_type[-1] == ' ':
                     var_type = var_type[:-1]
                 types.append(var_type)
-    except:
-        # later find another solution for this, this is during init, no funargs.txt exists
-        print('This should only appear during initialization!')
+
+    except: # During initialization, no funargs.txt exists
         for arg in config.function_args:
             types.append('long double')
 
@@ -289,14 +286,12 @@ def cleanUp(path, config):
     ans += '\tdouble prec = ((u_f64i)_ia_cast_dd_to_f64(diff_max)).up;\n'
     ans += '\tfprintf(file, "%.17g' + r"\\n" + '", prec);\n'
     ans += '\tprintf("Time: %ld' + r"\\n" + '", diff_time);\n'
-    ans += '\tprintf("Precision constraint: %s' + r"\\n" + '", answer);\n'
-    if config.return_info[0] == "True":
-        ans += '\tprintf("result: %.17g' + r"\\n" + '", temp.uh);\n'
+    #ans += '\tprintf("Accuracy constraint: %s' + r"\\n" + '", answer);\n'
+    #if config.return_info[0] == "True":
+    #    ans += '\tprintf("result: %.17g' + r"\\n" + '", temp.uh);\n'
+    ans += '\tprintf("Accuracy: %.17g' + r"\\n" + '", prec);\n'
 
-
-    prints = '\tprintf("Precision: %.17g' + r"\\n" + '", prec);\n'
-
-    code = err + ans + prints
+    code = err + ans
 
     c_new = re.sub(substitute, code, c_old)
 

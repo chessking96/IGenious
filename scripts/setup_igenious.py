@@ -255,7 +255,7 @@ def igenSetup(main_folder, config_name, config):
     call('cp ' + config_folder_path + '/igen_setup/igen_rmd_' + config.file_name + ' ' + config_folder_path + '/igen_setup/igen_chg_rmd_' + config.file_name)
 
     # Test build and execution - measure runtime when there is one repetition
-    call('cd ' + igen_path + ' && mkdir build && cd build && cmake .. && make && ./some_app')
+    call_background('cd ' + igen_path + ' && mkdir build && cd build && cmake .. && make && ./some_app')
 
     score = get_dynamic_score(igen_path + '/build/score.cov')
     factor = 1;
@@ -267,7 +267,7 @@ def igenSetup(main_folder, config_name, config):
             createChgMain.run(main_folder, config_name, config)
             call('cp ' + config_folder_path + '/igen_setup/cleaned_igen_chg_main.c ' + config_folder_path + '/igen_setup/cleaned_igen_main.c')
             call('cp ' + config_folder_path + '/igen_setup/igen_rmd_' + config.file_name + ' ' + config_folder_path + '/igen_setup/igen_chg_rmd_' + config.file_name)
-            call('cd ' + igen_path + ' && mkdir build && cd build && cmake .. && make && ./some_app')
+            call_background('cd ' + igen_path + ' && mkdir build && cd build && cmake .. && make && ./some_app')
 
             score = get_dynamic_score(igen_path + '/build/score.cov')
             if score < MIN_RUNTIME:
@@ -279,7 +279,6 @@ def igenSetup(main_folder, config_name, config):
 
         else:
             factor = int(MIN_RUNTIME / score)
-    print('factor:',factor, score)
 
     # Save new config to file
     config.repetitions = factor

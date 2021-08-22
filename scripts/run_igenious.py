@@ -4,6 +4,8 @@ from helper import call, call_background, getEnvVar, nameWithoutExtension, Confi
 import setup_igenious
 
 def run(main_folder, config_name, config):
+    print('Running IGenious for', main_folder + '/' + config_name + '.json')
+    print('Start setup...')
 
     # Start time measurent to measure tuning time
     t_start = time.time()
@@ -23,7 +25,7 @@ def run(main_folder, config_name, config):
     setup_igenious.run(main_folder, config_name, config)
 
     # Run precimonious/hifptuner
-    print_debug('Run')
+    print('Start tuning...')
     if config.tuning_algo == 'precimonious':
         tuner_folder_name = '/precimonious_setup'
     elif config.tuning_algo == 'hifptuner':
@@ -49,6 +51,7 @@ def run(main_folder, config_name, config):
     # Collect output
     path = config_folder_path
     run = 0
+    orig_time = -1
     best_run = -1
     best_time = 10000000000 # some big numbers
     best_acc = -1
@@ -73,6 +76,8 @@ def run(main_folder, config_name, config):
             best_run = run
             best_time = run_time
             best_acc = accuracy
+        if run == 0:
+            orig_time = run_time
         run += 1
     with open(path + '/number_tunings.txt', 'w') as myfile:
         myfile.write(str(run))
@@ -82,9 +87,28 @@ def run(main_folder, config_name, config):
     with open(path + '/result.txt', 'w') as myfile:
         myfile.write(str(best_run) + ',' + str(best_time) + ',' + str(best_acc))
 
+    # Copy files to output
+
+
     # Stop time measurement and write to file
     t_end = time.time()
-    print('Run succeeded')
-    print('Elapsed time:', str(t_end - t_start))
     with open(config_folder_path + '/runtime.txt', 'w') as myfile:
         myfile.write(str(t_end - t_start))
+
+    print('Run finished')
+    print('Original time:', orig_time)
+    print('Modified time:', best_time)
+    print('Elapsed time:', str(t_end - t_start), 'seconds')
+
+
+# Call this script with two arguments
+# arg1: path_to_folder_with_program_to_tune
+# arg2: name of setting file
+if __name__ == "__main__":
+    if len(sys.argv) != 3:
+        print('Expected 2 arguments.')
+        sys.exit(-1)
+
+    config = Config.read_config_from_file(sys.argv[1] + '/' + sys.argv[2] + '.json')
+
+    run(sys.argv[1], sys.argv[2], config)

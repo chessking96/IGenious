@@ -1,6 +1,8 @@
 import subprocess, signal, json
 import os, sys, re, time
 
+debug = False
+
 class Argument:
     type = 'long double'
     length = 100
@@ -73,7 +75,7 @@ class Config:
         config += '\t"max_iterations": ' + str(self.max_iterations) + ',\n'
         config += '\t"tuning_algorithm": "' + self.tuning_algo + '",\n'
         config += '\t"input_precision": "' + self.input_precision + '",\n'
-        config += '\t"input_range": ' + str(self.rng_range)
+        config += '\t"input_range": ' + str(self.rng_range) + '\n'
         config += '}'
 
         return config
@@ -86,6 +88,7 @@ class Config:
         file_name = data['file_name']
         function_name = data['entry_function']
         args_list = data['arguments']
+
 
         # Read arguments
         if len(args_list) % 4 != 0:
@@ -116,7 +119,7 @@ class Config:
         try:
             max_iterations = data["max_iterations"]
         except:
-            max_iterations = 1000
+            max_iterations = 500
         try:
             tuning = data["tuning_algorithm"]
         except:
@@ -207,13 +210,16 @@ def call(arg):
             sys.exit(-1)
 
 def call_background(arg):
-    res = subprocess.call([arg], shell=True, stdout=open(os.devnull, 'w'), stderr=open(os.devnull, 'w')) #remove shell...
-    if res != 0:
-        if res == 10:
-            print('Timeout2')
-        else:
-            print("Call Error", arg)
-            sys.exit(-1)
+    if debug:
+        call(arg)
+    else:
+        res = subprocess.call([arg], shell=True, stdout=open(os.devnull, 'w'), stderr=open(os.devnull, 'w')) #remove shell...
+        if res != 0:
+            if res == 10:
+                print('Timeout2')
+            else:
+                print("Call Error", arg)
+                sys.exit(-1)
 
 # Function from precimonious
 def get_dynamic_score(path):
@@ -248,7 +254,9 @@ def dockerCall38(arg):
 
 
 def print_debug(arg):
-    print(arg)
+    if debug:
+        print(bcolors.WARNING + arg)
+        print(bcolors.ENDC, end='') # To change cholor back
 
 #https://stackoverflow.com/questions/287871/how-to-print-colored-text-to-the-terminal
 class bcolors:
@@ -264,5 +272,6 @@ class bcolors:
 
 
 def print_err(arg):
-    print(bcolors.Fail + arg)
-    sys.exit(-1)
+    print(bcolors.FAIL + arg)
+    print(bcolors.ENDC, end='') # To change cholor back
+    sys.exit(-1) # This should be removed
