@@ -37,6 +37,7 @@ docker run -ti --name=hi hguo15/hifptuner:v0
 - Substitute in the <mark>docker container<mark/> each occurence of '$auto_tuning' in /root/HiFPTuner/scripts/analyze.sh and in root/HiFPTuner/scripts/compile.sh with '/root/HiFPTuner/'
 
 ## Usage
+### Tuning
 This examples does sound mixed-precision tuning on dot.c, an implementation of the dot product.
 
 ```bash
