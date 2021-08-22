@@ -1,3 +1,5 @@
+# Modified script from precimonious
+
 #!/usr/bin/env python
 
 import types, sys, os, math, json
@@ -17,17 +19,18 @@ search_counter = 0
 #         -1 some internal transformation error happens
 #         -2 some internal transformation error happens
 #         -3 some internal transformation error happens
-#         -10 timeout
+#         10 timeout
 #
 def run_config(search_config, original_config, bitcode):
   global search_counter
-  if search_counter > 10:
-      printf("Timeout!")
-      return -10
+  max_iter = int(sys.argv[6])
+  if search_counter >= max_iter:
+      sys.exit(10)
   utilities.print_config(search_config, "config_temp.json")
-  print "** Exploring configuration #" + str(search_counter)
+  #print "** Exploring configuration #" + str(search_counter)
   #result = transform2.transform(bitcode, "config_temp.json")
-  res = subprocess.check_call(["python3 ../../../scripts/run.py " + sys.argv[4] + " " + sys.argv[5] + ' ' + sys.argv[6] + ' ' + str(search_counter)], shell=True) #remove shell=True...
+
+  res = subprocess.check_call(["python3 ../../../../scripts/tuner_call.py " + sys.argv[4] + " " + sys.argv[5] + ' ' + str(search_counter)], shell=True) #remove shell=True...
   if res != 0:
     print("dd2 error", arg)
     sys.exit(-1)
@@ -155,15 +158,12 @@ def dd_search_config(change_set, type_set, switch_set, search_config, original_c
       # apply change for variables in delta
       to_highest_precision(delta_change, delta_type, switch_set)
       # record i if config passes
-      result_run = run_config(search_config, original_config, bitcode)
-      if result_run == 1 and utilities.get_dynamic_score() < original_score:
+      if run_config(search_config, original_config, bitcode) == 1 and utilities.get_dynamic_score() < original_score:
         score = utilities.get_dynamic_score()
         if score < min_score or min_score == -1:
           pass_inx = i
           inv_is_better = False
           min_score = score
-      if result_run == -10:
-          return
 
     delta_inv_change = delta_inv_change_set[i]
     delta_inv_type = delta_inv_type_set[i]
@@ -174,15 +174,13 @@ def dd_search_config(change_set, type_set, switch_set, search_config, original_c
       # apply change for variables in delta inverse
       to_highest_precision(delta_inv_change, delta_inv_type, delta_inv_switch)
       # record i if config passes
-      result_run = run_config(search_config, original_config, bitcode)
-      if result_run == 1 and utilities.get_dynamic_score() < original_score:
+      if run_config(search_config, original_config, bitcode) == 1 and utilities.get_dynamic_score() < original_score:
         score = utilities.get_dynamic_score()
         if score < min_score or min_score == -1:
           pass_inx = i
           inv_is_better = True
           min_score = score
-      if result_run == -10:
-          return
+
 
   #
   # recursively search in pass delta or pass delta inverse
@@ -229,8 +227,7 @@ def dd_search_config(change_set, type_set, switch_set, search_config, original_c
 def search_config(change_set, type_set, switch_set, search_config, original_config, bitcode, original_score):
   # search from bottom up
   to_2nd_highest_precision(change_set, type_set, switch_set)
-  result_run = run_config(search_config, original_config, bitcode)
-  if result_run != 1 or utilities.get_dynamic_score() > original_score:
+  if run_config(search_config, original_config, bitcode) != 1 or utilities.get_dynamic_score() > original_score:
     dd_search_config(change_set, type_set, switch_set, search_config, original_config, bitcode, 2, original_score)
   # remove types and switches that cannot be changed
   for i in xrange(0, len(change_set)):
@@ -295,7 +292,7 @@ def main():
   #
   # search for valid configuration
   #
-  print "** Searching for valid configuration using delta-debugging algorithm"
+  #print "** Searching for valid configuration using delta-debugging algorithm"
 
   # get original score
   to_highest_precision(change_set, type_set, switch_set)
@@ -311,12 +308,12 @@ def main():
   modified_score = utilities.get_dynamic_score()
 
   if modified_score <= original_score:
-    print "Check dd2_valid_" + bitcode + ".json for the valid configuration file"
+    #print "Check dd2_valid_" + bitcode + ".json for the valid configuration file"
     # print valid configuration file and diff file
     utilities.print_config(search_conf, "dd2_valid_" + bitcode + ".json")
     utilities.print_diff(search_conf, original_conf, "dd2_diff_" + bitcode + ".json")
-  else:
-    print "No configuration is found!"
+  #else:
+  #  print "No configuration is found!"
 
 if __name__ == "__main__":
   main()

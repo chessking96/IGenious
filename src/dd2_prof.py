@@ -1,3 +1,5 @@
+# Modified script from HiFPTuner
+
 #!/usr/bin/env python
 
 import types, sys, os, math, json
@@ -33,13 +35,13 @@ def run_config(search_config, original_config, bitcode, timeout):
         print>>fp, "search_config:"
         print>>fp, search_config
         fp.close()
-    print "** Exploring configuration #" + str(search_counter)
+    #print "** Exploring configuration #" + str(search_counter)
     utilities.print_config(search_config, "config_temp.json")
     #result = transform2.transform(bitcode, "config_temp.json", timeout)
 
-    res = subprocess.check_call(["python3 ../../../../scripts/run.py " + sys.argv[5] + " " + sys.argv[6] + ' ' + str(search_counter)], shell=True) #remove shell=True...
+    res = subprocess.check_call(["python3 ../../../../scripts/tuner_call.py " + sys.argv[5] + " " + sys.argv[6] + ' ' + str(search_counter)], shell=True) #remove shell=True...
     if res != 0:
-        print("dd2 error")
+        print("dd2_prof error")
         sys.exit(-1)
     answer = ''
     with open("sat.cov", "r") as myfile:
@@ -394,7 +396,7 @@ def main():
         #
         # search for valid configuration
         #
-        print "Searching for valid configuration using delta-debugging algorithm ..."
+        #print "Searching for valid configuration using delta-debugging algorithm ..."
 
         # get current score
         if curr_score == -1:
@@ -446,15 +448,15 @@ def main():
         diff = utilities.print_diff(curr_conf, original_conf, "dd2_diff_" + bitcode + ".json")
         if diff:
             utilities.print_config(curr_conf, "dd2_valid_" + bitcode + ".json")
-            print "original_score: ", original_score
-            print "modified_score: ", curr_score
+            #print "original_score: ", original_score
+            #print "modified_score: ", curr_score
             fp = open('time.txt', 'a')
             print>>fp, curr_score, "/", original_score
             fp.close()
-            print "Check valid_" + bitcode + ".json for the valid configuration file"
+            #print "Check valid_" + bitcode + ".json for the valid configuration file"
             return
 
-    print "No configuration is found!"
+    #print "No configuration is found!"
 
 if __name__ == "__main__":
     fp = open('time.txt', 'w')
@@ -464,7 +466,7 @@ if __name__ == "__main__":
     main()
     end = time.time()
     elapsed = end - start
-    print "\n Elapsed time : "+str(elapsed)+"secs\n"
+    #print "\n Elapsed time : "+str(elapsed)+"secs\n"
     fp = open('time.txt', 'a')
     fp.write("Elapsed time : %.6f secs" % (elapsed))
     fp.close()
