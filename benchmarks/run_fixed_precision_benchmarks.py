@@ -41,7 +41,7 @@ for err in error_types:
 
                             # Read standard config
                             main_folder = 'examples/' + folder
-                            config = Config.read_config_from_file(main_folder + '/std_config.json')
+                            config = Config.read_config_from_file(main_folder + '/settings.json')
                             config.error_type = err
                             config.input_precision = input_precision
                             config.vectorized = vec
