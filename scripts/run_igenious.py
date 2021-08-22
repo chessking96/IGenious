@@ -52,6 +52,7 @@ def run(main_folder, config_name, config):
     path = config_folder_path
     run = 0
     orig_time = -1
+    orig_acc = -1
     best_run = -1
     best_time = 10000000000 # some big numbers
     best_acc = -1
@@ -78,6 +79,7 @@ def run(main_folder, config_name, config):
             best_acc = accuracy
         if run == 0:
             orig_time = run_time
+            orig_acc = accuracy
         run += 1
     with open(path + '/number_tunings.txt', 'w') as myfile:
         myfile.write(str(run))
@@ -88,7 +90,7 @@ def run(main_folder, config_name, config):
         myfile.write(str(best_run) + ',' + str(best_time) + ',' + str(best_acc))
 
     # Copy files to output
-
+    call('cp ' + path + '/' + str(best_run) + '/igen_chg_rmd_' + config.file_name + ' ' +  main_folder + '/out_' + config.file_name)
 
     # Stop time measurement and write to file
     t_end = time.time()
@@ -96,8 +98,8 @@ def run(main_folder, config_name, config):
         myfile.write(str(t_end - t_start))
 
     print('Run finished')
-    print('Original time:', orig_time)
-    print('Modified time:', best_time)
+    print('Original time/accuracy:', orig_time, orig_acc)
+    print('Modified time/accuracy:', best_time, best_acc)
     print('Elapsed time:', str(t_end - t_start), 'seconds')
 
 

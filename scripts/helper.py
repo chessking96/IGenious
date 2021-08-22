@@ -71,13 +71,15 @@ class Config:
         config += '\t"repetitions_input": ' + str(self.repetitions_input) + ',\n'
         config += '\t"target_accuracy": ' + str(self.precision) + ',\n'
         config += '\t"error_type": "' + self.error_type + '",\n'
-        config += '\t"vectorized": "' + str(self.vectorized) + '",\n'
+        if self.vectorized:
+            config += '\t"vectorized": true,\n'
+        else:
+            config += '\t"vectorized": false,\n'
         config += '\t"max_iterations": ' + str(self.max_iterations) + ',\n'
         config += '\t"tuning_algorithm": "' + self.tuning_algo + '",\n'
         config += '\t"input_precision": "' + self.input_precision + '",\n'
         config += '\t"input_range": ' + str(self.rng_range) + '\n'
         config += '}'
-
         return config
 
 
