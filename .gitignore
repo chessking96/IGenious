@@ -4,3 +4,8 @@ scripts/__pycache__/*
 examples/*/analysis_non_mixed_*
 examples/*/non_mixed*
 benchmarks/__pycache__/
+scripts/changeTypes/build/*
+!scripts/changeTypes/build/.gitkeep
+benchmarks/__pycache__/
+scripts/removeSameLineDecl/build/*
+!scripts/removeSameLineDecl/build/.gitkeep
