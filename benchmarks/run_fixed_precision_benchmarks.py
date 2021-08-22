@@ -12,23 +12,12 @@ def run():
     src_path = getEnvVar('SOURCE_PATH') + '/src'
     scripts_path = getEnvVar('SOURCE_PATH') + '/scripts'
 
-    fast = True
-
-    if fast:
-        folders = ['arclength', 'linear', 'newton_root', 'DFT16', 'dot', 'matmul', 'simpsons']
-        types = ['dd', 'd', 'f']
-        vectorized = [True]
-        input_ranges =  [10]
-        input_precisions = ['dd']
-        error_types = ['highest_relative']
-
-    else:
-        folders = ['arclength', 'linear', 'newton_root', 'DFT16', 'dot', 'matmul', 'simpsons']
-        types = ['dd', 'd', 'f']
-        vectorized = [True, False]
-        input_ranges =  [10]
-        input_precisions = ['dd', 'd']
-        error_types = ['highest_relative']
+    folders = ['arclength', 'linear', 'newton_root', 'DFT16', 'dot', 'matmul', 'simpsons']
+    types = ['dd', 'd', 'f']
+    vectorized = [True, False]
+    input_ranges =  [10]
+    input_precisions = ['dd', 'd']
+    error_types = ['highest_relative']
 
     # No mixed-precision tuning necessary
     max_iter = 1

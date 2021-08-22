@@ -8,30 +8,17 @@ from helper import call, Config, json, Config, nameWithoutExtension
 import run_igenious
 
 def run():
-    fast = True # change here to make a quick test
 
-    if fast:
-        precisions =  [10]
-        max_prec_iters = [1]
-        vectorized = [True]
-        error_types = ['highest_relative']
-        folders = ['simpsons']
-        #folders = ['arclength', 'linear', 'newton_root', 'DFT16', 'dot', 'matmul', 'simpsons']
-        tunings = ['precimonious']
-        #tunings = ['hifptuner', 'precimonious']
-        input_precisions = ['dd']
-        input_ranges = [10]
-        rep_input = 100
-    else:
-        precisions = [6, 8, 10, 12, 11, 13, 14, 15, 16, 2, 3, 4, 5, 7, 9]
-        max_prec_iters = [500]
-        vectorized = [True, False]
-        error_types = ['highest_relative']
-        folders = ['arclength', 'linear', 'newton_root', 'DFT16', 'dot', 'matmul', 'simpsons']
-        tunings = ['hifptuner', 'precimonious']
-        input_precisions = ['dd', 'd']
-        input_ranges = [10]
-        rep_input = 100
+    precisions = [6, 8, 10, 12, 11, 13, 14, 15, 16, 2, 3, 4, 5, 7, 9]
+    #max_prec_iters = [500]
+    max_prec_iters = [5] # Make it fast for now
+    vectorized = [True, False]
+    error_types = ['highest_relative']
+    folders = ['arclength', 'linear', 'newton_root', 'DFT16', 'dot', 'matmul', 'simpsons']
+    tunings = ['hifptuner', 'precimonious']
+    input_precisions = ['dd', 'd']
+    input_ranges = [10]
+    rep_input = 100
 
     path = 'examples/'
 
