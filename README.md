@@ -10,20 +10,47 @@
 ### Instructions
 We tested this installation guide on Ubuntu 20.04:
 - Clone this repository
-- Clone IGen and follow the install instructions:
+- Clone IGen and follow the install instructions
 - Clone Precimonious
 - Clone HiFPTuner repository
 
-#### Install LLVM-3.0
+#### Install LLVM-3.0 and precimonious
 (Instruction from HiFPTuner repository)
+
+Make sure that gcc/g++-4.8 is installed and active, otherwise the following script will not work. Also make sure that python 2.7 is installed.
 
 ```bash
 cd $HOME && \
 wget http://llvm.org/releases/3.0/clang+llvm-3.0-x86_64-linux-Ubuntu-11_10.tar.gz && \
 tar -xzvf clang+llvm-3.0-x86_64-linux-Ubuntu-11_10.tar.gz && \
 mv clang+llvm-3.0-x86_64-linux-Ubuntu-11_10 llvm-3.0 && \
-rm -f clang+llvm-3.0-x86_64-linux-Ubuntu-11_10.tar.gz
+rm -f clang+llvm-3.0-x86_64-linux-Ubuntu-11_10.tar.gz && \
+echo "export LLVM_VERSION=llvm-3.0" >> ~/.bashrc && \
+echo "export PATH=$HOME/\$LLVM_VERSION/bin:$PATH" >> ~/.bashrc && \
+echo "export LD_LIBRARY_PATH=$HOME/\$LLVM_VERSION/lib:$LD_LIBRARY_PATH" >> ~/.bashrc && \
+echo "export CPATH=$HOME/\$LLVM_VERSION/include:." >> ~/.bashrc && \
+echo "export LLVM_COMPILER=clang" >> ~/.bashrc && \
+sudo apt-get install python-dev -y && \
+cd && \
+wget -qnc http://prdownloads.sourceforge.net/scons/scons-2.4.0.tar.gz && \
+tar xzvf scons-2.4.0.tar.gz && \
+rm -f scons-2.4.0.tar.gz && \
+mv scons-2.4.0 scons && \
+cd scons && \
+sudo python2.7 setup.py install && \
+cd .. && \
+cd $HOME/precimonious/src && \
+sed -i "s/SHLINKFLAGS='-Wl',/SHLINKFLAGS='',/g" SConscript && \
+sed -i "s/LIBS='LLVM-\$llvm_version'/#LIBS='LLVM-\$llvm_version'/g" SConscript && \
+echo $PATH && \
+printenv && \
+scons -Uc && \
+scons -U && \
+scons -U test && \
+cd
 ```
+
+Now switch back to current version of gcc/g++ and python3.
 
 #### Install HiFPTuner
 - Pull docker container and run
