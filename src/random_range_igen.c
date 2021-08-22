@@ -1,3 +1,5 @@
+// Adapted form IGen - https://github.com/joaoriverd/IGen
+
 #include <stdlib.h>
 #include <math.h>
 #include "igen_dd_lib.h"
@@ -6,7 +8,7 @@ void initRandomSeed(){
 	srand(0);
 }
 
-//from Joao
+//from IGen
 double getRandomNumUniform(int magnitude){
 
 	int rnum = rand();
@@ -23,6 +25,7 @@ double getRandomPositiveDouble(int min_exp, int dyn_range){
 }
 
 double getRandomDouble(){
+	// 'factor' gets substituted according to settings
 	int factor = 1;
 	int min_exp = 0;
 	int dyn_range = min_exp + factor + 1;
@@ -30,14 +33,10 @@ double getRandomDouble(){
 	if(rand() % 2 == 0){
 		r_num = -r_num;
 	}
-	//printf("%.17g\n", r_num);
 	return r_num;
 }
 
-
-
-
-// from Joao
+// from IGen
 dd_I getRandomDDI() {
     int rm = fegetround();
     int n;
@@ -64,6 +63,7 @@ dd_I getRandomDDI() {
     return c;
 }
 
+// These functions provide random intervals for all precision levels
 dd_I getRandomDoubleDoubleInterval() {
 	return getRandomDDI();
 }

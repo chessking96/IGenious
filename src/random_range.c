@@ -1,3 +1,5 @@
+// Dummy file for Precimonious setup
+
 #include <stdlib.h>
 void initRandomSeed(){
 	srand(42);
