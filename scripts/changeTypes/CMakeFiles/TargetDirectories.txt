@@ -1,3 +1,0 @@
-/home/user/master-thesis/scripts/changeTypes/CMakeFiles/rebuild_cache.dir
-/home/user/master-thesis/scripts/changeTypes/CMakeFiles/edit_cache.dir
-/home/user/master-thesis/scripts/changeTypes/CMakeFiles/clang_ast_visitor.dir
