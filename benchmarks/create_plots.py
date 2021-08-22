@@ -5,6 +5,7 @@
 import sys, os, math
 sys.path.insert(1, os.path.join(sys.path[0], '../scripts'))
 from helper import nameWithoutExtension, Config
+
 import matplotlib.pyplot as plt
 import matplotlib.ticker
 from matplotlib.ticker import MaxNLocator
@@ -49,19 +50,11 @@ def getFixedData(input_precision, rng_range, vectorized, folder_name):
 
 # Create plots where just a single setting is shown
 def create_single():
-    fast = False
-    if fast:
-        precisions = [10]
-        input_types = ['dd']
-        input_ranges = [10]
-        vectorized = [True]
-        folder_names = [['simpsons', 'matmul'], ['dot', 'DFT16'], ['arclength', 'linear'], ['newton_root']]
-    else:
-        precisions = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
-        input_types = ['d', 'dd']
-        input_ranges = [10]
-        vectorized = [True, False]
-        folder_names = [['simpsons', 'matmul'], ['dot', 'DFT16'], ['arclength', 'linear'], ['newton_root']]
+    precisions = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+    input_types = ['d', 'dd']
+    input_ranges = [10]
+    vectorized = [True, False]
+    folder_names = [['simpsons', 'matmul'], ['dot', 'DFT16'], ['arclength', 'linear'], ['newton_root']]
 
     #for input_type in input_types:
     for input_range in input_ranges:
@@ -142,8 +135,8 @@ def create_single():
                         # Adjust fontsize
                         ax[folder_i, folder_j].tick_params(axis='both', which='major', labelsize=14)
 
-                # Save figure
-                plt.legend([l1, l3], ['IGenious', 'Fixed precision'], bbox_to_anchor=(2.1, 0.8), fontsize=16)
+                # Plot legend and save figure
+                plt.legend([l1, l3], [r'Mixed-precision - IGenious', 'Fixed-precision'], bbox_to_anchor=(2.28, 0.8), fontsize=16)
                 plt.savefig('plots/singles/single_' + in_type + str(vec) + str(input_range) + '.png')
                 plt.close('all')
 
@@ -238,7 +231,7 @@ def create_tuner():
                         ax[folder_i, folder_j].tick_params(axis='both', which='major', labelsize=14)
 
                 # Save figure
-                plt.legend([l1, l2, l3], ['Precimonious', 'HiFPTuner', 'Fixed precision'], bbox_to_anchor=(2.1, 0.9), fontsize=16)
+                plt.legend([l1, l2, l3], ['Mixed-precision with Precimonious', 'Mixed-precision with HiFPTuner', 'Fixed-precision'], bbox_to_anchor=(2.325, 0.9), fontsize=16)
                 plt.savefig('plots/pVSh/tuner_' + in_type + str(vec) + str(input_range) + '.png')
                 plt.close('all')
 
@@ -337,7 +330,7 @@ def create_input():
                         ax[folder_i, folder_j].tick_params(axis='both', which='major', labelsize=14)
 
                 # Save figure
-                plt.legend([l1, l2, l3, l4], ['Double input', 'Double-double input', 'Fixed precision double input', 'Fixed precision double-double input'], bbox_to_anchor=(0.5, -0.4), fontsize=16)
+                plt.legend([l1, l2, l3, l4], ['Mixed-precision with double input', 'Mixed-precision with double-double input', 'Fixed-precision with double input', 'Fixed-precision with double-double input'], bbox_to_anchor=(0.55, -0.4), fontsize=16)
                 plt.savefig('plots/ddVSd/input_' + str(vec) + tuner + str(input_range) + '.png')
                 plt.close('all')
 
@@ -437,19 +430,14 @@ def create_vec():
 
 
                 # Save data
-                plt.legend([l1, l2, l3, l4], ['Vectorized', 'Non-vectorized', 'Fixed precision vectorized', 'Fixed precision non-vectorized'], bbox_to_anchor=(1.2, 1.0), fontsize=16)
+                plt.legend([l1, l2, l3, l4], ['Mixed-precision vectorized', 'Mixed-precision non-vectorized', 'Fixed-precision vectorized', 'Fixed-precision non-vectorized'], bbox_to_anchor=(1.164, 1.0), fontsize=16)
                 plt.savefig('plots/vVSn/vec_' + tuner + input_type + str(input_range) + '.png')
                 plt.close('all')
 
 def run():
-    fast = False
-
-    if fast:
-        create_single()
-    else:
-        create_single()
-        create_tuner()
-        create_input()
-        create_vec()
+    create_single()
+    create_tuner()
+    create_input()
+    create_vec()
 
 run()

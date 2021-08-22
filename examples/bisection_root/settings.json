@@ -2,5 +2,6 @@
   "file_name": "bisection_root.c",
   "entry_function": "bisection_root",
   "arguments": [],
-  "return": ["True", "long double", 1, "scalar"]
+  "return": ["True", "long double", 1, "scalar"],
+  "repetitions_input": 10
 }

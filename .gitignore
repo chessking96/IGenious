@@ -1,4 +1,4 @@
-examples/*/analysis_config_*
+examples/*/analysis_*
 examples/*/config_*.json
 scripts/__pycache__/*
 examples/*/analysis_non_mixed_*

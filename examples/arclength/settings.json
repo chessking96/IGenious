@@ -2,5 +2,6 @@
   "file_name": "arclength.c",
   "entry_function": "arclength",
   "arguments": [],
-  "return": ["True", "long double", 1, "scalar"]
+  "return": ["True", "long double", 1, "scalar"],
+  "repetitions_input": 10
 }
