@@ -3,9 +3,12 @@
 ### Prerequsites
 - IGen: https://github.com/joaoriverd/IGen
 - Precimonious: https://github.com/corvette-berkeley/precimonious
+  - LLVM-3.0
+  - gcc/g++ 4.8
+  - python2.7
 - HiFPTuner:  https://github.com/ucd-plse/HiFPTuner
 - Docker
-- LLVM-3.0
+
 
 ### Instructions
 We tested this installation guide on Ubuntu 20.04:
@@ -64,7 +67,7 @@ docker run -ti --name=hi hguo15/hifptuner:v0
 - Replace ~/precimonious/scripts/dd2.py with ~/IGenious/src/dd2.py
 - Replace ~/HiFPTuner/precimonious/scripts/dd2_prof.py with ~/IGenious/src/dd2_prof.py
 - Set environment variables: $IGEN_PATH: /path/IGen, $SOURCE_PATH: /path/to/IGenious, $HIFP_PATH: /path/to/HiFPTuner, $CORVETTE_PATH: /path/to/precimonious
-- Substitute in the <mark>docker container<mark/> each occurence of '$auto_tuning' in /root/HiFPTuner/scripts/analyze.sh and in root/HiFPTuner/scripts/compile.sh with '/root/HiFPTuner/'
+- Substitute in the **docker container** each occurence of '$auto_tuning' in /root/HiFPTuner/scripts/analyze.sh and in root/HiFPTuner/scripts/compile.sh with '/root/HiFPTuner/'
 
 ## Usage
 ### Tuning
