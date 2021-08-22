@@ -60,6 +60,6 @@ The following declarations are optional:
 - max_iterations: The maximal number of explorations of Precimonious/HiFPTuner after they timeout, standard is 500
 - tuning_algorithm: 'hifptuner' or 'precimonious', standard is 'precimonious'
 - input_precision: 'dd' or 'd', standard is 'dd'
-- input_range:
+- input_range: The range, of which numbers are generated, standard is 10.
 
 For an example of a settings file look at the example folder.
