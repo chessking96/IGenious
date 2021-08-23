@@ -10,8 +10,7 @@ import run_igenious
 def run():
 
     precisions = [6, 8, 10, 12, 11, 13, 14, 15, 16, 2, 3, 4, 5, 7, 9]
-    #max_prec_iters = [500]
-    max_prec_iters = [5] # Make it fast for now
+    max_prec_iters = [500]
     vectorized = [True, False]
     error_types = ['highest_relative']
     folders = ['arclength', 'linear', 'newton_root', 'DFT16', 'dot', 'matmul', 'simpsons']
