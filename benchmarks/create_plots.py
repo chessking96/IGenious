@@ -37,11 +37,6 @@ def getFixedData(input_precision, rng_range, vectorized, folder_name):
         with open(run_path + '/igen_setup/precision.cov', 'r') as myfile:
             prec = float(myfile.read())
 
-        # Fix temporary issue
-        fn = folder_name
-        if fn == 'simpsons' or fn == 'arclength' or fn == 'newton_root':
-            time /= 10
-
         times_fix.append(time / reps)
         acc_fix.append(prec)
 
