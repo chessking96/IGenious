@@ -91,18 +91,21 @@ def run(main_folder, config_name, config):
     with open(path + '/result.txt', 'w') as myfile:
         myfile.write(str(best_run) + ',' + str(best_time) + ',' + str(best_acc))
 
-    # Copy files to output
-    call('cp ' + path + '/' + str(best_run) + '/igen_chg_rmd_' + config.file_name + ' ' +  main_folder + '/out_' + config.file_name)
 
     # Stop time measurement and write to file
     t_end = time.time()
     with open(config_folder_path + '/runtime.txt', 'w') as myfile:
         myfile.write(str(t_end - t_start))
 
-    print('Run finished')
-    print('Original time/accuracy:', int(orig_time), orig_acc)
-    print('Modified time/accuracy:', int(best_time), best_acc)
-    print('Elapsed time:', str(t_end - t_start), 'seconds')
+    # Copy files to output
+    if best_run != -1:
+        call('cp ' + path + '/' + str(best_run) + '/igen_chg_rmd_' + config.file_name + ' ' +  main_folder + '/out_' + config.file_name)
+        print('Run finished')
+        print('Original time/accuracy:', int(orig_time), orig_acc)
+        print('Modified time/accuracy:', int(best_time), best_acc)
+        print('Elapsed time:', str(t_end - t_start), 'seconds')
+    else:
+        print('No configuration satisfying the accuracy constraint was found.')
 
 
 # Call this script with two arguments
