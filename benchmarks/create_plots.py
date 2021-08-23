@@ -28,7 +28,7 @@ def getFixedData(input_precision, rng_range, vectorized, folder_name):
         if vectorized:
             config_file_path += '#vec'
         config_file_path += '.json'
-        reps = Config.read_config_from_file_old(config_file_path).repetitions
+        reps = Config.read_config_from_file(config_file_path).repetitions
 
         # Get time
         with open(run_path + '/igen_setup/score.cov', 'r') as myfile:
